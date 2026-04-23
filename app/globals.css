@@ -5,6 +5,15 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /*custom colors start*/
+  --primary: #161f1d;
+  --secondary: #0a7c58;
+  --mint-green: #34d399;
+  --dark-green: #25302b;
+  --red: #dc2626;
+  --orange: #ff9800;
+
+  /*custom colors end*/
 }
 
 .dark {
@@ -17,6 +26,14 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  /*custom color name start*/
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-red: var(--red);
+  --color-mint-green: var(--mint-green);
+  --color-orange: var(--orange);
+  --color-dark-green: var(--dark-green);
+  /*custom color name end*/
 }
 
 html,
