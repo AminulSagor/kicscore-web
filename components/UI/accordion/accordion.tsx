@@ -27,14 +27,16 @@ const Accordion = ({
   }, [isOpen]);
 
   return (
-    <div className={`w-full rounded-2xl overflow-hidden ${className}`}>
-      {/* Header */}
+    <div
+      className={`w-full overflow-hidden rounded-2xl border border-[#DDE8E3] bg-white dark:border-white/10 dark:bg-[#111d1a] ${className}`}
+    >
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="
-          w-full flex items-center justify-between
-          px-4 py-3.5
-          bg-[#25302B] text-white
+          flex w-full items-center justify-between
+          bg-[#EAF3EF] px-4 py-3.5 text-[#10201B]
+          dark:bg-[#25302B] dark:text-white
         "
       >
         <span>{title}</span>
@@ -47,13 +49,12 @@ const Accordion = ({
         />
       </button>
 
-      {/* Body */}
       <div
         style={{ height }}
         className="
-          overflow-hidden
+          overflow-hidden bg-white text-[#10201B]
           transition-all duration-300 ease-in-out
-          bg-primary text-white
+          dark:bg-[#101c19] dark:text-white
         "
       >
         <div ref={contentRef} className="px-4 py-4">
