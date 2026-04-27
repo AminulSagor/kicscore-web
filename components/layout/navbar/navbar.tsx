@@ -11,7 +11,7 @@ import NavbarActions from "@/components/layout/navbar/navbar-actions";
 export default function Navbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const isLoggedIn = false;
+  const isLoggedIn = true;
 
   return (
     <header className="sticky top-0 z-50 w-full">

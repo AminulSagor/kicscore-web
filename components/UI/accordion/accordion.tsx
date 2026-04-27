@@ -36,7 +36,7 @@ const Accordion = ({
         className="
           flex w-full items-center justify-between
           bg-[#EAF3EF] px-4 py-3.5 text-[#10201B]
-          dark:bg-[#25302B] dark:text-white
+          dark:bg-[#25302B] dark:text-white cursor-pointer
         "
       >
         <span>{title}</span>
