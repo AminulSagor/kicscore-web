@@ -7,6 +7,7 @@ import { useState } from "react";
 import UserAvatar from "./user-avatar";
 import { authStore } from "@/z_store/auth/auth.store";
 import AuthPopover from "@/components/layout/navbar/auth-popover";
+import NotificationPopover from "@/components/layout/navbar/notification-popover";
 
 const ThemeToggle = dynamic(() => import("../../UI/theme/theme-toggle"), {
   ssr: false,
@@ -15,6 +16,8 @@ const ThemeToggle = dynamic(() => import("../../UI/theme/theme-toggle"), {
 export default function NavbarActions() {
   const router = useRouter();
   const [isAuthPopoverOpen, setIsAuthPopoverOpen] = useState(false);
+  const [isNotificationPopoverOpen, setIsNotificationPopoverOpen] =
+    useState(false);
   const loggedIn = authStore((state) => state.loggedIn);
 
   const handleSignIn = () => {
@@ -34,9 +37,14 @@ export default function NavbarActions() {
 
       {loggedIn ? (
         <>
-          <button className="flex h-10 w-10 items-center justify-center pr-2 text-[#10201B] transition hover:text-[#078B63] dark:text-white dark:hover:text-[#72e3c6]">
+          <button
+            className="flex h-10 w-10 items-center justify-center pr-2 text-[#10201B] transition hover:text-[#078B63] dark:text-white dark:hover:text-[#72e3c6]"
+            onClick={() => setIsNotificationPopoverOpen((prev) => !prev)}
+          >
             <Bell className="h-4.5 w-4.5" />
           </button>
+
+          {isNotificationPopoverOpen && <NotificationPopover />}
 
           <UserAvatar />
         </>
