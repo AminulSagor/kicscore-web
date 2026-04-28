@@ -12,7 +12,7 @@ export default function SignInPage() {
     <main className="flex items-center justify-center px-4 py-10 text-foreground">
       <section
         className="
-          w-full max-w-122rounded-2xl border border-[#DDE8E3]
+          w-full max-w-122 rounded-2xl border border-[#DDE8E3]
           bg-white px-6 py-10 shadow-sm
           dark:border-white/10 dark:bg-[#111d1a]
           sm:px-7 md:px-8
