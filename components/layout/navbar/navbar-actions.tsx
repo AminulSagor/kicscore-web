@@ -32,8 +32,9 @@ export default function NavbarActions() {
       </button>
 
       <div className="mx-2 hidden h-6 w-px bg-[#DDE8E3] md:block dark:bg-white/15" />
-
-      <ThemeToggle />
+      <div className="px-2 py-2 md:py-4">
+        <ThemeToggle />
+      </div>
 
       {loggedIn ? (
         <>
