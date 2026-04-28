@@ -8,13 +8,13 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
         <AdminSidebar />
       </aside>
 
-      <div className="flex h-screen min-w-0 flex-1 flex-col">
+      <div className="flex h-screen min-w-0 flex-1 flex-col bg-[#F3F7F5] dark:bg-black">
         <nav className="h-12 shrink-0 bg-primary md:h-18">
           <AdminNavbar />
         </nav>
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 w-full xl:w-5xl 2xl:w-7xl mx-auto">
-          {children}
+        <main className="flex-1 overflow-y-auto p-4 md:p-6">
+          <div className="mx-auto w-full max-w-7xl">{children}</div>
         </main>
       </div>
     </div>
