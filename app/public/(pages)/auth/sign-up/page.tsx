@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Eye, EyeOff, Lock, Mail, User, X } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 import Button from "@/components/UI/buttons/button";
 import Link from "next/link";
 
@@ -12,7 +12,7 @@ export default function SignUpPage() {
     <main className="flex items-center justify-center px-4 py-10 text-foreground">
       <section
         className="
-          relative w-full max-w-[486px] rounded-[28px] border border-[#DDE8E3]
+          relative w-full max-w-121.5 rounded-[28px] border border-[#DDE8E3]
           bg-white px-6 py-10 shadow-sm
           dark:border-white/10 dark:bg-[#111d1a]
           sm:px-7 md:px-8
