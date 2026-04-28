@@ -6,18 +6,16 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import UserAvatar from "./user-avatar";
 import Button from "@/components/UI/buttons/button";
+import { authStore } from "@/z_store/auth/auth.store";
 
 const ThemeToggle = dynamic(() => import("../../UI/theme/theme-toggle"), {
   ssr: false,
 });
 
-interface NavbarActionsProps {
-  isLoggedIn: boolean;
-}
-
-export default function NavbarActions({ isLoggedIn }: NavbarActionsProps) {
+export default function NavbarActions() {
   const router = useRouter();
   const [isAuthPopoverOpen, setIsAuthPopoverOpen] = useState(false);
+  const loggedIn = authStore((state) => state.loggedIn);
 
   const handleSignIn = () => {
     router.push("/public/sign-in");
@@ -34,7 +32,7 @@ export default function NavbarActions({ isLoggedIn }: NavbarActionsProps) {
 
       <ThemeToggle />
 
-      {isLoggedIn ? (
+      {loggedIn ? (
         <>
           <button className="flex h-10 w-10 items-center justify-center pr-2 text-[#10201B] transition hover:text-[#078B63] dark:text-white dark:hover:text-[#72e3c6]">
             <Bell className="h-4.5 w-4.5" />
@@ -53,7 +51,7 @@ export default function NavbarActions({ isLoggedIn }: NavbarActionsProps) {
           </button>
 
           {isAuthPopoverOpen && (
-            <div className="absolute right-0 top-12 z-50 w-[284px] rounded-2xl border border-[#DDE8E3] bg-white p-5 shadow-2xl dark:border-white/10 dark:bg-[#111f1d]">
+            <div className="absolute right-0 top-12 z-50 w-71 rounded-2xl border border-[#DDE8E3] bg-white p-5 shadow-2xl dark:border-white/10 dark:bg-[#111f1d]">
               <h3 className="mb-2 text-base font-semibold text-[#10201B] dark:text-white">
                 Experience More
               </h3>
