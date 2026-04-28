@@ -13,7 +13,7 @@ export default function SettingsPage() {
   const [isDirty, setIsDirty] = useState(false);
 
   return (
-    <main className="px-4 py-8 text-foreground">
+    <main className="py-4 md:py-8 text-foreground">
       <section className="mx-auto w-full">
         <h1 className="mb-7 text-lg font-bold text-[#10201B] dark:text-white">
           Settings

@@ -14,7 +14,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full">
       <div className="mx-auto flex items-center justify-between border-b border-[#D8E7DF] bg-white/90 py-2 text-[#0B1F1A] padding-x shadow-[0_8px_30px_rgba(16,32,27,0.04)] backdrop-blur-xl dark:border-transparent dark:bg-[#0b1718]/95 dark:text-white dark:shadow-none">
-        <div className="flex items-center gap-7">
+        <div className="flex items-center gap-4 md:gap-7">
           <button
             type="button"
             onClick={() => setIsSidebarOpen(true)}

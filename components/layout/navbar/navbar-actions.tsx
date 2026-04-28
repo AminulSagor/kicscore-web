@@ -46,7 +46,7 @@ export default function NavbarActions() {
 
           {isNotificationPopoverOpen && <NotificationPopover />}
 
-          <UserAvatar />
+          <UserAvatar action={true} />
         </>
       ) : (
         <>

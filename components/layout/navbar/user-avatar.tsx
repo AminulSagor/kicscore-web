@@ -7,7 +7,7 @@ import Image from "next/image";
 import { IMAGE } from "@/constants/image.path";
 import { authStore } from "@/z_store/auth/auth.store";
 
-export default function UserAvatar() {
+export default function UserAvatar({ action }: { action?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const setLoggedIn = authStore((state) => state.setLoggedIn);
@@ -33,7 +33,11 @@ export default function UserAvatar() {
     <div ref={wrapperRef} className="relative">
       <button
         type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={() => {
+          if (action) {
+            setIsOpen((prev) => !prev);
+          }
+        }}
         className="flex h-9 w-9 items-center justify-center cursor-pointer"
       >
         <Image
@@ -48,7 +52,7 @@ export default function UserAvatar() {
       {isOpen && (
         <div
           className="
-            absolute right-0 top-14 z-50 w-82.5 rounded-[28px]
+            absolute right-0 top-13 z-50 w-82.5 rounded-[28px]
             border border-[#DDE8E3] bg-white p-7 shadow-xl
             dark:border-white/10 dark:bg-[#111d1a]
             max-sm:-right-3 max-sm:w-71.25 max-sm:p-5
