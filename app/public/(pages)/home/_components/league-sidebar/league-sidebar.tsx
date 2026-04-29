@@ -4,6 +4,7 @@ import {
   countryLeaguesMockData,
   topLeaguesMockData,
 } from "@/mock/league-sidebar/league-sidebar.mock.data";
+import Link from "next/link";
 
 export default function LeagueSidebar() {
   return (
@@ -22,7 +23,11 @@ export default function LeagueSidebar() {
               "
             >
               <span className="text-base">{league.icon}</span>
-              <span>{league.name}</span>
+              <span>
+                <Link href={`/public/league-details/${league.id}`}>
+                  {league.name}
+                </Link>
+              </span>
             </button>
           ))}
         </div>
