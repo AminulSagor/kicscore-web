@@ -22,6 +22,7 @@ import type {
 import FixtureDateSeparator from "./fixture-date-separator";
 import FixtureMatchRow from "./fixture-match-row";
 import CustomSelect from "@/components/UI/select/custom-select";
+import Link from "next/link";
 
 const modeOptions: { label: string; value: FixtureViewMode }[] = [
   { label: "By date", value: "date" },
@@ -98,7 +99,9 @@ export default function FixturesTab() {
           <div key={group.id}>
             <FixtureDateSeparator label={group.label} />
             {group.matches.map((match) => (
-              <FixtureMatchRow key={match.id} match={match} />
+              <Link href={`/public/match-details/${match.id}`} key={match.id}>
+                <FixtureMatchRow match={match} />
+              </Link>
             ))}
           </div>
         ))}

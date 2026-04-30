@@ -28,7 +28,8 @@ export default function TeamStatCard({ stat }: TeamStatCardProps) {
 
       <div className="space-y-3 p-4">
         {stat.teams.map((team) => (
-          <div
+          <Link
+            href={`/public/team-details/${team.id}`}
             key={team.id}
             className="flex items-center gap-4 rounded-2xl bg-[#EAF3EF] px-4 py-4 dark:bg-[#25302B]"
           >
@@ -47,7 +48,7 @@ export default function TeamStatCard({ stat }: TeamStatCardProps) {
             <span className="text-base font-bold text-secondary">
               {team.value}
             </span>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
