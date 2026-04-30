@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 export type DataTableColumn<T> = {
   key: string;
   header: ReactNode;
-  className?: string;
   headerClassName?: string;
   cellClassName?: string;
   render: (item: T, index: number) => ReactNode;
@@ -16,4 +15,6 @@ export type DataTableProps<T> = {
   emptyMessage?: string;
   className?: string;
   tableClassName?: string;
+  title?: string;
+  defaultOpen?: boolean;
 };

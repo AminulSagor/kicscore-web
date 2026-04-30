@@ -1,4 +1,6 @@
 import { Play } from "lucide-react";
+import { FaFacebookF, FaInstagram } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 const Footer = () => {
   return (
@@ -96,13 +98,18 @@ const Footer = () => {
               Follow Us on
             </span>
 
-            {[1, 2, 3].map((item) => (
+            {[
+              { icon: FaInstagram, label: "Instagram" },
+              { icon: FaFacebookF, label: "Facebook" },
+              { icon: FaXTwitter, label: "X" },
+            ].map(({ icon: Icon, label }) => (
               <a
-                key={item}
+                key={label}
                 href="#"
+                aria-label={label}
                 className="transition hover:text-[#008A63] dark:hover:text-[#79e2c5]"
               >
-                <Play className="h-5 w-5" />
+                <Icon className="h-5 w-5" />
               </a>
             ))}
           </div>

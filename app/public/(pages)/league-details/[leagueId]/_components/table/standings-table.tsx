@@ -103,6 +103,7 @@ const standingsColumns: DataTableColumn<StandingTeam>[] = [
 export default function StandingsTable({ teams }: StandingsTableProps) {
   return (
     <DataTable
+      title="Table"
       data={teams}
       columns={standingsColumns}
       getRowKey={(team) => `${team.position}-${team.teamName}`}
