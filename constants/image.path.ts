@@ -5,4 +5,5 @@ export const IMAGE = {
   celebration3: "/images/world cup celebration.jpg",
   portugal: "/images/portugal.jpg",
   fc_porto: "/images/fc_porto.jpg",
+  arsenal: "/images/Arsenal_FC.svg.png",
 } as const;
