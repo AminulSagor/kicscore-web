@@ -73,17 +73,17 @@ const Footer = () => {
           <div>
             <div className="mt-0 flex flex-col gap-5 text-[#61736D] lg:mt-10 dark:text-white/70">
               {[
-                "Privacy Policy",
-                "Terms of Service",
-                "Cookie Policy",
-                "Data Settings",
+                { name: "Privacy Policy", url: "/public/privacy-policy" },
+                { name: "Terms of Service", url: "/public/terms-condition" },
+                { name: "Cookie Policy", url: "#" },
+                { name: "Data Settings", url: "#" },
               ].map((link) => (
                 <a
-                  key={link}
-                  href="#"
+                  key={link.name}
+                  href={link.url}
                   className="text-sm transition hover:text-[#008A63] dark:hover:text-[#79e2c5]"
                 >
-                  {link}
+                  {link.name}
                 </a>
               ))}
             </div>

@@ -11,6 +11,7 @@ export default function TeamSquadTab() {
         title="Coach"
         players={[teamCoach]}
         showNumber={false}
+        link={teamCoach.link}
       />
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -19,6 +20,7 @@ export default function TeamSquadTab() {
             key={group.title}
             title={group.title}
             players={group.players}
+            link={"/public/player-details/1"}
           />
         ))}
       </div>

@@ -6,6 +6,7 @@ import Image from "next/image";
 
 import { IMAGE } from "@/constants/image.path";
 import { authStore } from "@/z_store/auth/auth.store";
+import Link from "next/link";
 
 export default function UserAvatar({ action }: { action?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -75,21 +76,21 @@ export default function UserAvatar({ action }: { action?: boolean }) {
           <div className="my-5 h-px w-full bg-[#DDE8E3] dark:bg-white/10" />
 
           <div className="space-y-1">
-            <button
-              type="button"
+            <Link
+              href={"/public/user/following"}
               className="flex w-full items-center gap-4 rounded-xl px-1 py-3 text-sm font-semibold text-[#10201B] transition hover:bg-[#EAF3EF] dark:text-white dark:hover:bg-[#25302B]"
             >
               <Star size={21} />
               Following
-            </button>
+            </Link>
 
-            <button
-              type="button"
+            <Link
+              href={"/public/user/profile-settings"}
               className="flex w-full items-center gap-4 rounded-xl px-1 py-3 text-sm font-semibold text-[#10201B] transition hover:bg-[#EAF3EF] dark:text-white dark:hover:bg-[#25302B]"
             >
               <Settings size={21} />
               Settings
-            </button>
+            </Link>
 
             <button
               type="button"

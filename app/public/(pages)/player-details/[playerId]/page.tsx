@@ -35,15 +35,15 @@ export default async function PlayerDetailsPage({
   if (!player) notFound();
 
   return (
-    <main className="min-h-screen bg-[#F8FBFA] text-[#0B1F1A] dark:bg-[#07110F] dark:text-white">
-      <section className="padding-x mx-auto max-w-[930px] pt-10 pb-28">
+    <main className="">
+      <section className="mx-auto pt-10 pb-28">
         <PlayerProfileHeader player={player} />
 
         <PlayerProfileTabs playerId={player.id} activeTab={activeTab} />
 
         {activeTab === "profile" && (
           <>
-            <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-[1fr_250px]">
+            <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-[1fr_350px]">
               <PlayerProfileOverview player={player} />
               <PlayerTraitsCard traits={player.traits} />
             </div>

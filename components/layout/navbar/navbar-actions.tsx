@@ -8,6 +8,7 @@ import UserAvatar from "./user-avatar";
 import { authStore } from "@/z_store/auth/auth.store";
 import AuthPopover from "@/components/layout/navbar/auth-popover";
 import NotificationPopover from "@/components/layout/navbar/notification-popover";
+import Link from "next/link";
 
 const ThemeToggle = dynamic(() => import("../../UI/theme/theme-toggle"), {
   ssr: false,
@@ -28,7 +29,7 @@ export default function NavbarActions() {
   return (
     <div className="relative flex items-center">
       <button className="hidden px-6 text-sm font-medium text-[#10201B] transition hover:text-[#078B63] md:block dark:text-white dark:hover:text-[#72e3c6]">
-        News
+        <Link href={"/public/news"}>News</Link>
       </button>
 
       <div className="mx-2 hidden h-6 w-px bg-[#DDE8E3] md:block dark:bg-white/15" />

@@ -97,29 +97,54 @@ export const newsMockData: NewsItemMock[] = [
       },
     ],
   },
-  // {
-  //   id: "4",
-  //   title: "Argentina stars celebrate historic final night",
-  //   description:
-  //     "A memorable night for Argentina as senior players delivered another iconic performance.",
-  //   time: "5 hr ago",
-  //   source: "Fotfoot.fr",
-  //   image: IMAGE.celebration1,
-  //   detailImage: IMAGE.celebration1,
-  //   category: "International",
-  //   publishedDate: "April 7, 2026",
-  //   author: "By Match Desk",
-  //   detailSections: [
-  //     {
-  //       id: "intro",
-  //       title: "",
-  //       paragraphs: [
-  //         {
-  //           id: "p1",
-  //           text: "Argentina’s senior players produced another emotional performance, combining experience and control in decisive phases.",
-  //         },
-  //       ],
-  //     },
-  //   ],
-  // },
+  {
+    id: "4",
+    title: "Argentina stars celebrate historic final night",
+    description:
+      "A memorable night for Argentina as senior players delivered another iconic performance.",
+    time: "5 hr ago",
+    source: "Fotfoot.fr",
+    image: IMAGE.celebration1,
+    detailImage: IMAGE.celebration1,
+    category: "International",
+    publishedDate: "April 7, 2026",
+    author: "By Match Desk",
+    detailSections: [
+      {
+        id: "intro",
+        title: "",
+        paragraphs: [
+          {
+            id: "p1",
+            text: "Argentina’s senior players produced another emotional performance, combining experience and control in decisive phases.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "5",
+    title: "Mercato: L'OL fonce sur un défenseur à 15 millions d'euros ?",
+    description:
+      "Lyon are reportedly monitoring a defensive target as the summer window approaches.",
+    time: "4 hr ago",
+    source: "Fotfoot.fr",
+    image: IMAGE.celebration3,
+    detailImage: IMAGE.celebration3,
+    category: "Transfer",
+    publishedDate: "April 7, 2026",
+    author: "By Transfer Desk",
+    detailSections: [
+      {
+        id: "intro",
+        title: "",
+        paragraphs: [
+          {
+            id: "p1",
+            text: "Lyon’s recruitment team is exploring defensive reinforcements, with a potential move worth around 15 million euros being discussed.",
+          },
+        ],
+      },
+    ],
+  },
 ];

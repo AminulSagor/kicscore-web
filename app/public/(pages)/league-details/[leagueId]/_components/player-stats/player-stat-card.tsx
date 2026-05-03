@@ -25,7 +25,8 @@ export default function PlayerStatCard({ stat }: PlayerStatCardProps) {
 
       <div className="space-y-3 p-4">
         {stat.players.map((player) => (
-          <div
+          <Link
+            href={"/public/player-details/1"}
             key={player.id}
             className="flex items-center gap-4 rounded-2xl bg-[#EAF3EF] px-4 py-4 dark:bg-[#25302B]"
           >
@@ -47,7 +48,7 @@ export default function PlayerStatCard({ stat }: PlayerStatCardProps) {
             <span className="text-base font-bold text-secondary">
               {player.value}
             </span>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

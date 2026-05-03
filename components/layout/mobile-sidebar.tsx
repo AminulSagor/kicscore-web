@@ -42,10 +42,14 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
         />
 
         <nav>
-          <button className="flex w-full items-center gap-3 rounded-md px-3 py-3 text-sm text-[#10201B] hover:bg-[#EAF3EF] dark:text-white dark:hover:bg-white/8 cursor-pointer">
+          <Link
+            onClick={onClose}
+            href={"/public/news"}
+            className="flex w-full items-center gap-3 rounded-md px-3 py-3 text-sm text-[#10201B] hover:bg-[#EAF3EF] dark:text-white dark:hover:bg-white/8 cursor-pointer"
+          >
             <Newspaper className="h-4 w-4" />
             News
-          </button>
+          </Link>
 
           <Link
             onClick={onClose}

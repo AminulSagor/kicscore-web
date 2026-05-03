@@ -8,6 +8,7 @@ export const teamCoach: TeamSquadMember = {
   flag: "🇪🇸",
   image: IMAGE.profile_image,
   age: 31,
+  link: "/public/coach-details/1",
 };
 
 const squadPlayer = (id: string, name = "Player name"): TeamSquadMember => ({
@@ -18,6 +19,7 @@ const squadPlayer = (id: string, name = "Player name"): TeamSquadMember => ({
   image: IMAGE.profile_image,
   number: 13,
   age: 31,
+  link: "/public/player-details/1",
 });
 
 export const teamSquadGroups: TeamSquadGroup[] = [

@@ -6,6 +6,7 @@ export type TeamSquadMember = {
   image: string;
   age: number;
   number?: number;
+  link?: string;
 };
 
 export type TeamSquadGroup = {

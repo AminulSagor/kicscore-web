@@ -21,9 +21,9 @@ export default async function CoachDetailsPage({
   if (!coach) notFound();
 
   return (
-    <main className="min-h-screen bg-[#07110F] text-white">
-      <section className="padding-x mx-auto max-w-[1210px] pt-12 pb-28">
-        <div className="mx-auto max-w-[930px]">
+    <main className="">
+      <section className="pt-12 pb-28">
+        <div className="">
           <CoachProfileHeader coach={coach} />
 
           <div className="mt-12 border-b border-white/8">
