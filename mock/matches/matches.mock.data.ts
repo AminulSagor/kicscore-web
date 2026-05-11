@@ -185,3 +185,51 @@ export const matchesMockData: MatchGroupMock[] = [
     ],
   },
 ];
+
+export const matchPreviewMockData: MatchGroupMock[] = [
+  {
+    id: "preview-1",
+    leagueName: "Bulgaria - Second Professional League",
+    leagueIcon: "🇧🇬",
+    matches: [
+      {
+        id: "1",
+        status: "72",
+        homeTeam: "Fratria",
+        awayTeam: "Dunav Ruse",
+        score: "0 - 1",
+        aggregate: "",
+      },
+    ],
+  },
+  {
+    id: "preview-2",
+    leagueName: "Denmark - Superligaen Relegation Group",
+    leagueIcon: "🇩🇰",
+    matches: [
+      {
+        id: "1",
+        status: "77",
+        homeTeam: "Randers FC",
+        awayTeam: "OB",
+        score: "2 - 2",
+        aggregate: "",
+      },
+    ],
+  },
+  {
+    id: "preview-3",
+    leagueName: "England - Baller League",
+    leagueIcon: "🏴",
+    matches: [
+      {
+        id: "1",
+        status: "24",
+        homeTeam: "NDL FC",
+        awayTeam: "Gold Devils",
+        score: "3 - 2",
+        aggregate: "",
+      },
+    ],
+  },
+];

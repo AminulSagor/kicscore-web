@@ -6,4 +6,5 @@ export const IMAGE = {
   portugal: "/images/portugal.jpg",
   fc_porto: "/images/fc_porto.jpg",
   arsenal: "/images/Arsenal_FC.svg.png",
+  playStoreIcon: "/images/playstore icon.png",
 } as const;

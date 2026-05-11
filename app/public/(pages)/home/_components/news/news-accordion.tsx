@@ -1,28 +1,35 @@
 import { newsMockData } from "@/mock/news/news.mock.data";
-import NewsCard from "./news-card";
 import Accordion from "@/components/UI/accordion/accordion";
+import NewsCard from "./news-card";
+import NewsSmallCard from "./news-small-card";
 
 export default function NewsAccordion() {
+  const [featuredNews, ...restNews] = newsMockData;
+
   return (
     <Accordion title="News" defaultOpen>
-      <div className="grid gap-4 md:grid-cols-3">
-        {newsMockData.map((item) => (
-          <NewsCard key={item.id} item={item} />
-        ))}
-      </div>
+      <div className="space-y-5">
+        <NewsCard item={featuredNews} />
 
-      <button
-        type="button"
-        className="
-          mt-5 h-10 w-full rounded-full border
-          border-[#DDE8E3] text-sm font-semibold text-[#6B7A75]
-          transition hover:bg-[#EAF3EF] hover:text-[#10201B]
-          dark:border-white/10 dark:text-white/65
-          dark:hover:bg-white/5 dark:hover:text-white
-        "
-      >
-        See more
-      </button>
+        <div className="divide-y divide-[#DDE8E3] dark:divide-white/10">
+          {restNews.map((item) => (
+            <div key={item.id} className="py-4 first:pt-0 last:pb-0">
+              <NewsSmallCard item={item} />
+            </div>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          className="
+            mx-auto block text-sm font-semibold
+            text-[#10201B] transition hover:opacity-70
+            dark:text-white
+          "
+        >
+          See more
+        </button>
+      </div>
     </Accordion>
   );
 }

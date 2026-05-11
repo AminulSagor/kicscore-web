@@ -1,4 +1,6 @@
+import { IMAGE } from "@/constants/image.path";
 import { Play } from "lucide-react";
+import Image from "next/image";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
@@ -22,8 +24,13 @@ const Footer = () => {
             </h3>
 
             <button className="mt-5 flex items-center gap-3 rounded-full border border-[#D8E7DF] bg-white px-5 py-3 shadow-[0_10px_30px_rgba(16,32,27,0.08)] transition hover:border-[#008A63]/30 hover:bg-[#F8FBFA] dark:border-transparent dark:bg-white/6 dark:shadow-none dark:hover:bg-white/10">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#EAF3EF] dark:bg-white/8">
-                <Play className="h-4 w-4 fill-[#008A63] text-[#008A63] dark:fill-white dark:text-white" />
+              <div className="flex h-9 w-9 items-center justify-center">
+                <Image
+                  src={IMAGE.playStoreIcon}
+                  height={24}
+                  width={24}
+                  alt={"playStoreIcon"}
+                />
               </div>
 
               <div className="text-left leading-tight">

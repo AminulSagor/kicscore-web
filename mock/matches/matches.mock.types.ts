@@ -1,6 +1,6 @@
 export interface MatchMock {
   id: string;
-  status: "LIVE" | "FT";
+  status: "LIVE" | "FT" | string;
   homeTeam: string;
   awayTeam: string;
   score: string;
