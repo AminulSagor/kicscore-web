@@ -2,12 +2,21 @@
 
 import { LogOut } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { adminNavigation } from "@/constants/navigation";
+import { authStore } from "@/z_store/auth/auth.store";
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const logout = authStore((state) => state.logout);
+  const router = useRouter();
+
+  //======= Handle logout =======//
+  const handleLogout = () => {
+    logout();
+    router.replace("/public/auth/sign-in");
+  };
 
   return (
     <aside className="flex h-full flex-col border-r border-[#DDE8E3] bg-white text-[#10201B] dark:border-white/10 dark:bg-primary dark:text-white">
@@ -49,8 +58,9 @@ export default function AdminSidebar() {
 
       <div className="px-2 pb-6">
         <button
+          onClick={handleLogout}
           type="button"
-          className="flex w-full items-center gap-3 rounded-md px-3 py-3 text-sm text-[#6B7A75] transition hover:bg-[#EAF3EF] hover:text-secondary dark:text-white/55 dark:hover:bg-white/5 dark:hover:text-white"
+          className="flex cursor-pointer w-full items-center gap-3 rounded-md px-3 py-3 text-sm text-[#6B7A75] transition hover:bg-[#EAF3EF] hover:text-secondary dark:text-white/55 dark:hover:bg-white/5 dark:hover:text-white"
         >
           <LogOut size={20} />
           <span className="hidden md:block">Logout</span>

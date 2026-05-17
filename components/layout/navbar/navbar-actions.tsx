@@ -21,6 +21,8 @@ export default function NavbarActions() {
     useState(false);
   const loggedIn = authStore((state) => state.loggedIn);
 
+  console.log("loggedin check", loggedIn);
+
   const handleSignIn = () => {
     router.push("/public/auth/sign-in");
     setIsAuthPopoverOpen(false);

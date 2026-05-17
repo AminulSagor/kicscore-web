@@ -2,11 +2,79 @@
 
 import { useState } from "react";
 import { Eye, EyeOff, Lock, LogIn, Mail } from "lucide-react";
-import Button from "@/components/UI/buttons/button";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+
+import Button from "@/components/UI/buttons/button";
+import { signin } from "@/service/auth/signin.service";
+import { signinSchema, SigninFormValues } from "@/schema/auth/signin.schema";
+import { setAccessToken } from "@/utils/token/cookie.utils";
+import ButtonLoader from "@/components/UI/loaders/button-loader";
+import { authStore } from "@/z_store/auth/auth.store";
+
+type SigninErrors = Partial<Record<keyof SigninFormValues, string>>;
+
+const initialFormValues: SigninFormValues = {
+  email: "",
+  password: "",
+};
 
 export default function SignInPage() {
+  const router = useRouter();
+  const setAuthUser = authStore((state) => state.setAuthUser);
+
   const [showPassword, setShowPassword] = useState(false);
+  const [formValues, setFormValues] =
+    useState<SigninFormValues>(initialFormValues);
+  const [errors, setErrors] = useState<SigninErrors>({});
+  const [isLoading, setIsLoading] = useState(false);
+
+  //======= Update field value =======//
+  const handleFieldChange = (field: keyof SigninFormValues, value: string) => {
+    setFormValues((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({ ...prev, [field]: undefined }));
+  };
+
+  //======= Validate form =======//
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const validatedFields = signinSchema.safeParse(formValues);
+
+    if (!validatedFields.success) {
+      const fieldErrors: SigninErrors = {};
+
+      validatedFields.error.issues.forEach((issue) => {
+        const fieldName = issue.path[0] as keyof SigninFormValues;
+        fieldErrors[fieldName] = issue.message;
+      });
+
+      setErrors(fieldErrors);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      const response = await signin(validatedFields.data);
+      setAccessToken(response.data.token.accessToken);
+      setAuthUser(response.data.user);
+
+      toast.success(response.message || "Signed in successfully");
+
+      if (response.data.user.role === "ADMIN") {
+        router.push("/dashboards/admin/home");
+        return;
+      }
+
+      router.push("/public/home");
+    } catch {
+      toast.error("Invalid email or password");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <main className="flex items-center justify-center px-4 py-10 text-foreground">
@@ -27,7 +95,7 @@ export default function SignInPage() {
           </p>
         </div>
 
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label className="mb-2 block text-xs font-bold uppercase tracking-[0.18em] text-[#10201B] dark:text-white/80">
               Email Address
@@ -43,6 +111,10 @@ export default function SignInPage() {
               <Mail size={18} className="text-secondary" />
               <input
                 type="email"
+                value={formValues.email}
+                onChange={(event) =>
+                  handleFieldChange("email", event.target.value)
+                }
                 placeholder="name@example.com"
                 className="
                   h-full w-full bg-transparent text-sm outline-none
@@ -51,6 +123,12 @@ export default function SignInPage() {
                 "
               />
             </div>
+
+            {errors.email && (
+              <p className="mt-2 text-xs font-medium text-red-500">
+                {errors.email}
+              </p>
+            )}
           </div>
 
           <div>
@@ -69,6 +147,10 @@ export default function SignInPage() {
 
               <input
                 type={showPassword ? "text" : "password"}
+                value={formValues.password}
+                onChange={(event) =>
+                  handleFieldChange("password", event.target.value)
+                }
                 placeholder="••••••••"
                 className="
                   h-full w-full bg-transparent text-sm outline-none
@@ -87,6 +169,12 @@ export default function SignInPage() {
               </button>
             </div>
 
+            {errors.password && (
+              <p className="mt-2 text-xs font-medium text-red-500">
+                {errors.password}
+              </p>
+            )}
+
             <div className="mt-2 flex justify-end">
               <button
                 type="button"
@@ -101,9 +189,20 @@ export default function SignInPage() {
             type="submit"
             rounded="full"
             size="md"
+            disabled={isLoading}
             className="mt-8 h-12 w-full text-xs font-bold uppercase tracking-[0.12em]"
           >
-            Sign In <LogIn size={15} />
+            {isLoading ? (
+              <>
+                Signing In
+                <ButtonLoader size="sm" />
+              </>
+            ) : (
+              <>
+                Sign In
+                <LogIn size={15} />
+              </>
+            )}
           </Button>
         </form>
 

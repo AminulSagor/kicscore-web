@@ -13,7 +13,7 @@ export default function NotificationPopover() {
       padding="md"
       shadow="lg"
       className="
-    absolute right-0 top-12 z-50
+    absolute right-0 top-12 md:top-14 z-50
     w-[min(calc(100vw-32px),456px)]!
     border border-[#DDE8E3]
     bg-white text-[#10201B]

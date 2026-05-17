@@ -11,7 +11,8 @@ import Link from "next/link";
 export default function UserAvatar({ action }: { action?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const setLoggedIn = authStore((state) => state.setLoggedIn);
+  const user = authStore((state) => state.user);
+  const logout = authStore((state) => state.logout);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -53,7 +54,7 @@ export default function UserAvatar({ action }: { action?: boolean }) {
       {isOpen && (
         <div
           className="
-            absolute right-0 top-13 z-50 w-82.5 rounded-[28px]
+            absolute right-0 top-11 md:top-13 z-50 w-82.5 rounded-[28px]
             border border-[#DDE8E3] bg-white p-7 shadow-xl
             dark:border-white/10 dark:bg-[#111d1a]
             max-sm:-right-3 max-sm:w-71.25 max-sm:p-5
@@ -69,7 +70,7 @@ export default function UserAvatar({ action }: { action?: boolean }) {
             />
 
             <h3 className="text-base font-bold text-[#10201B] dark:text-white">
-              User Name
+              {user?.fullName || "User"}
             </h3>
           </div>
 
@@ -77,6 +78,7 @@ export default function UserAvatar({ action }: { action?: boolean }) {
 
           <div className="space-y-1">
             <Link
+              onClick={() => setIsOpen(false)}
               href={"/public/user/following"}
               className="flex w-full items-center gap-4 rounded-xl px-1 py-3 text-sm font-semibold text-[#10201B] transition hover:bg-[#EAF3EF] dark:text-white dark:hover:bg-[#25302B]"
             >
@@ -85,6 +87,7 @@ export default function UserAvatar({ action }: { action?: boolean }) {
             </Link>
 
             <Link
+              onClick={() => setIsOpen(false)}
               href={"/public/user/profile-settings"}
               className="flex w-full items-center gap-4 rounded-xl px-1 py-3 text-sm font-semibold text-[#10201B] transition hover:bg-[#EAF3EF] dark:text-white dark:hover:bg-[#25302B]"
             >
@@ -95,7 +98,7 @@ export default function UserAvatar({ action }: { action?: boolean }) {
             <button
               type="button"
               className="flex w-full items-center gap-4 rounded-xl px-1 py-3 text-sm font-semibold text-red transition hover:bg-red/10 cursor-pointer"
-              onClick={() => setLoggedIn()}
+              onClick={() => logout()}
             >
               <LogOut size={21} />
               Logout
