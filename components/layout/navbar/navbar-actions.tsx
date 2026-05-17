@@ -17,11 +17,9 @@ const ThemeToggle = dynamic(() => import("../../UI/theme/theme-toggle"), {
 export default function NavbarActions() {
   const router = useRouter();
   const [isAuthPopoverOpen, setIsAuthPopoverOpen] = useState(false);
+  const loggedIn = authStore((state) => state.loggedIn);
   const [isNotificationPopoverOpen, setIsNotificationPopoverOpen] =
     useState(false);
-  const loggedIn = authStore((state) => state.loggedIn);
-
-  console.log("loggedin check", loggedIn);
 
   const handleSignIn = () => {
     router.push("/public/auth/sign-in");
