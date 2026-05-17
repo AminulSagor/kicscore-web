@@ -8,7 +8,7 @@ interface AuthPopoverProps {
 
 export default function AuthPopover({ onSignIn }: AuthPopoverProps) {
   return (
-    <div className="absolute right-0 top-12 z-50 w-71 rounded-2xl border border-[#DDE8E3] bg-white p-5 shadow-2xl dark:border-white/10 dark:bg-[#111f1d]">
+    <div className="absolute right-0 top-12 md:top-14 z-50 w-71 rounded-2xl border border-[#DDE8E3] bg-white p-5 shadow-2xl dark:border-white/10 dark:bg-[#111f1d]">
       <h3 className="mb-2 text-base font-semibold text-[#10201B] dark:text-white">
         Experience More
       </h3>
