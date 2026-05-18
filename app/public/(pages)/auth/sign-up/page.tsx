@@ -58,7 +58,9 @@ export default function SignUpPage() {
       const response = await signup(validatedFields.data);
 
       toast.success(response.message || "Account created successfully");
-      router.push("/public/auth/sign-in");
+      router.push(
+        `/public/auth/verify-email?email=${encodeURIComponent(response.data.email)}`,
+      );
     } catch {
       toast.error("Failed to create account");
     } finally {
