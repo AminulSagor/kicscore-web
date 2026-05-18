@@ -11,4 +11,5 @@ export const IMAGE = {
   Inter_Milan_Logo: "/images/FC_Internazionale_Milano_2021.svg",
   Liverpool_Logo: "/images/Liverpool_FC.svg",
   profile_avatar: "/images/profile_avatar.webp",
+  fallback_image: "/images/fallback_image.jpg",
 } as const;

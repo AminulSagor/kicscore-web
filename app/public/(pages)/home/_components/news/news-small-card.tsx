@@ -1,18 +1,23 @@
 import Image from "next/image";
-import { NewsItemMock } from "@/mock/news/news.mock.types";
+
+import { NewsArticle } from "@/types/news/news.types";
 
 interface NewsSmallCardProps {
-  item: NewsItemMock;
+  item: NewsArticle;
 }
 
 export default function NewsSmallCard({ item }: NewsSmallCardProps) {
+  const imageUrl = item.imageUrl || "/images/news-fallback.png";
+  const source = item.source || "KICScore";
+
   return (
     <article className="flex gap-3">
       <div className="relative h-[78px] w-[96px] shrink-0 overflow-hidden rounded-xl bg-[#EAF3EF] dark:bg-white/5">
         <Image
-          src={item.image}
+          src={imageUrl}
           alt={item.title}
           fill
+          unoptimized
           className="object-cover"
         />
       </div>
@@ -23,7 +28,7 @@ export default function NewsSmallCard({ item }: NewsSmallCardProps) {
         </h4>
 
         <p className="mt-2 text-xs text-[#6B7A75] dark:text-white/45">
-          SI · {item.time}
+          {source}
         </p>
       </div>
     </article>
