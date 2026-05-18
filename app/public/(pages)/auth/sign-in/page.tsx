@@ -12,6 +12,7 @@ import { signinSchema, SigninFormValues } from "@/schema/auth/signin.schema";
 import { setAccessToken } from "@/utils/token/cookie.utils";
 import ButtonLoader from "@/components/UI/loaders/button-loader";
 import { authStore } from "@/z_store/auth/auth.store";
+import { mapSigninUserToAuthUser } from "@/utils/auth/auth-user.mapper";
 
 type SigninErrors = Partial<Record<keyof SigninFormValues, string>>;
 
@@ -59,7 +60,7 @@ export default function SignInPage() {
 
       const response = await signin(validatedFields.data);
       setAccessToken(response.data.token.accessToken);
-      setAuthUser(response.data.user);
+      setAuthUser(mapSigninUserToAuthUser(response.data.user));
 
       toast.success(response.message || "Signed in successfully");
 

@@ -43,7 +43,7 @@ export default function UserAvatar({ action }: { action?: boolean }) {
         className="flex h-9 w-9 items-center justify-center cursor-pointer"
       >
         <Image
-          src={IMAGE.profile_image}
+          src={user?.photoReadUrl || IMAGE.profile_avatar}
           alt="Profile"
           width={36}
           height={36}
@@ -62,7 +62,7 @@ export default function UserAvatar({ action }: { action?: boolean }) {
         >
           <div className="flex items-center gap-5">
             <Image
-              src={IMAGE.profile_image}
+              src={user?.photoReadUrl || IMAGE.profile_avatar}
               alt="User"
               width={60}
               height={60}
