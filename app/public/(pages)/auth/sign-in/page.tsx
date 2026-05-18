@@ -176,12 +176,12 @@ export default function SignInPage() {
             )}
 
             <div className="mt-2 flex justify-end">
-              <button
-                type="button"
+              <Link
+                href={"/public/auth/forgot-password"}
                 className="text-xs font-semibold text-secondary transition hover:opacity-80 dark:text-mint-green"
               >
                 Forgot password?
-              </button>
+              </Link>
             </div>
           </div>
 

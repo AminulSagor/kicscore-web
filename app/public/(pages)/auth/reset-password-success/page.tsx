@@ -38,9 +38,7 @@ export default function PasswordResetSuccessPage() {
           rounded="full"
           className="mt-28 h-11 w-full text-xs font-bold uppercase tracking-[0.12em]"
         >
-          <Link href={"/dashbaords/user/profile-settings"}>
-            Go To My Account
-          </Link>
+          <Link href={"/public/user/profile-settings"}>Go To My Account</Link>
         </Button>
       </section>
     </main>
