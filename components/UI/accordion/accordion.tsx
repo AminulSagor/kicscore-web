@@ -20,11 +20,25 @@ const Accordion = ({
   const [height, setHeight] = useState("0px");
   const contentRef = useRef<HTMLDivElement>(null);
 
+  //======= Update accordion height =======//
   useEffect(() => {
-    if (contentRef.current) {
-      setHeight(isOpen ? `${contentRef.current.scrollHeight}px` : "0px");
-    }
-  }, [isOpen]);
+    const contentElement = contentRef.current;
+
+    if (!contentElement) return;
+
+    const updateHeight = () => {
+      setHeight(isOpen ? `${contentElement.scrollHeight}px` : "0px");
+    };
+
+    updateHeight();
+
+    const resizeObserver = new ResizeObserver(updateHeight);
+    resizeObserver.observe(contentElement);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [isOpen, children]);
 
   return (
     <div
@@ -32,11 +46,11 @@ const Accordion = ({
     >
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen((prev) => !prev)}
         className="
-          flex w-full items-center justify-between
+          flex w-full cursor-pointer items-center justify-between
           bg-[#EAF3EF] px-4 py-3.5 text-[#10201B]
-          dark:bg-[#25302B] dark:text-white cursor-pointer
+          dark:bg-[#25302B] dark:text-white
         "
       >
         <span>{title}</span>
