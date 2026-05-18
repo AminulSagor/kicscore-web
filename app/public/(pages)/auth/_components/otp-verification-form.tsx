@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+
 import Button from "@/components/UI/buttons/button";
+import ButtonLoader from "@/components/UI/loaders/button-loader";
 
 const OTP_LENGTH = 4;
 const RESEND_SECONDS = 55;
@@ -11,6 +13,8 @@ interface OtpVerificationFormProps {
   highlightedTitle: string;
   email: string;
   buttonText?: string;
+  isLoading?: boolean;
+  isResending?: boolean;
   onVerify?: (code: string) => void;
   onResend?: () => void;
 }
@@ -20,6 +24,8 @@ export default function OtpVerificationForm({
   highlightedTitle,
   email,
   buttonText = "Verify",
+  isLoading = false,
+  isResending = false,
   onVerify,
   onResend,
 }: OtpVerificationFormProps) {
@@ -40,7 +46,7 @@ export default function OtpVerificationForm({
 
   const isOtpComplete = otp.every(Boolean);
 
-  /* ============ Handle OTP Change ============ */
+  //======= Handle OTP change =======//
   const handleChange = (value: string, index: number) => {
     const digit = value.replace(/\D/g, "");
 
@@ -55,7 +61,7 @@ export default function OtpVerificationForm({
     }
   };
 
-  /* ============ Handle Backspace ============ */
+  //======= Handle backspace =======//
   const handleKeyDown = (
     event: React.KeyboardEvent<HTMLInputElement>,
     index: number,
@@ -74,7 +80,7 @@ export default function OtpVerificationForm({
     }
   };
 
-  /* ============ Handle OTP Paste ============ */
+  //======= Handle OTP paste =======//
   const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
     event.preventDefault();
 
@@ -99,9 +105,9 @@ export default function OtpVerificationForm({
     inputRefs.current[focusIndex]?.focus();
   };
 
-  /* ============ Handle Resend Code ============ */
+  //======= Handle resend code =======//
   const handleResend = () => {
-    if (secondsLeft > 0) return;
+    if (secondsLeft > 0 || isLoading || isResending) return;
 
     setOtp(Array(OTP_LENGTH).fill(""));
     setSecondsLeft(RESEND_SECONDS);
@@ -109,8 +115,10 @@ export default function OtpVerificationForm({
     onResend?.();
   };
 
-  /* ============ Handle Verify Code ============ */
+  //======= Handle verify code =======//
   const handleVerify = () => {
+    if (!isOtpComplete || isLoading) return;
+
     const code = otp.join("");
     onVerify?.(code);
   };
@@ -144,13 +152,14 @@ export default function OtpVerificationForm({
               value={digit}
               inputMode="numeric"
               maxLength={1}
+              disabled={isLoading}
               onChange={(event) => handleChange(event.target.value, index)}
               onKeyDown={(event) => handleKeyDown(event, index)}
               onPaste={handlePaste}
               className="
                 h-14.5 w-14.5 rounded-lg border border-transparent
                 bg-[#d4e6de] text-center text-sm font-bold text-secondary
-                outline-none transition
+                outline-none transition disabled:cursor-not-allowed disabled:opacity-60
                 focus:border-secondary focus:ring-2 focus:ring-secondary/20
                 dark:bg-[#25302B]
               "
@@ -162,10 +171,17 @@ export default function OtpVerificationForm({
           type="button"
           rounded="xl"
           onClick={handleVerify}
-          disabled={!isOtpComplete}
+          disabled={!isOtpComplete || isLoading}
           className="mt-16 h-11 w-full text-xs font-bold uppercase tracking-[0.12em]"
         >
-          {buttonText}
+          {isLoading ? (
+            <>
+              Verifying
+              <ButtonLoader size="sm" />
+            </>
+          ) : (
+            buttonText
+          )}
         </Button>
 
         <div className="mt-5 text-center">
@@ -176,12 +192,21 @@ export default function OtpVerificationForm({
           <button
             type="button"
             onClick={handleResend}
-            disabled={secondsLeft > 0}
+            disabled={secondsLeft > 0 || isLoading || isResending}
             className="mt-2 text-xs text-[#6B7A75] transition enabled:hover:text-secondary disabled:cursor-not-allowed dark:text-white/50 dark:enabled:hover:text-mint-green"
           >
-            Resend code{" "}
-            {secondsLeft > 0 &&
-              `in 00:${secondsLeft.toString().padStart(2, "0")}`}
+            {isResending ? (
+              <span className="inline-flex items-center gap-2">
+                Sending
+                <ButtonLoader size="sm" />
+              </span>
+            ) : (
+              <>
+                Resend code{" "}
+                {secondsLeft > 0 &&
+                  `in 00:${secondsLeft.toString().padStart(2, "0")}`}
+              </>
+            )}
           </button>
         </div>
       </section>
