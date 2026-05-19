@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "www.sportsnet.ca",
       },
+      {
+        protocol: "https",
+        hostname: "media.api-sports.io",
+      },
     ],
   },
 };
