@@ -1,13 +1,15 @@
 import Image from "next/image";
 
 import { NewsArticle } from "@/types/news/news.types";
+import Link from "next/link";
+import { getValidImage } from "@/utils/image.utils";
 
 interface NewsCardProps {
   item: NewsArticle;
 }
 
 export default function NewsCard({ item }: NewsCardProps) {
-  const imageUrl = item.imageUrl || "/images/news-fallback.png";
+  const imageUrl = getValidImage(item.imageUrl);
   const source = item.source || "KICScore";
 
   return (
@@ -22,9 +24,12 @@ export default function NewsCard({ item }: NewsCardProps) {
         />
       </div>
 
-      <h3 className="mt-4 text-base font-bold leading-7 text-[#10201B] dark:text-white">
+      <Link
+        href={`/public/news/${item.uuid}`}
+        className="mt-4 text-base font-bold leading-7 text-[#10201B] dark:text-white"
+      >
         {item.title}
-      </h3>
+      </Link>
 
       <p className="mt-2 text-sm text-[#6B7A75] dark:text-white/45">{source}</p>
     </article>

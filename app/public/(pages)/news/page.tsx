@@ -1,17 +1,30 @@
-import { newsMockData } from "@/mock/news/news.mock2data";
-import FeaturedNewsCard from "./_components/featured-news-card";
-import NewsListCard from "./_components/news-list-card";
-import NewsPagination from "./_components/news-pagination";
-import NewsToolbar from "./_components/news-toolbar";
+import FeaturedNewsCard from "@/app/public/(pages)/news/_components/featured-news-card";
+import NewsListCard from "@/app/public/(pages)/news/_components/news-list-card";
+import NewsPagination from "@/app/public/(pages)/news/_components/news-pagination";
+import NewsToolbar from "@/app/public/(pages)/news/_components/news-toolbar";
+import { getNewsServer } from "@/service/news/news.server.service";
 
-export default function NewsPage() {
-  const featuredNews = newsMockData.find((news) => news.isFeatured);
-  const newsList = newsMockData.filter((news) => !news.isFeatured);
+interface NewsPageProps {
+  searchParams: Promise<{
+    page?: string;
+  }>;
+}
+
+export default async function NewsPage({ searchParams }: NewsPageProps) {
+  const params = await searchParams;
+  const currentPage = Number(params.page || 1);
+
+  const newsData = await getNewsServer({
+    page: currentPage,
+    limit: 11,
+  });
+
+  const [featuredNews, ...newsList] = newsData.articles;
 
   if (!featuredNews) return null;
 
   return (
-    <main className="">
+    <main>
       <section className="mx-auto max-w-[1060px] pt-12 pb-24">
         <NewsToolbar />
 
@@ -23,7 +36,7 @@ export default function NewsPage() {
           ))}
         </div>
 
-        <NewsPagination />
+        <NewsPagination pagination={newsData.pagination} />
       </section>
     </main>
   );

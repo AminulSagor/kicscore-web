@@ -48,3 +48,18 @@ export interface GetNewsParams {
   page?: number;
   limit?: number;
 }
+
+//similar news
+export interface SimilarNewsData {
+  article: NewsArticle;
+  similar: NewsArticle[];
+}
+
+export interface SimilarNewsApiResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: SimilarNewsData;
+  timestamp: string;
+  path: string;
+}

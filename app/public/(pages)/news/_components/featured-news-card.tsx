@@ -1,43 +1,52 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { NewsItemMock } from "@/mock/news/news.mock.types";
+
+import type { NewsArticle } from "@/types/news/news.types";
+import { getValidImage } from "@/utils/image.utils";
 
 type FeaturedNewsCardProps = {
-    news: NewsItemMock;
+  news: NewsArticle;
 };
 
 export default function FeaturedNewsCard({ news }: FeaturedNewsCardProps) {
-    return (
-        <Link href={`/public/news/${news.id}`} className="block">
-            <article className="group overflow-hidden rounded-md">
-                <div className="relative h-[320px] overflow-hidden rounded-md md:h-[340px]">
-                    <Image
-                        src={news.image}
-                        alt={news.title}
-                        fill
-                        priority
-                        className="object-cover transition duration-500 group-hover:scale-105"
-                    />
+  const newsImage = getValidImage(news.imageUrl);
+  const newsDescription = news.description || news.snippet || "";
+  const publishedDate = news.publishedAt
+    ? new Date(news.publishedAt).toLocaleDateString()
+    : "Recently";
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent" />
+  return (
+    <Link href={`/public/news/${news.uuid}`} className="block">
+      <article className="group overflow-hidden rounded-md">
+        <div className="relative h-[320px] overflow-hidden rounded-md md:h-[340px]">
+          <Image
+            src={newsImage}
+            alt={news.title}
+            fill
+            unoptimized
+            priority
+            className="object-cover transition duration-500 group-hover:scale-105"
+          />
 
-                    <div className="absolute right-6 bottom-7 left-6">
-                        <h2 className="max-w-[620px] text-2xl font-bold leading-tight text-white md:text-[30px]">
-                            {news.title}
-                        </h2>
-                    </div>
-                </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent" />
 
-                <div className="mt-4 flex flex-col gap-4 text-xs text-[#61736D] md:flex-row md:items-start md:justify-between dark:text-white/55">
-                    <p className="max-w-[560px] leading-6">{news.description}</p>
+          <div className="absolute right-6 bottom-7 left-6">
+            <h2 className="max-w-[620px] text-2xl leading-tight font-bold text-white md:text-[30px]">
+              {news.title}
+            </h2>
+          </div>
+        </div>
 
-                    <div className="flex shrink-0 items-center gap-3 whitespace-nowrap">
-                        <span>{news.source}</span>
-                        <span>•</span>
-                        <span>{news.time}</span>
-                    </div>
-                </div>
-            </article>
-        </Link>
-    );
+        <div className="mt-4 flex flex-col gap-4 text-xs text-[#61736D] md:flex-row md:items-start md:justify-between dark:text-white/55">
+          <p className="max-w-[560px] leading-6">{newsDescription}</p>
+
+          <div className="flex shrink-0 items-center gap-3 whitespace-nowrap">
+            <span>{news.source || "Unknown Source"}</span>
+            <span>•</span>
+            <span>{publishedDate}</span>
+          </div>
+        </div>
+      </article>
+    </Link>
+  );
 }

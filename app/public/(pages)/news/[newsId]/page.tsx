@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
-import { newsMockData } from "@/mock/news/news.mock.data";
 
 import NewsDetailArticle from "./_components/news-detail-article";
+
+import { getSimilarNewsServer } from "@/service/news/news.server.service";
 
 type NewsDetailPageProps = {
   params: Promise<{
@@ -11,13 +12,18 @@ type NewsDetailPageProps = {
 
 export default async function NewsDetailPage({ params }: NewsDetailPageProps) {
   const { newsId } = await params;
-  const news = newsMockData.find((item) => item.id === newsId);
 
-  if (!news) notFound();
+  //======= Fetch news detail with similar news =======//
+  const newsData = await getSimilarNewsServer(newsId).catch(() => null);
+
+  if (!newsData?.article) notFound();
 
   return (
-    <main className="">
-      <NewsDetailArticle news={news} />
+    <main>
+      <NewsDetailArticle
+        news={newsData.article}
+        similarNews={newsData.similar}
+      />
     </main>
   );
 }

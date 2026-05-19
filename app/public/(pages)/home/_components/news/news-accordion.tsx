@@ -9,6 +9,7 @@ import { NewsArticle } from "@/types/news/news.types";
 import NewsCard from "./news-card";
 import NewsSmallCard from "./news-small-card";
 import NewsSkeleton from "@/app/public/(pages)/home/_components/news/news-skeleton";
+import Link from "next/link";
 
 export default function NewsAccordion() {
   const [news, setNews] = useState<NewsArticle[]>([]);
@@ -72,17 +73,18 @@ export default function NewsAccordion() {
                 </div>
               ))}
             </div>
-
-            <button
-              type="button"
-              className="
+            <div className="flex items-center justify-center">
+              <Link
+                href={"/public/news"}
+                className="
                 mx-auto block text-sm font-semibold
                 text-[#10201B] transition hover:opacity-70
                 dark:text-white
               "
-            >
-              See more
-            </button>
+              >
+                See more
+              </Link>
+            </div>
           </>
         )}
       </div>

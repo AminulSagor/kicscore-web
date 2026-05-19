@@ -1,13 +1,15 @@
 import Image from "next/image";
 
 import { NewsArticle } from "@/types/news/news.types";
+import Link from "next/link";
+import { getValidImage } from "@/utils/image.utils";
 
 interface NewsSmallCardProps {
   item: NewsArticle;
 }
 
 export default function NewsSmallCard({ item }: NewsSmallCardProps) {
-  const imageUrl = item.imageUrl || "/images/news-fallback.png";
+  const imageUrl = getValidImage(item.imageUrl);
   const source = item.source || "KICScore";
 
   return (
@@ -23,9 +25,12 @@ export default function NewsSmallCard({ item }: NewsSmallCardProps) {
       </div>
 
       <div className="min-w-0 flex-1">
-        <h4 className="line-clamp-3 text-sm font-bold leading-5 text-[#10201B] dark:text-white">
+        <Link
+          href={`/public/news/${item.uuid}`}
+          className="line-clamp-3 text-sm font-bold leading-5 text-[#10201B] dark:text-white"
+        >
           {item.title}
-        </h4>
+        </Link>
 
         <p className="mt-2 text-xs text-[#6B7A75] dark:text-white/45">
           {source}
