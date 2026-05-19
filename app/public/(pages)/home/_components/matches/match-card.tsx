@@ -1,21 +1,22 @@
 import Accordion from "@/components/UI/accordion/accordion";
-import { MatchGroupMock } from "@/mock/matches/matches.mock.types";
+import { GroupedLeagueMatches } from "@/types/football/matches/match.types";
+
 import MatchRow from "./match-row";
 
 interface MatchCardProps {
-  group: MatchGroupMock;
+  group: GroupedLeagueMatches;
 }
 
 export default function MatchCard({ group }: MatchCardProps) {
   return (
     <Accordion
-      title={`${group.leagueIcon} ${group.leagueName}`}
+      title={`${group.league.name} ${group.league.round ?? ""}`}
       defaultOpen
       className="rounded-3xl"
     >
       <div className="-mx-4 -my-4">
-        {group.matches.map((match) => (
-          <MatchRow key={match.id} match={match} />
+        {group.fixtures.map((match) => (
+          <MatchRow key={match.fixture.id} match={match} />
         ))}
       </div>
     </Accordion>

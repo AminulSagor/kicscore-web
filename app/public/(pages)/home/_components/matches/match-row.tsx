@@ -1,11 +1,20 @@
-import { MatchMock } from "@/mock/matches/matches.mock.types";
+import Image from "next/image";
+
+import { MatchFixtureItem } from "@/types/football/matches/match.types";
+import { getValidImage } from "@/utils/image.utils";
 
 interface MatchRowProps {
-  match: MatchMock;
+  match: MatchFixtureItem;
 }
 
+const LIVE_STATUS = ["1H", "2H", "HT", "ET", "P", "BT", "LIVE"];
+
 export default function MatchRow({ match }: MatchRowProps) {
-  const isLive = match.status === "LIVE";
+  const status = match.fixture.status.short;
+  const isLive = LIVE_STATUS.includes(status);
+
+  const homeScore = match.goals.home ?? "-";
+  const awayScore = match.goals.away ?? "-";
 
   return (
     <div
@@ -23,13 +32,19 @@ export default function MatchRow({ match }: MatchRowProps) {
         {isLive && (
           <span className="h-2 w-2 rounded-full bg-[#78DDB3] shadow-[0_0_10px_#78DDB3]" />
         )}
-        {match.status}
+        {status}
       </div>
 
-      <div className="flex items-center gap-3">
-        <span className="h-5 w-5 rounded-full border border-[#8B9A95] dark:border-white/35" />
-        <span className="text-sm font-semibold text-[#10201B] dark:text-white">
-          {match.homeTeam}
+      <div className="flex min-w-0 items-center gap-3">
+        <Image
+          src={getValidImage(match.teams.home.logo)}
+          alt={match.teams.home.name}
+          width={20}
+          height={20}
+          className="size-5 shrink-0 object-contain"
+        />
+        <span className="truncate text-sm font-semibold text-[#10201B] dark:text-white">
+          {match.teams.home.name}
         </span>
       </div>
 
@@ -39,18 +54,24 @@ export default function MatchRow({ match }: MatchRowProps) {
             isLive ? "text-[#78DDB3]" : "text-[#10201B] dark:text-white"
           }`}
         >
-          {match.score}
+          {homeScore} - {awayScore}
         </p>
         <p className="mt-1 text-xs text-[#6B7A75] dark:text-white/35">
-          {match.aggregate}
+          {match.fixture.status.long}
         </p>
       </div>
 
-      <div className="flex items-center justify-end gap-3">
-        <span className="text-sm font-semibold text-[#10201B] dark:text-white">
-          {match.awayTeam}
+      <div className="flex min-w-0 items-center justify-end gap-3">
+        <span className="truncate text-sm font-semibold text-[#10201B] dark:text-white">
+          {match.teams.away.name}
         </span>
-        <span className="h-5 w-5 rounded-full border border-[#8B9A95] dark:border-white/35" />
+        <Image
+          src={getValidImage(match.teams.away.logo)}
+          alt={match.teams.away.name}
+          width={20}
+          height={20}
+          className="size-5 shrink-0 object-contain"
+        />
       </div>
     </div>
   );

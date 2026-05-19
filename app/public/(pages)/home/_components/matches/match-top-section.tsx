@@ -1,67 +1,108 @@
-import Image from "next/image";
+"use client";
 
-import Card from "@/components/UI/cards/card";
-import { liveMatchesMockData } from "@/mock/matches/match-top-section.mock";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+
+import { getLiveFixtures } from "@/service/football/fixtures/fixture.service";
+import { LiveFixtureItem } from "@/types/football/fixtures/fixture.types";
+
+import LiveMatchCard from "./live-match-card";
+import LiveMatchCardSkeleton from "./live-match-card-skeleton";
 
 const MatchTopSection = () => {
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const [liveMatches, setLiveMatches] = useState<LiveFixtureItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  //======= Fetch live matches =======//
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchLiveMatches = async () => {
+      try {
+        setIsLoading(true);
+
+        const data = await getLiveFixtures();
+
+        if (isMounted) {
+          setLiveMatches(data.response);
+        }
+      } catch {
+        if (isMounted) {
+          setLiveMatches([]);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchLiveMatches();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  //======= Slide carousel =======//
+  const handleSlide = (direction: "left" | "right") => {
+    const container = scrollContainerRef.current;
+
+    if (!container) return;
+
+    container.scrollBy({
+      left:
+        direction === "left" ? -container.clientWidth : container.clientWidth,
+      behavior: "smooth",
+    });
+  };
+
   return (
-    <section className="space-y-3">
-      <div className="flex items-center justify-between">
+    <section className="space-y-3 overflow-hidden">
+      <div className="flex items-center justify-between gap-3">
         <h2 className="font-semibold text-foreground">Live Now</h2>
 
-        <span className="rounded-full bg-secondary/10 px-3 py-1 font-medium text-secondary">
-          {liveMatchesMockData.length} Live
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="rounded-full bg-secondary/10 px-3 py-1 font-medium text-secondary">
+            {liveMatches.length} Live
+          </span>
+
+          <button
+            type="button"
+            onClick={() => handleSlide("left")}
+            className="flex size-9 items-center justify-center rounded-full bg-secondary text-white transition hover:opacity-85"
+            aria-label="Previous live matches"
+          >
+            <ChevronLeft size={18} />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleSlide("right")}
+            className="flex size-9 items-center justify-center rounded-full bg-secondary text-white transition hover:opacity-85"
+            aria-label="Next live matches"
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {liveMatchesMockData.map((match) => (
-          <Card
-            key={match.id}
-            variant="white"
-            rounded="2xl"
-            padding="md"
-            shadow="sm"
-            className="border border-black/10 bg-white text-foreground transition hover:border-secondary/40 dark:border-white/10 dark:bg-dark-green"
-          >
-            <div className="mb-4 flex items-center justify-between">
-              <span className="text-muted-foreground">{match.league}</span>
-
-              <span className="flex items-center gap-2 font-medium text-red-500">
-                <span className="h-2 w-2 rounded-full bg-red-500" />
-                Live {match.minute}
-              </span>
-            </div>
-
-            <div className="space-y-3">
-              {match.teams.map((team) => (
-                <div
-                  key={team.name}
-                  className="flex items-center justify-between gap-3"
-                >
-                  <div className="flex min-w-0 items-center gap-2">
-                    <Image
-                      src={team.logo}
-                      alt={team.name}
-                      width={32}
-                      height={32}
-                      className="h-8 w-8 shrink-0 object-contain"
-                    />
-
-                    <span className="truncate font-medium">{team.name}</span>
-                  </div>
-
-                  <span className="font-semibold">{team.score}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-4 flex items-center justify-between border-t border-black/10 pt-3 dark:border-white/10">
-              <span className="text-muted-foreground">{match.shortLabel}</span>
-              <span className="font-medium text-secondary">Live</span>
-            </div>
-          </Card>
-        ))}
+      <div
+        ref={scrollContainerRef}
+        className="
+          flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2
+          [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
+        "
+      >
+        {isLoading
+          ? Array.from({ length: 3 }).map((_, index) => (
+              <LiveMatchCardSkeleton key={index} />
+            ))
+          : liveMatches.map((match) => (
+              <LiveMatchCard key={match.fixture.id} match={match} />
+            ))}
       </div>
     </section>
   );

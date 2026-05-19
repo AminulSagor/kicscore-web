@@ -5,17 +5,20 @@ import NewsAccordion from "@/app/public/(pages)/home/_components/news/news-accor
 
 const Home = () => {
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_240px] xl:grid-cols-[1fr_280px] items-start">
-      <div className="flex flex-col gap-4">
+    <div className="grid min-w-0 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_240px] xl:grid-cols-[minmax(0,1fr)_280px]">
+      <div className="flex min-w-0 flex-col gap-4 overflow-hidden">
         <MatchTopSection />
+
         <div className="space-y-4 lg:hidden">
           <NewsAccordion />
           <LeagueSidebar />
         </div>
+
         <MatchSection />
       </div>
-      <div>
-        <div className="space-y-4 hidden lg:block">
+
+      <div className="min-w-0">
+        <div className="hidden space-y-4 lg:block">
           <NewsAccordion />
           <LeagueSidebar />
         </div>
