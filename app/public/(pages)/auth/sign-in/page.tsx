@@ -5,7 +5,8 @@ import { Eye, EyeOff, Lock, LogIn, Mail } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-
+import { mergeAnonymousFollows } from "@/service/follows/follow.service";
+import { getInstallationId } from "@/utils/device/installation-id.utils";
 import Button from "@/components/UI/buttons/button";
 import { signin } from "@/service/auth/signin.service";
 import { signinSchema, SigninFormValues } from "@/schema/auth/signin.schema";
@@ -59,8 +60,22 @@ export default function SignInPage() {
       setIsLoading(true);
 
       const response = await signin(validatedFields.data);
+
       setAccessToken(response.data.token.accessToken);
       setAuthUser(mapSigninUserToAuthUser(response.data.user));
+
+      //======= Merge guest follows after login =======//
+      try {
+        const installationId = getInstallationId();
+
+        if (installationId) {
+          await mergeAnonymousFollows({
+            installationId,
+          });
+        }
+      } catch {
+        console.error("Failed to merge anonymous follows");
+      }
 
       toast.success(response.message || "Signed in successfully");
 

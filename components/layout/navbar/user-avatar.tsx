@@ -3,16 +3,27 @@
 import { useEffect, useRef, useState } from "react";
 import { LogOut, Settings, Star } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 
 import { IMAGE } from "@/constants/image.path";
 import { authStore } from "@/z_store/auth/auth.store";
-import Link from "next/link";
 
 export default function UserAvatar({ action }: { action?: boolean }) {
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+
   const user = authStore((state) => state.user);
   const logout = authStore((state) => state.logout);
+
+  const handleLogout = () => {
+    logout();
+    setIsOpen(false);
+    router.replace(`/public/auth/sign-in?redirect=${pathname}`);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -40,7 +51,7 @@ export default function UserAvatar({ action }: { action?: boolean }) {
             setIsOpen((prev) => !prev);
           }
         }}
-        className="flex h-9 w-9 items-center justify-center cursor-pointer"
+        className="flex h-9 w-9 cursor-pointer items-center justify-center"
       >
         <Image
           src={user?.photoReadUrl || IMAGE.profile_avatar}
@@ -54,10 +65,10 @@ export default function UserAvatar({ action }: { action?: boolean }) {
       {isOpen && (
         <div
           className="
-            absolute right-0 top-11 md:top-13 z-50 w-82.5 rounded-[28px]
+            absolute right-0 top-11 z-50 w-82.5 rounded-[28px]
             border border-[#DDE8E3] bg-white p-7 shadow-xl
             dark:border-white/10 dark:bg-[#111d1a]
-            max-sm:-right-3 max-sm:w-71.25 max-sm:p-5
+            max-sm:-right-3 max-sm:w-71.25 max-sm:p-5 md:top-13
           "
         >
           <div className="flex items-center gap-5">
@@ -79,7 +90,7 @@ export default function UserAvatar({ action }: { action?: boolean }) {
           <div className="space-y-1">
             <Link
               onClick={() => setIsOpen(false)}
-              href={"/public/user/following"}
+              href="/public/user/following"
               className="flex w-full items-center gap-4 rounded-xl px-1 py-3 text-sm font-semibold text-[#10201B] transition hover:bg-[#EAF3EF] dark:text-white dark:hover:bg-[#25302B]"
             >
               <Star size={21} />
@@ -88,7 +99,7 @@ export default function UserAvatar({ action }: { action?: boolean }) {
 
             <Link
               onClick={() => setIsOpen(false)}
-              href={"/public/user/profile-settings"}
+              href="/public/user/profile-settings"
               className="flex w-full items-center gap-4 rounded-xl px-1 py-3 text-sm font-semibold text-[#10201B] transition hover:bg-[#EAF3EF] dark:text-white dark:hover:bg-[#25302B]"
             >
               <Settings size={21} />
@@ -97,8 +108,8 @@ export default function UserAvatar({ action }: { action?: boolean }) {
 
             <button
               type="button"
-              className="flex w-full items-center gap-4 rounded-xl px-1 py-3 text-sm font-semibold text-red transition hover:bg-red/10 cursor-pointer"
-              onClick={() => logout()}
+              className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-1 py-3 text-sm font-semibold text-red transition hover:bg-red/10"
+              onClick={handleLogout}
             >
               <LogOut size={21} />
               Logout

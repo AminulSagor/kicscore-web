@@ -6,8 +6,11 @@ import Image from "next/image";
 import Button from "@/components/UI/buttons/button";
 import Card from "@/components/UI/cards/card";
 import { IMAGE } from "@/constants/image.path";
+import { authStore } from "@/z_store/auth/auth.store";
 
 export default function ProfileHeaderCard() {
+  const user = authStore((state) => state.user);
+
   return (
     <Card
       variant="white"
@@ -18,8 +21,8 @@ export default function ProfileHeaderCard() {
         <div className="flex items-center gap-4">
           <div className="relative">
             <Image
-              src={IMAGE.profile_image}
-              alt="User"
+              src={user?.photoReadUrl || IMAGE.profile_avatar}
+              alt={user?.fullName || "User"}
               width={68}
               height={68}
               className="h-[68px] w-[68px] rounded-full border-2 border-white object-cover dark:border-white"
@@ -31,9 +34,9 @@ export default function ProfileHeaderCard() {
           </div>
 
           <div>
-            <h2 className="text-sm font-bold">User</h2>
+            <h2 className="text-sm font-bold">{user?.fullName || "User"}</h2>
             <p className="mt-1 text-xs text-[#6B7A75] dark:text-white/60">
-              user@email.com
+              {user?.email || "user@email.com"}
             </p>
           </div>
         </div>

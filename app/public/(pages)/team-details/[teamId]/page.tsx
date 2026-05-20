@@ -8,18 +8,26 @@ import TeamSquadTab from "@/app/public/(pages)/team-details/[teamId]/_components
 import TeamTrophiesTab from "@/app/public/(pages)/team-details/[teamId]/_components/trophies/team-trophies-tab";
 
 type Props = {
+  params: Promise<{
+    teamId: string;
+  }>;
   searchParams?: Promise<{
     tab?: string;
   }>;
 };
 
-export default async function TeamDetailsPage({ searchParams }: Props) {
-  const params = searchParams ? await searchParams : {};
-  const activeTab = params.tab ?? "overview";
+export default async function TeamDetailsPage({ params, searchParams }: Props) {
+  const routeParams = await params;
+  const queryParams = searchParams ? await searchParams : {};
+  const activeTab = queryParams.tab ?? "overview";
 
   return (
     <main>
-      <TeamDetailsHeader teamName="Arsenal" country="England" />
+      <TeamDetailsHeader
+        teamId={routeParams.teamId}
+        teamName="Arsenal"
+        country="England"
+      />
 
       <TeamDetailsTabs />
 

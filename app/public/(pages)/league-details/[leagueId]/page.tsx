@@ -8,19 +8,30 @@ import PlayerStatsTab from "@/app/public/(pages)/league-details/[leagueId]/_comp
 import TeamStatsTab from "@/app/public/(pages)/league-details/[leagueId]/_components/team-stats/team-stats-tab";
 
 type LeagueDetailsPageProps = {
+  params: Promise<{
+    leagueId: string;
+  }>;
   searchParams?: Promise<{
     tab?: string;
   }>;
 };
 
-export default async function page({ searchParams }: LeagueDetailsPageProps) {
-  const params = await searchParams;
-  const activeTab = params?.tab ?? "overview";
+export default async function page({
+  params,
+  searchParams,
+}: LeagueDetailsPageProps) {
+  const routeParams = await params;
+  const queryParams = await searchParams;
+  const activeTab = queryParams?.tab ?? "overview";
 
   return (
     <main>
       <div className="mx-auto">
-        <LeagueDetailsHeader league={leagueHeaderMockData} />
+        <LeagueDetailsHeader
+          leagueId={routeParams.leagueId}
+          league={leagueHeaderMockData}
+        />
+
         <LeagueDetailsTabs />
 
         {activeTab === "overview" && <OverviewTab />}

@@ -3,12 +3,19 @@
 import { Mail, User } from "lucide-react";
 
 import Card from "@/components/UI/cards/card";
+import { authStore } from "@/z_store/auth/auth.store";
 
 interface EditProfileCardProps {
-  onChange: () => void;
+  fullName: string;
+  onFullNameChange: (value: string) => void;
 }
 
-export default function EditProfileCard({ onChange }: EditProfileCardProps) {
+export default function EditProfileCard({
+  fullName,
+  onFullNameChange,
+}: EditProfileCardProps) {
+  const user = authStore((state) => state.user);
+
   return (
     <Card
       variant="white"
@@ -28,8 +35,8 @@ export default function EditProfileCard({ onChange }: EditProfileCardProps) {
           <div className="flex h-11 items-center gap-3 rounded-lg border border-transparent bg-[#EAF3EF] px-3 focus-within:border-secondary dark:bg-[#0b1512]">
             <User size={15} className="text-[#10201B]/40 dark:text-white/35" />
             <input
-              defaultValue="User"
-              onChange={onChange}
+              value={fullName}
+              onChange={(event) => onFullNameChange(event.target.value)}
               className="h-full w-full bg-transparent text-sm outline-none"
             />
           </div>
@@ -44,7 +51,7 @@ export default function EditProfileCard({ onChange }: EditProfileCardProps) {
             <Mail size={15} className="text-[#10201B]/40 dark:text-white/35" />
             <input
               disabled
-              defaultValue="user@email.com"
+              value={user?.email || ""}
               className="h-full w-full bg-transparent text-sm outline-none"
             />
           </div>

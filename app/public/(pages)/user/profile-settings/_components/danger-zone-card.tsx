@@ -1,14 +1,52 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import { TriangleAlert } from "lucide-react";
 
 import Card from "@/components/UI/cards/card";
 import Dialog from "@/components/UI/dialogs/dialog";
+import { deleteAccount } from "@/service/user/profile.service";
+import { authStore } from "@/z_store/auth/auth.store";
 
 export default function DangerZoneCard() {
+  const router = useRouter();
+
+  const user = authStore((state) => state.user);
+  const logout = authStore((state) => state.logout);
+
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [confirmName, setConfirmName] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const isDeleteDisabled =
+    !user?.fullName || confirmName.trim() !== user.fullName.trim() || isDeleting;
+
+  const handleDeleteAccount = async () => {
+    if (isDeleteDisabled) return;
+
+    try {
+      setIsDeleting(true);
+
+      const response = await deleteAccount({
+        fullName: confirmName.trim(),
+      });
+
+      toast.success(response.message);
+      logout();
+      router.replace("/public/auth/sign-in");
+    } catch {
+      toast.error("Unable to delete account.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleCloseDialog = () => {
+    setIsDeleteDialogOpen(false);
+    setConfirmName("");
+  };
 
   return (
     <>
@@ -24,7 +62,7 @@ export default function DangerZoneCard() {
         <button
           type="button"
           onClick={() => setIsDeleteDialogOpen(true)}
-          className="mt-8 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.16em] text-red cursor-pointer"
+          className="mt-8 flex cursor-pointer items-center gap-3 text-xs font-bold uppercase tracking-[0.16em] text-red"
         >
           <TriangleAlert size={16} />
           Delete Account?
@@ -49,8 +87,8 @@ export default function DangerZoneCard() {
           </h2>
 
           <p className="mx-auto mt-3 max-w-[230px] text-xs leading-5 text-[#6B7A75] dark:text-white/55">
-            This action cannot be undone. You will permanently lose all your
-            progress, including the page you follow
+            This action cannot be undone. You will permanently lose your account
+            and saved data.
           </p>
 
           <div className="mt-6 text-left">
@@ -61,22 +99,24 @@ export default function DangerZoneCard() {
             <input
               value={confirmName}
               onChange={(event) => setConfirmName(event.target.value)}
-              placeholder="Enter your full name"
+              placeholder={user?.fullName || "Enter your full name"}
               className="h-11 w-full rounded-lg border border-[#DDE8E3] bg-white px-4 text-sm text-[#10201B] outline-none placeholder:text-[#10201B]/35 focus:border-red dark:border-white/10 dark:bg-[#0b1512] dark:text-white dark:placeholder:text-white/25"
             />
           </div>
 
           <button
             type="button"
-            className="mt-4 h-11 w-full bg-red text-xs font-bold uppercase rounded-xl"
+            disabled={isDeleteDisabled}
+            onClick={handleDeleteAccount}
+            className="mt-4 h-11 w-full rounded-xl bg-red text-xs font-bold uppercase text-white disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Delete Permanently
+            {isDeleting ? "Deleting..." : "Delete Permanently"}
           </button>
 
           <button
             type="button"
-            onClick={() => setIsDeleteDialogOpen(false)}
-            className="mt-3 h-11 w-full rounded-xl bg-[#EAF3EF] text-xs font-bold uppercase text-[#6B7A75] transition hover:opacity-80 dark:bg-[#25302B] dark:text-white/60"
+            onClick={handleCloseDialog}
+            className="mt-3 h-11 w-full cursor-pointer rounded-xl bg-[#EAF3EF] text-xs font-bold uppercase text-[#6B7A75] transition hover:opacity-80 dark:bg-[#25302B] dark:text-white/60"
           >
             Go Back
           </button>

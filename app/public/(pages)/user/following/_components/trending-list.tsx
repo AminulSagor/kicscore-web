@@ -1,8 +1,26 @@
 import type { TrendingFollowingItemMock } from "@/mock/user/following/following.mock.types";
+import type { FollowEntityType } from "@/types/follows/follow.types";
+
 import FollowingRow from "./following-row";
 
 type TrendingListProps = {
     items: TrendingFollowingItemMock[];
+};
+
+const getFollowEntityType = (
+    type: TrendingFollowingItemMock["type"],
+): FollowEntityType => {
+    const entityTypeMap: Record<
+        TrendingFollowingItemMock["type"],
+        FollowEntityType
+    > = {
+        players: "PLAYER",
+        teams: "TEAM",
+        coach: "COACH",
+        leagues: "LEAGUE",
+    };
+
+    return entityTypeMap[type];
 };
 
 const TrendingList = ({ items }: TrendingListProps) => {
@@ -15,8 +33,8 @@ const TrendingList = ({ items }: TrendingListProps) => {
                     <FollowingRow
                         key={item.id}
                         name={item.name}
-                        type={item.type}
-                        popupType={item.popupType}
+                        entityType={getFollowEntityType(item.type)}
+                        entityId={item.id}
                         iconLabel={item.iconLabel}
                         subtitle={item.subtitle}
                         image={item.image}

@@ -1,43 +1,44 @@
 "use client";
 
+import axios from "axios";
+import { useState } from "react";
+import toast from "react-hot-toast";
 import { AlertTriangle } from "lucide-react";
-import type {
-    FollowingPopupType,
-    FollowingTabKey,
-} from "@/mock/user/following/following.mock.types";
 
-type DialogType = FollowingTabKey | FollowingPopupType;
+import { unfollowEntity } from "@/service/follows/follow.service";
+import { FollowEntityType } from "@/types/follows/follow.types";
 
 type UnfollowConfirmDialogProps = {
-    type: DialogType;
+    entityType: FollowEntityType;
+    entityId: string;
     open: boolean;
     onClose: () => void;
-    onConfirm: () => void;
+    onUnfollowSuccess?: (entityType: FollowEntityType, entityId: string) => void;
 };
 
-const getDialogContent = (type: DialogType) => {
-    if (type === "players" || type === "player") {
+const getDialogContent = (entityType: FollowEntityType) => {
+    if (entityType === "PLAYER") {
         return {
             label: "Player",
             description: "You won’t get any notification about this player afterwards",
         };
     }
 
-    if (type === "teams" || type === "team") {
+    if (entityType === "TEAM") {
         return {
             label: "Team",
             description: "You won’t get any notification about this team afterwards",
         };
     }
 
-    if (type === "team-vs-team") {
+    if (entityType === "FIXTURE") {
         return {
             label: "Team vs Team",
             description: "You won’t get any notification on these afterwards",
         };
     }
 
-    if (type === "coach") {
+    if (entityType === "COACH") {
         return {
             label: "Coach",
             description: "You won’t get any notification about this coach afterwards",
@@ -51,14 +52,41 @@ const getDialogContent = (type: DialogType) => {
 };
 
 const UnfollowConfirmDialog = ({
-    type,
+    entityType,
+    entityId,
     open,
     onClose,
-    onConfirm,
+    onUnfollowSuccess,
 }: UnfollowConfirmDialogProps) => {
+    const [isUnfollowing, setIsUnfollowing] = useState(false);
+
     if (!open) return null;
 
-    const content = getDialogContent(type);
+    const content = getDialogContent(entityType);
+
+    const handleUnfollow = async () => {
+        try {
+            setIsUnfollowing(true);
+
+            const response = await unfollowEntity({
+                entityType,
+                entityId,
+            });
+
+            toast.success(response.message);
+            onUnfollowSuccess?.(entityType, entityId);
+            onClose();
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                toast.error(error.response?.data?.message || "Unable to unfollow.");
+                return;
+            }
+
+            toast.error("Unable to unfollow.");
+        } finally {
+            setIsUnfollowing(false);
+        }
+    };
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-4 backdrop-blur-sm dark:bg-black/70">
@@ -82,16 +110,17 @@ const UnfollowConfirmDialog = ({
                 <div className="mt-6 space-y-3">
                     <button
                         type="button"
-                        onClick={onConfirm}
-                        className="w-full rounded-full bg-[#FF9800] py-3 text-xs font-bold text-[#07110F] transition hover:bg-[#f08f00]"
+                        disabled={isUnfollowing}
+                        onClick={handleUnfollow}
+                        className="w-full cursor-pointer rounded-full bg-[#FF9800] py-3 text-xs font-bold text-[#07110F] transition hover:bg-[#f08f00] disabled:cursor-not-allowed disabled:opacity-70"
                     >
-                        Unfollow
+                        {isUnfollowing ? "Unfollowing..." : "Unfollow"}
                     </button>
 
                     <button
                         type="button"
                         onClick={onClose}
-                        className="w-full rounded-full bg-[#EAF3EF] py-3 text-xs font-bold text-[#61736D] transition hover:bg-[#DDEBE5] dark:bg-white/6 dark:text-white/70 dark:hover:bg-white/10"
+                        className="w-full cursor-pointer rounded-full bg-[#EAF3EF] py-3 text-xs font-bold text-[#61736D] transition hover:bg-[#DDEBE5] dark:bg-white/6 dark:text-white/70 dark:hover:bg-white/10"
                     >
                         GO BACK
                     </button>
