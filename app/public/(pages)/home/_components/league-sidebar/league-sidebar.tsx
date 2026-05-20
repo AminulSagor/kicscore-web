@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import Accordion from "@/components/UI/accordion/accordion";
 import { getCurrentLeagues } from "@/service/football/leagues/league.service";
 import { FootballLeagueItem } from "@/types/football/leagues/league.types";
-import { getValidImage } from "@/utils/image.utils";
+import { getValidImage } from "@/utils/image/image.utils";
 
 const TOP_LEAGUE_IDS = [
   1, // FIFA World Cup

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import Card from "@/components/UI/cards/card";
 import { LiveFixtureItem } from "@/types/football/fixtures/fixture.types";
-import { getValidImage } from "@/utils/image.utils";
+import { getValidImage } from "@/utils/image/image.utils";
 
 interface LiveMatchCardProps {
   match: LiveFixtureItem;

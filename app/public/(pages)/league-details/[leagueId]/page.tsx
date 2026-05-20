@@ -5,6 +5,7 @@ import TableTab from "@/app/public/(pages)/league-details/[leagueId]/_components
 import FixturesTab from "@/app/public/(pages)/league-details/[leagueId]/_components/fixtures/fixtures-tab";
 import PlayerStatsTab from "@/app/public/(pages)/league-details/[leagueId]/_components/player-stats/player-stats-tab";
 import TeamStatsTab from "@/app/public/(pages)/league-details/[leagueId]/_components/team-stats/team-stats-tab";
+import { getLeagueFixtures } from "@/service/football/fixtures/league.fixtures.service";
 import { getLeagueDetails } from "@/service/football/leagues/league.details.service";
 import {
   getLeagueTopAssists,
@@ -19,6 +20,8 @@ type LeagueDetailsPageProps = {
   searchParams?: Promise<{
     tab?: string;
     season?: string;
+    fixturePage?: string;
+    fixtureDate?: string;
   }>;
 };
 
@@ -40,20 +43,37 @@ export default async function page({
   const selectedSeason =
     queryParams?.season ?? String(currentSeason?.year ?? "");
 
+  const fixturePage = Number(queryParams?.fixturePage ?? 1);
+  const fixtureDate = queryParams?.fixtureDate;
+  const fixtureLimit = 20;
+
   const shouldFetchStandings =
     activeTab === "overview" || activeTab === "table";
+  const shouldFetchFixtures = activeTab === "fixtures";
 
-  const [standings, topScorers, topAssists] = shouldFetchStandings
-    ? await Promise.all([
-        getLeagueStandings(leagueId, selectedSeason),
-        activeTab === "overview"
-          ? getLeagueTopScorers({ leagueId, season: selectedSeason, limit: 5 })
-          : Promise.resolve([]),
-        activeTab === "overview"
-          ? getLeagueTopAssists({ leagueId, season: selectedSeason, limit: 5 })
-          : Promise.resolve([]),
-      ])
-    : [[], [], []];
+  const [standings, topScorers, topAssists, fixtureData] = await Promise.all([
+    shouldFetchStandings
+      ? getLeagueStandings(leagueId, selectedSeason)
+      : Promise.resolve([]),
+
+    activeTab === "overview"
+      ? getLeagueTopScorers({ leagueId, season: selectedSeason, limit: 5 })
+      : Promise.resolve([]),
+
+    activeTab === "overview"
+      ? getLeagueTopAssists({ leagueId, season: selectedSeason, limit: 5 })
+      : Promise.resolve([]),
+
+    shouldFetchFixtures
+      ? getLeagueFixtures({
+          leagueId,
+          season: selectedSeason,
+          page: fixturePage,
+          limit: fixtureLimit,
+          date: fixtureDate,
+        })
+      : Promise.resolve(null),
+  ]);
 
   return (
     <main>
@@ -76,7 +96,15 @@ export default async function page({
         )}
 
         {activeTab === "table" && <TableTab standings={standings} />}
-        {activeTab === "fixtures" && <FixturesTab />}
+
+        {activeTab === "fixtures" && (
+          <FixturesTab
+            fixtures={fixtureData?.response ?? []}
+            pagination={fixtureData?.backendPaging}
+            selectedSeason={selectedSeason}
+          />
+        )}
+
         {activeTab === "player-stats" && <PlayerStatsTab />}
         {activeTab === "team-stats" && <TeamStatsTab />}
       </div>

@@ -5,6 +5,9 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import Button from "@/components/UI/buttons/button";
 import Dialog from "@/components/UI/dialogs/dialog";
+import CustomSelect, {
+  CustomSelectOption,
+} from "@/components/UI/select/custom-select";
 
 type DatePickerDialogProps = {
   open: boolean;
@@ -12,12 +15,42 @@ type DatePickerDialogProps = {
   onOpenChange: (open: boolean) => void;
   onConfirm: (date: Date) => void;
   markedDates?: string[];
+  enableMonthPicker?: boolean;
+  lockedYear?: number;
 };
 
 const weekDays = ["M", "T", "W", "T", "F", "S", "S"];
 
+const monthOptions: CustomSelectOption<string>[] = [
+  { label: "Jan", value: "0" },
+  { label: "Feb", value: "1" },
+  { label: "Mar", value: "2" },
+  { label: "Apr", value: "3" },
+  { label: "May", value: "4" },
+  { label: "Jun", value: "5" },
+  { label: "Jul", value: "6" },
+  { label: "Aug", value: "7" },
+  { label: "Sep", value: "8" },
+  { label: "Oct", value: "9" },
+  { label: "Nov", value: "10" },
+  { label: "Dec", value: "11" },
+];
+
 function toDateKey(date: Date) {
   return date.toISOString().slice(0, 10);
+}
+
+function createLockedDate(date: Date, lockedYear?: number) {
+  if (!lockedYear) return date;
+
+  return new Date(
+    lockedYear,
+    date.getMonth(),
+    date.getDate(),
+    date.getHours(),
+    date.getMinutes(),
+    date.getSeconds(),
+  );
 }
 
 function isSameDate(a: Date, b: Date) {
@@ -70,13 +103,24 @@ export default function DatePickerDialog({
   onOpenChange,
   onConfirm,
   markedDates = [],
+  enableMonthPicker = false,
+  lockedYear,
 }: DatePickerDialogProps) {
+  const lockedSelectedDate = createLockedDate(selectedDate, lockedYear);
+
   const [activeMonth, setActiveMonth] = useState(
-    new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1),
+    new Date(
+      lockedSelectedDate.getFullYear(),
+      lockedSelectedDate.getMonth(),
+      1,
+    ),
   );
-  const [draftDate, setDraftDate] = useState(selectedDate);
+  const [draftDate, setDraftDate] = useState(lockedSelectedDate);
 
   const monthDays = useMemo(() => getMonthDays(activeMonth), [activeMonth]);
+
+  const activeYear = activeMonth.getFullYear();
+  const activeMonthIndex = activeMonth.getMonth();
 
   const monthTitle = activeMonth.toLocaleDateString("en-US", {
     month: "long",
@@ -84,19 +128,31 @@ export default function DatePickerDialog({
   });
 
   const handlePrevMonth = () => {
-    setActiveMonth(
-      new Date(activeMonth.getFullYear(), activeMonth.getMonth() - 1, 1),
-    );
+    setActiveMonth(new Date(activeYear, activeMonthIndex - 1, 1));
   };
 
   const handleNextMonth = () => {
-    setActiveMonth(
-      new Date(activeMonth.getFullYear(), activeMonth.getMonth() + 1, 1),
+    setActiveMonth(new Date(activeYear, activeMonthIndex + 1, 1));
+  };
+
+  const handleMonthChange = (month: string) => {
+    const nextMonth = Number(month);
+
+    setActiveMonth(new Date(activeYear, nextMonth, 1));
+    setDraftDate((prevDate) =>
+      createLockedDate(
+        new Date(activeYear, nextMonth, prevDate.getDate()),
+        lockedYear,
+      ),
     );
   };
 
+  const handleDateSelect = (date: Date) => {
+    setDraftDate(createLockedDate(date, lockedYear));
+  };
+
   const handleConfirm = () => {
-    onConfirm(draftDate);
+    onConfirm(createLockedDate(draftDate, lockedYear));
     onOpenChange(false);
   };
 
@@ -119,7 +175,9 @@ export default function DatePickerDialog({
             <ChevronLeft size={18} />
           </button>
 
-          <h3 className="text-xl font-bold text-secondary dark:text-white">{monthTitle}</h3>
+          <h3 className="text-xl font-bold text-secondary dark:text-white">
+            {monthTitle}
+          </h3>
 
           <button
             type="button"
@@ -129,6 +187,16 @@ export default function DatePickerDialog({
             <ChevronRight size={18} />
           </button>
         </div>
+
+        {enableMonthPicker && (
+          <div className="flex justify-center">
+            <CustomSelect
+              value={String(activeMonthIndex)}
+              options={monthOptions}
+              onChange={handleMonthChange}
+            />
+          </div>
+        )}
 
         <div className="grid grid-cols-7 gap-y-3 text-center">
           {weekDays.map((day, index) => (
@@ -148,7 +216,7 @@ export default function DatePickerDialog({
               <button
                 key={toDateKey(date)}
                 type="button"
-                onClick={() => setDraftDate(date)}
+                onClick={() => handleDateSelect(date)}
                 className={`relative mx-auto grid size-9 place-items-center rounded-full text-sm font-medium transition ${
                   selected
                     ? "bg-secondary text-white"

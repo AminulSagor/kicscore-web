@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Copy, Share2 } from "lucide-react";
 
 import type { NewsArticle } from "@/types/news/news.types";
-import { getValidImage } from "@/utils/image.utils";
+import { getValidImage } from "@/utils/image/image.utils";
 import NewsDetailShareActions from "@/app/public/(pages)/news/[newsId]/_components/news-detail-share-actions";
 
 type NewsDetailArticleProps = {

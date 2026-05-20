@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 import { MatchFixtureItem } from "@/types/football/matches/match.types";
-import { getValidImage } from "@/utils/image.utils";
+import { getValidImage } from "@/utils/image/image.utils";
 
 interface MatchRowProps {
   match: MatchFixtureItem;

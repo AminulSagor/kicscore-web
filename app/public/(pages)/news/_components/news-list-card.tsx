@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import type { NewsArticle } from "@/types/news/news.types";
-import { getValidImage } from "@/utils/image.utils";
+import { getValidImage } from "@/utils/image/image.utils";
 
 type NewsListCardProps = {
   news: NewsArticle;

@@ -27,6 +27,7 @@ import {
 type FixturesTabProps = {
   fixtures: LeagueFixtureItem[];
   pagination?: LeagueFixturesBackendPaging;
+  selectedSeason: string;
 };
 
 const modeOptions: { label: string; value: FixtureViewMode }[] = [
@@ -38,25 +39,58 @@ const modeOptions: { label: string; value: FixtureViewMode }[] = [
 export default function FixturesTab({
   fixtures,
   pagination,
+  selectedSeason,
 }: FixturesTabProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const selectedSeasonYear = Number(selectedSeason) || new Date().getFullYear();
+
   const [mode, setMode] = useState<FixtureViewMode>("date");
   const [openDatePicker, setOpenDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
 
-  //======= Prepare Fixtures =======//
+  const selectedDateFromQuery = searchParams.get("fixtureDate");
+
+  const [selectedDate, setSelectedDate] = useState(
+    selectedDateFromQuery
+      ? new Date(selectedDateFromQuery)
+      : new Date(
+          selectedSeasonYear,
+          new Date().getMonth(),
+          new Date().getDate(),
+        ),
+  );
+
   const groups = getFixtureGroups(fixtures, mode);
   const currentPage = pagination?.page ?? 1;
   const totalPages = pagination?.totalPages ?? 1;
 
-  //======= Handle Pagination =======//
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());
 
     params.set("tab", "fixtures");
     params.set("fixturePage", String(page));
+
+    router.push(`?${params.toString()}`);
+  };
+
+  const handleDateConfirm = (date: Date) => {
+    const selectedDateWithSeason = new Date(
+      selectedSeasonYear,
+      date.getMonth(),
+      date.getDate(),
+    );
+
+    setSelectedDate(selectedDateWithSeason);
+
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.set("tab", "fixtures");
+    params.set("fixturePage", "1");
+    params.set(
+      "fixtureDate",
+      selectedDateWithSeason.toISOString().split("T")[0],
+    );
 
     router.push(`?${params.toString()}`);
   };
@@ -125,19 +159,28 @@ export default function FixturesTab({
       )}
 
       <div className="mt-5">
-        {groups.map((group) => (
-          <div key={group.id}>
-            <FixtureDateSeparator label={group.label} />
-            {group.matches.map((match) => (
-              <Link
-                href={`/public/match-details/${match.fixture.id}`}
-                key={match.fixture.id}
-              >
-                <FixtureMatchRow match={match} />
-              </Link>
-            ))}
+        {groups.length > 0 ? (
+          groups.map((group) => (
+            <div key={group.id}>
+              <FixtureDateSeparator label={group.label} />
+
+              {group.matches.map((match) => (
+                <Link
+                  href={`/public/match-details/${match.fixture.id}`}
+                  key={match.fixture.id}
+                >
+                  <FixtureMatchRow match={match} />
+                </Link>
+              ))}
+            </div>
+          ))
+        ) : (
+          <div className="flex items-center justify-center py-12">
+            <p className="text-sm font-medium text-[#6B7A75] dark:text-white/50">
+              No fixtures found
+            </p>
           </div>
-        ))}
+        )}
       </div>
 
       {mode === "team" && (
@@ -159,10 +202,12 @@ export default function FixturesTab({
         open={openDatePicker}
         selectedDate={selectedDate}
         onOpenChange={setOpenDatePicker}
-        onConfirm={setSelectedDate}
+        onConfirm={handleDateConfirm}
         markedDates={fixtures.map((fixture) =>
           fixture.fixture.date.slice(0, 10),
         )}
+        enableMonthPicker
+        lockedYear={selectedSeasonYear}
       />
     </div>
   );

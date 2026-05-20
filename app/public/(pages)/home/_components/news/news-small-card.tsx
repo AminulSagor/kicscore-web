@@ -2,7 +2,7 @@ import Image from "next/image";
 
 import { NewsArticle } from "@/types/news/news.types";
 import Link from "next/link";
-import { getValidImage } from "@/utils/image.utils";
+import { getValidImage } from "@/utils/image/image.utils";
 
 interface NewsSmallCardProps {
   item: NewsArticle;

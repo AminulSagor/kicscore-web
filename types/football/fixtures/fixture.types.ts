@@ -109,11 +109,20 @@ export interface LeagueFixtureItem {
   score: FixtureScore;
 }
 
+export interface LeagueFixturesBackendPaging {
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+}
+
 export interface LeagueFixturesData {
   get: string;
   parameters: {
     league: string;
     season: string;
+    page?: string;
+    limit?: string;
   };
   errors: unknown[];
   results: number;
@@ -122,6 +131,7 @@ export interface LeagueFixturesData {
     total: number;
   };
   response: LeagueFixtureItem[];
+  backendPaging?: LeagueFixturesBackendPaging;
 }
 
 export interface LeagueFixturesApiResponse {

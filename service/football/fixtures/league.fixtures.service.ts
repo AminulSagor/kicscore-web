@@ -6,13 +6,16 @@ interface GetLeagueFixturesParams {
   season: string;
   page?: number;
   limit?: number;
+  date?: string;
 }
 
+//======= API Call =======//
 export const getLeagueFixtures = async ({
   leagueId,
   season,
   page = 1,
   limit = 20,
+  date,
 }: GetLeagueFixturesParams) => {
   const response = await serviceClient.get<LeagueFixturesApiResponse>(
     "/football/fixtures",
@@ -22,6 +25,7 @@ export const getLeagueFixtures = async ({
         season,
         page,
         limit,
+        ...(date && { date }),
       },
     },
   );
