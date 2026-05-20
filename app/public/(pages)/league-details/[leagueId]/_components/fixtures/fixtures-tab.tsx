@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import {
   CalendarDays,
@@ -10,19 +12,22 @@ import {
 
 import Button from "@/components/UI/buttons/button";
 import DatePickerDialog from "@/components/UI/dialogs/date-picker-dialog";
-import {
-  fixtureDateGroupsMockData,
-  fixtureRoundGroupsMockData,
-  fixtureTeamGroupsMockData,
-} from "@/mock/league-details/league-fixtures.mock.data";
+import CustomSelect from "@/components/UI/select/custom-select";
 import type {
-  FixtureGroup,
-  FixtureViewMode,
-} from "@/mock/league-details/league-fixtures.mock.types";
+  LeagueFixtureItem,
+  LeagueFixturesBackendPaging,
+} from "@/types/football/fixtures/fixture.types";
 import FixtureDateSeparator from "./fixture-date-separator";
 import FixtureMatchRow from "./fixture-match-row";
-import CustomSelect from "@/components/UI/select/custom-select";
-import Link from "next/link";
+import {
+  FixtureViewMode,
+  getFixtureGroups,
+} from "@/app/public/(pages)/league-details/_utils/fixture-groups.utils";
+
+type FixturesTabProps = {
+  fixtures: LeagueFixtureItem[];
+  pagination?: LeagueFixturesBackendPaging;
+};
 
 const modeOptions: { label: string; value: FixtureViewMode }[] = [
   { label: "By date", value: "date" },
@@ -30,18 +35,31 @@ const modeOptions: { label: string; value: FixtureViewMode }[] = [
   { label: "By team", value: "team" },
 ];
 
-function getFixtureGroups(mode: FixtureViewMode): FixtureGroup[] {
-  if (mode === "round") return fixtureRoundGroupsMockData;
-  if (mode === "team") return fixtureTeamGroupsMockData;
-  return fixtureDateGroupsMockData;
-}
+export default function FixturesTab({
+  fixtures,
+  pagination,
+}: FixturesTabProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-export default function FixturesTab() {
   const [mode, setMode] = useState<FixtureViewMode>("date");
   const [openDatePicker, setOpenDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date(2026, 3, 9));
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const groups = getFixtureGroups(mode);
+  //======= Prepare Fixtures =======//
+  const groups = getFixtureGroups(fixtures, mode);
+  const currentPage = pagination?.page ?? 1;
+  const totalPages = pagination?.totalPages ?? 1;
+
+  //======= Handle Pagination =======//
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.set("tab", "fixtures");
+    params.set("fixturePage", String(page));
+
+    router.push(`?${params.toString()}`);
+  };
 
   return (
     <div className="mt-6 rounded-2xl border border-[#DDE8E3] bg-white p-4 dark:border-white/10 dark:bg-[#111d1a] sm:p-5">
@@ -62,7 +80,7 @@ export default function FixturesTab() {
             >
               <span className="flex items-center gap-2">
                 <span className="size-5 rounded-full border border-[#8A98A3]" />
-                Arsenal
+                All Teams
               </span>
               <ChevronDown size={16} />
             </button>
@@ -84,11 +102,23 @@ export default function FixturesTab() {
 
       {mode === "date" && (
         <div className="mt-7 flex items-center justify-between">
-          <Button size="sm" rounded="lg" className="size-9 p-0">
+          <Button
+            size="sm"
+            rounded="lg"
+            className="size-9 p-0"
+            disabled={currentPage <= 1}
+            onClick={() => handlePageChange(currentPage - 1)}
+          >
             <ChevronLeft size={18} />
           </Button>
 
-          <Button size="sm" rounded="lg" className="size-9 p-0">
+          <Button
+            size="sm"
+            rounded="lg"
+            className="size-9 p-0"
+            disabled={currentPage >= totalPages}
+            onClick={() => handlePageChange(currentPage + 1)}
+          >
             <ChevronRight size={18} />
           </Button>
         </div>
@@ -99,7 +129,10 @@ export default function FixturesTab() {
           <div key={group.id}>
             <FixtureDateSeparator label={group.label} />
             {group.matches.map((match) => (
-              <Link href={`/public/match-details/${match.id}`} key={match.id}>
+              <Link
+                href={`/public/match-details/${match.fixture.id}`}
+                key={match.fixture.id}
+              >
                 <FixtureMatchRow match={match} />
               </Link>
             ))}
@@ -113,6 +146,8 @@ export default function FixturesTab() {
             rounded="lg"
             size="base"
             className="h-9 px-5 text-sm font-bold"
+            disabled={currentPage >= totalPages}
+            onClick={() => handlePageChange(currentPage + 1)}
           >
             Load More
             <ChevronDown size={16} />
@@ -125,7 +160,9 @@ export default function FixturesTab() {
         selectedDate={selectedDate}
         onOpenChange={setOpenDatePicker}
         onConfirm={setSelectedDate}
-        markedDates={["2026-04-09", "2026-04-12", "2026-04-19", "2026-04-29"]}
+        markedDates={fixtures.map((fixture) =>
+          fixture.fixture.date.slice(0, 10),
+        )}
       />
     </div>
   );
