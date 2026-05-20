@@ -1,10 +1,14 @@
 import StandingsTable from "@/app/public/(pages)/league-details/[leagueId]/_components/table/standings-table";
-import { standingsMockData } from "@/mock/league-details/league-details.mock.data";
+import { LeagueStandingTeam } from "@/types/football/leagues/league.standings";
 
-const TableTab = () => {
+type OverviewTabProps = {
+  standings: LeagueStandingTeam[];
+};
+
+const TableTab = ({ standings }: OverviewTabProps) => {
   return (
     <div className="mt-6 sm:mt-8">
-      <StandingsTable teams={standingsMockData} />
+      <StandingsTable teams={standings} />
     </div>
   );
 };

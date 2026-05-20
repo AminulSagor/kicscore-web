@@ -3,7 +3,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { getLiveFixtures } from "@/service/football/fixtures/fixture.service";
+import { getLiveFixtures } from "@/service/football/fixtures/live.fixture.service";
 import { LiveFixtureItem } from "@/types/football/fixtures/fixture.types";
 
 import LiveMatchCard from "./live-match-card";

@@ -1,13 +1,16 @@
 "use client";
+
+import Link from "next/link";
+
 import DataTable from "@/components/UI/tables/data-table";
 import { DataTableColumn } from "@/components/UI/tables/table.types";
-import type { StandingTeam } from "@/mock/league-details/league-details.mock.types";
+import { LeagueStandingTeam } from "@/types/football/leagues/league.standings";
 
 type StandingsTableProps = {
-  teams: StandingTeam[];
+  teams: LeagueStandingTeam[];
 };
 
-const standingsColumns: DataTableColumn<StandingTeam>[] = [
+const standingsColumns: DataTableColumn<LeagueStandingTeam>[] = [
   {
     key: "position",
     header: "#",
@@ -17,13 +20,16 @@ const standingsColumns: DataTableColumn<StandingTeam>[] = [
     key: "team",
     header: "Team",
     render: (team) => (
-      <div className="flex items-center gap-3">
+      <Link
+        href={`/public/team-details/${team.teamId}`}
+        className="flex w-fit items-center gap-3 rounded-lg transition hover:opacity-80"
+      >
         <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#EAF3EF] text-xs font-bold text-[#10201B] dark:bg-white/10 dark:text-white">
           {team.shortName}
         </div>
 
         <span className="font-semibold">{team.teamName}</span>
-      </div>
+      </Link>
     ),
   },
   {
@@ -79,24 +85,34 @@ const standingsColumns: DataTableColumn<StandingTeam>[] = [
   {
     key: "form",
     header: "Form",
-    render: (team) => (
-      <div className="flex items-center gap-1.5">
-        {team.form.map((result, index) => (
-          <span
-            key={`${team.teamName}-${result}-${index}`}
-            className={`grid size-6 place-items-center rounded-full text-[10px] font-bold text-white ${
-              result === "W"
-                ? "bg-emerald-500"
-                : result === "D"
-                  ? "bg-amber-500"
-                  : "bg-red-500"
-            }`}
-          >
-            {result}
+    render: (team) => {
+      if (!team.form.length) {
+        return (
+          <span className="text-xs font-semibold text-[#6B7A75] dark:text-white/45">
+            -
           </span>
-        ))}
-      </div>
-    ),
+        );
+      }
+
+      return (
+        <div className="flex items-center gap-1.5">
+          {team.form.map((result, index) => (
+            <span
+              key={`${team.teamName}-${result}-${index}`}
+              className={`grid size-6 place-items-center rounded-full text-[10px] font-bold text-white ${
+                result === "W"
+                  ? "bg-emerald-500"
+                  : result === "D"
+                    ? "bg-amber-500"
+                    : "bg-red-500"
+              }`}
+            >
+              {result}
+            </span>
+          ))}
+        </div>
+      );
+    },
   },
 ];
 
