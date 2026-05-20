@@ -23,11 +23,11 @@ export const adminNavigation: AdminNavigationItem[] = [
     href: "/dashboards/admin/general-users",
     icon: Users,
   },
-  {
-    label: "Managers",
-    href: "/dashboards/admin/managers",
-    icon: Shield,
-  },
+  // {
+  //   label: "Managers",
+  //   href: "/dashboards/admin/managers",
+  //   icon: Shield,
+  // },
   {
     label: "My Profile",
     href: "/dashboards/admin/profile",

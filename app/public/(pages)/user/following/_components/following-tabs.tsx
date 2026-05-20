@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { FollowingTabKey } from "@/mock/user/following/following.mock.types";
+import { FollowingTabKey } from "../page";
 
 type FollowingTabsProps = {
     tabs: {

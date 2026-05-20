@@ -3,30 +3,31 @@
 import Image from "next/image";
 import { useState } from "react";
 import { ChevronRight } from "lucide-react";
-import type {
-    FollowingPopupType,
-    FollowingTabKey,
-} from "@/mock/user/following/following.mock.types";
+
+import { FollowEntityType } from "@/types/follows/follow.types";
+
 import UnfollowConfirmDialog from "./unfollow-confirm-dialog";
 
 type FollowingRowProps = {
     name: string;
-    type: FollowingTabKey;
-    popupType?: FollowingPopupType;
+    entityType: FollowEntityType;
+    entityId: string;
     iconLabel: string;
     subtitle?: string;
     image?: string;
     showFollowButton?: boolean;
+    onUnfollowSuccess?: (entityType: FollowEntityType, entityId: string) => void;
 };
 
 const FollowingRow = ({
     name,
-    type,
-    popupType,
+    entityType,
+    entityId,
     iconLabel,
     subtitle,
     image,
     showFollowButton = false,
+    onUnfollowSuccess,
 }: FollowingRowProps) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -65,11 +66,11 @@ const FollowingRow = ({
                 {showFollowButton ? (
                     <button
                         type="button"
-                        onClick={(e) => {
-                            e.stopPropagation();
+                        onClick={(event) => {
+                            event.stopPropagation();
                             setIsDialogOpen(true);
                         }}
-                        className="rounded-full bg-[#34D399] px-4 py-2 text-xs font-bold text-[#07110F] transition hover:bg-[#25C28A]"
+                        className="cursor-pointer rounded-full bg-[#34D399] px-4 py-2 text-xs font-bold text-[#07110F] transition hover:bg-[#25C28A]"
                     >
                         Follow
                     </button>
@@ -79,10 +80,11 @@ const FollowingRow = ({
             </div>
 
             <UnfollowConfirmDialog
-                type={popupType ?? type}
+                entityType={entityType}
+                entityId={entityId}
                 open={isDialogOpen}
                 onClose={() => setIsDialogOpen(false)}
-                onConfirm={() => setIsDialogOpen(false)}
+                onUnfollowSuccess={onUnfollowSuccess}
             />
         </>
     );

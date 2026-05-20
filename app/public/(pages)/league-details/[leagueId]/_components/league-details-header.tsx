@@ -3,9 +3,10 @@
 import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
-import Button from "@/components/UI/buttons/button";
-import { LeagueDetailsItem } from "@/types/football/leagues/league.details";
 import CustomSelect from "@/components/UI/select/custom-select";
+import { LeagueDetailsItem } from "@/types/football/leagues/league.details";
+
+import LeagueFollowButton from "./league-follow-button";
 
 type LeagueDetailsHeaderProps = {
   league: LeagueDetailsItem;
@@ -20,19 +21,20 @@ export default function LeagueDetailsHeader({
   const params = useParams<{ leagueId: string }>();
   const searchParams = useSearchParams();
 
+  const leagueId = params.leagueId;
+
   const currentSeason =
     league.seasons.find((season) => season.current) ?? league.seasons.at(-1);
 
   const activeSeason = selectedSeason ?? String(currentSeason?.year ?? "");
 
-  //======= Handle Season Change =======//
   const handleSeasonChange = (season: string) => {
     const currentParams = new URLSearchParams(searchParams.toString());
 
     currentParams.set("season", season);
 
     router.push(
-      `/public/league-details/${params.leagueId}?${currentParams.toString()}`,
+      `/public/league-details/${leagueId}?${currentParams.toString()}`,
     );
   };
 
@@ -72,9 +74,11 @@ export default function LeagueDetailsHeader({
           menuClassName="right-0 left-auto min-w-[110px]"
         />
 
-        <Button size="sm" rounded="full" className="h-8 px-5 font-bold">
-          Follow
-        </Button>
+        <LeagueFollowButton
+          leagueId={leagueId}
+          entityName={league.league.name}
+          entityLogo={league.league.logo}
+        />
       </div>
     </section>
   );
