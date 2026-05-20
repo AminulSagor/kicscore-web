@@ -96,13 +96,24 @@ const MatchTopSection = () => {
           [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
         "
       >
-        {isLoading
-          ? Array.from({ length: 3 }).map((_, index) => (
-              <LiveMatchCardSkeleton key={index} />
-            ))
-          : liveMatches.map((match) => (
-              <LiveMatchCard key={match.fixture.id} match={match} />
-            ))}
+        {isLoading ? (
+          Array.from({ length: 3 }).map((_, index) => (
+            <LiveMatchCardSkeleton key={index} />
+          ))
+        ) : liveMatches.length > 0 ? (
+          liveMatches.map((match) => (
+            <LiveMatchCard key={match.fixture.id} match={match} />
+          ))
+        ) : (
+          <div className="min-h-[130px] w-full shrink-0 rounded-3xl border border-[#DDE8E3] bg-white px-6 py-12 text-center dark:border-white/10 dark:bg-[#111d1a]">
+            <p className="text-sm font-semibold text-[#10201B] dark:text-white">
+              No live matches right now
+            </p>
+            <p className="mt-2 text-xs text-[#6B7A75] dark:text-white/45">
+              Live matches will appear here once they start.
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );
