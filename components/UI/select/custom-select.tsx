@@ -14,6 +14,7 @@ type CustomSelectProps<T extends string> = {
   onChange: (value: T) => void;
   className?: string;
   menuClassName?: string;
+  buttonClassName?: string;
 };
 
 export default function CustomSelect<T extends string>({
@@ -22,6 +23,7 @@ export default function CustomSelect<T extends string>({
   onChange,
   className = "",
   menuClassName = "",
+  buttonClassName = "rounded-lg",
 }: CustomSelectProps<T>) {
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -36,6 +38,7 @@ export default function CustomSelect<T extends string>({
     };
 
     document.addEventListener("mousedown", handleClickOutside);
+
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
@@ -44,12 +47,15 @@ export default function CustomSelect<T extends string>({
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="
-          flex h-9 items-center gap-2 rounded-lg bg-secondary cursor-pointer
-          px-4 text-sm font-bold text-white transition hover:brightness-105
-        "
+        className={`
+          flex h-9 cursor-pointer items-center gap-2
+          bg-secondary px-4 text-sm font-bold text-white
+          transition hover:brightness-105
+          ${buttonClassName}
+        `}
       >
         {selectedOption?.label}
+
         <ChevronDown
           size={16}
           className={`transition-transform ${open ? "rotate-180" : ""}`}
