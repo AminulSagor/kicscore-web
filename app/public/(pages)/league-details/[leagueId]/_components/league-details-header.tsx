@@ -28,15 +28,23 @@ export default function LeagueDetailsHeader({
 
   const activeSeason = selectedSeason ?? String(currentSeason?.year ?? "");
 
+  //season change handler
   const handleSeasonChange = (season: string) => {
     const currentParams = new URLSearchParams(searchParams.toString());
 
     currentParams.set("season", season);
+    currentParams.set("fixturePage", "1");
+    currentParams.delete("fixtureDate");
 
     router.push(
       `/public/league-details/${leagueId}?${currentParams.toString()}`,
     );
   };
+
+  //format season label like this: 2023/24
+  function formatSeasonLabel(year: number) {
+    return `${year}/${year + 1}`;
+  }
 
   return (
     <section className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
@@ -66,7 +74,7 @@ export default function LeagueDetailsHeader({
           value={activeSeason}
           onChange={handleSeasonChange}
           options={league.seasons.map((season) => ({
-            label: String(season.year),
+            label: formatSeasonLabel(season.year),
             value: String(season.year),
           }))}
           className="shrink-0"
