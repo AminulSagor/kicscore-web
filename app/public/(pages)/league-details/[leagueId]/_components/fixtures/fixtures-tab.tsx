@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   CalendarDays,
   ChevronDown,
@@ -36,6 +36,22 @@ const modeOptions: { label: string; value: FixtureViewMode }[] = [
   { label: "By team", value: "team" },
 ];
 
+function formatDateKey(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function parseFixtureDate(dateKey: string, selectedYear: number) {
+  const [, month, day] = dateKey.split("-").map(Number);
+
+  if (!month || !day) return null;
+
+  return new Date(selectedYear, month - 1, day);
+}
+
 export default function FixturesTab({
   fixtures,
   pagination,
@@ -51,15 +67,20 @@ export default function FixturesTab({
 
   const selectedDateFromQuery = searchParams.get("fixtureDate");
 
-  const [selectedDate, setSelectedDate] = useState(
-    selectedDateFromQuery
-      ? new Date(selectedDateFromQuery)
-      : new Date(
-          selectedSeasonYear,
-          new Date().getMonth(),
-          new Date().getDate(),
-        ),
-  );
+  const selectedDate = useMemo(() => {
+    if (selectedDateFromQuery) {
+      const parsedDate = parseFixtureDate(
+        selectedDateFromQuery,
+        selectedSeasonYear,
+      );
+
+      if (parsedDate) return parsedDate;
+    }
+
+    const today = new Date();
+
+    return new Date(selectedSeasonYear, today.getMonth(), today.getDate());
+  }, [selectedDateFromQuery, selectedSeasonYear]);
 
   const groups = getFixtureGroups(fixtures, mode);
   const currentPage = pagination?.page ?? 1;
@@ -75,22 +96,17 @@ export default function FixturesTab({
   };
 
   const handleDateConfirm = (date: Date) => {
-    const selectedDateWithSeason = new Date(
+    const selectedFixtureDate = new Date(
       selectedSeasonYear,
       date.getMonth(),
       date.getDate(),
     );
 
-    setSelectedDate(selectedDateWithSeason);
-
     const params = new URLSearchParams(searchParams.toString());
 
     params.set("tab", "fixtures");
     params.set("fixturePage", "1");
-    params.set(
-      "fixtureDate",
-      selectedDateWithSeason.toISOString().split("T")[0],
-    );
+    params.set("fixtureDate", formatDateKey(selectedFixtureDate));
 
     router.push(`?${params.toString()}`);
   };
@@ -206,7 +222,6 @@ export default function FixturesTab({
         markedDates={fixtures.map((fixture) =>
           fixture.fixture.date.slice(0, 10),
         )}
-        enableMonthPicker
         lockedYear={selectedSeasonYear}
       />
     </div>
