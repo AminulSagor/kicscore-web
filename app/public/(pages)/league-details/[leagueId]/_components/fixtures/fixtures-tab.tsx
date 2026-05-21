@@ -23,6 +23,10 @@ import {
   FixtureViewMode,
   getFixtureGroups,
 } from "@/app/public/(pages)/league-details/_utils/fixture-groups.utils";
+import {
+  formatDateKey,
+  parseFixtureDate,
+} from "@/app/public/(pages)/league-details/_utils/fixture-date.utils";
 
 type FixturesTabProps = {
   fixtures: LeagueFixtureItem[];
@@ -35,22 +39,6 @@ const modeOptions: { label: string; value: FixtureViewMode }[] = [
   { label: "By round", value: "round" },
   { label: "By team", value: "team" },
 ];
-
-function formatDateKey(date: Date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
-
-function parseFixtureDate(dateKey: string, selectedYear: number) {
-  const [, month, day] = dateKey.split("-").map(Number);
-
-  if (!month || !day) return null;
-
-  return new Date(selectedYear, month - 1, day);
-}
 
 export default function FixturesTab({
   fixtures,
