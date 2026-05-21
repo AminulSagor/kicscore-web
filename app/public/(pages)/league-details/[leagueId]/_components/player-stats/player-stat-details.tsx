@@ -15,12 +15,14 @@ import {
   type PlayerStatId,
 } from "@/app/public/(pages)/league-details/_utils/player-stats.utils";
 import PlayerStatRankingTable from "./player-stat-ranking-table";
+import ButtonLoader from "@/components/UI/loaders/button-loader";
 
 type PlayerStatDetailsProps = {
   selectedStatId: string | null;
   topScorers: LeagueRankingPlayer[];
   topAssists: LeagueRankingPlayer[];
   playerStatsLimit: number;
+  hasMore: boolean;
 };
 
 export default function PlayerStatDetails({
@@ -28,6 +30,7 @@ export default function PlayerStatDetails({
   topScorers,
   topAssists,
   playerStatsLimit,
+  hasMore,
 }: PlayerStatDetailsProps) {
   const router = useRouter();
   const params = useParams<{ leagueId: string }>();
@@ -124,16 +127,18 @@ export default function PlayerStatDetails({
 
       {canLoadMore && (
         <div className="mt-6 flex justify-center">
-          <Button
-            rounded="lg"
-            size="base"
-            disabled={isPending}
-            onClick={handleLoadMore}
-            className="h-9 px-5 text-sm font-bold"
-          >
-            {isPending ? "Loading..." : "Load More"}
-            <ChevronDown size={16} />
-          </Button>
+          <div className="group relative">
+            <Button
+              rounded="lg"
+              size="base"
+              disabled={isPending || !hasMore}
+              onClick={handleLoadMore}
+              className="h-9 px-5 text-sm font-bold"
+            >
+              {isPending ? <ButtonLoader /> : "Load More"}
+              <ChevronDown size={16} />
+            </Button>
+          </div>
         </div>
       )}
     </div>

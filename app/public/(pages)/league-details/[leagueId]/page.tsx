@@ -12,8 +12,10 @@ import {
   getLeagueTopScorers,
 } from "@/service/football/leagues/league.rankings.service";
 import { getLeagueStandings } from "@/service/football/leagues/league.standing.service";
-import { DEFAULT_PLAYER_STATS_LIMIT } from "@/app/public/(pages)/league-details/_utils/player-stats.utils";
-
+import {
+  DEFAULT_PLAYER_STATS_LIMIT,
+  PLAYER_STATS_END_CHECK_OFFSET,
+} from "@/app/public/(pages)/league-details/_utils/player-stats.utils";
 type LeagueDetailsPageProps = {
   params: Promise<{
     leagueId: string;
@@ -33,7 +35,7 @@ const getValidPlayerStatsLimit = (limit?: string) => {
   const parsedLimit = Number(limit);
 
   if (
-    !Number.isFinite(parsedLimit) ||
+    !Number.isInteger(parsedLimit) ||
     parsedLimit < DEFAULT_PLAYER_STATS_LIMIT
   ) {
     return DEFAULT_PLAYER_STATS_LIMIT;
@@ -69,6 +71,11 @@ export default async function page({
       ? getValidPlayerStatsLimit(queryParams?.playerStatsLimit)
       : DEFAULT_PLAYER_STATS_LIMIT;
 
+  const playerRankingRequestLimit =
+    activeTab === "player-stats"
+      ? playerStatsLimit + PLAYER_STATS_END_CHECK_OFFSET
+      : DEFAULT_PLAYER_STATS_LIMIT;
+
   const shouldFetchStandings =
     activeTab === "overview" || activeTab === "table";
   const shouldFetchFixtures = activeTab === "fixtures";
@@ -84,7 +91,7 @@ export default async function page({
       ? getLeagueTopScorers({
           leagueId,
           season: selectedSeason,
-          limit: playerStatsLimit,
+          limit: playerRankingRequestLimit,
         })
       : Promise.resolve([]),
 
@@ -92,7 +99,7 @@ export default async function page({
       ? getLeagueTopAssists({
           leagueId,
           season: selectedSeason,
-          limit: playerStatsLimit,
+          limit: playerRankingRequestLimit,
         })
       : Promise.resolve([]),
 

@@ -4,6 +4,7 @@ export type PlayerStatId = "top-scorers" | "top-assists";
 
 export const DEFAULT_PLAYER_STATS_LIMIT = 5;
 export const PLAYER_STATS_LIMIT_STEP = 5;
+export const PLAYER_STATS_END_CHECK_OFFSET = 1;
 
 export interface PlayerStatViewData {
   id: PlayerStatId;

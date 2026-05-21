@@ -20,13 +20,23 @@ export default function PlayerStatsTab({
   const searchParams = useSearchParams();
   const selectedStat = searchParams.get("stat");
 
+  const visibleTopScorers = topScorers.slice(0, playerStatsLimit);
+  const visibleTopAssists = topAssists.slice(0, playerStatsLimit);
+
+  const hasMoreTopScorers = topScorers.length > playerStatsLimit;
+  const hasMoreTopAssists = topAssists.length > playerStatsLimit;
+
+  const selectedStatHasMore =
+    selectedStat === "top-assists" ? hasMoreTopAssists : hasMoreTopScorers;
+
   if (selectedStat) {
     return (
       <PlayerStatDetails
         selectedStatId={selectedStat}
-        topScorers={topScorers}
-        topAssists={topAssists}
+        topScorers={visibleTopScorers}
+        topAssists={visibleTopAssists}
         playerStatsLimit={playerStatsLimit}
+        hasMore={selectedStatHasMore}
       />
     );
   }
@@ -37,7 +47,7 @@ export default function PlayerStatsTab({
         <PlayerStatCard
           title="Top Scorers"
           statId="top-scorers"
-          players={topScorers}
+          players={visibleTopScorers}
           layout="full"
         />
       </div>
@@ -46,7 +56,7 @@ export default function PlayerStatsTab({
         <PlayerStatCard
           title="Top Assists"
           statId="top-assists"
-          players={topAssists}
+          players={visibleTopAssists}
         />
       </div>
     </div>
