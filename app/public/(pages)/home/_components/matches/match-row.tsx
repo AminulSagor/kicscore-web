@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { MatchFixtureItem } from "@/types/football/matches/match.types";
 import { getValidImage } from "@/utils/image/image.utils";
@@ -17,11 +18,14 @@ export default function MatchRow({ match }: MatchRowProps) {
   const awayScore = match.goals.away ?? "-";
 
   return (
-    <div
+    <Link
+      href={`/public/match-details/${match.fixture.id}`}
+      aria-label={`View match details for ${match.teams.home.name} vs ${match.teams.away.name}`}
       className="
         grid grid-cols-[70px_1fr_90px_1fr] items-center gap-3
         border-t border-[#DDE8E3] px-5 py-4
-        dark:border-white/10
+        transition-colors hover:bg-[#F4FBF8]
+        dark:border-white/10 dark:hover:bg-white/[0.03]
       "
     >
       <div
@@ -73,6 +77,6 @@ export default function MatchRow({ match }: MatchRowProps) {
           className="size-5 shrink-0 object-contain"
         />
       </div>
-    </div>
+    </Link>
   );
 }
