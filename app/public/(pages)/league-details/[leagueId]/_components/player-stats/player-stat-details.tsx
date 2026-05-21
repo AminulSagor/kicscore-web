@@ -2,31 +2,36 @@
 
 import Link from "next/link";
 import { ChevronDown, ChevronLeft } from "lucide-react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
 import Button from "@/components/UI/buttons/button";
 import CustomSelect from "@/components/UI/select/custom-select";
-import { playerStatsMockData } from "@/mock/league-details/league-player-stats.mock.data";
-import type { PlayerStatCategory } from "@/mock/league-details/league-player-stats.mock.types";
+import type { LeagueRankingPlayer } from "@/types/football/leagues/league.rankings";
+import {
+  getPlayerStatById,
+  PLAYER_STAT_OPTIONS,
+  type PlayerStatId,
+} from "@/app/public/(pages)/league-details/_utils/player-stats.utils";
 import PlayerStatRankingTable from "./player-stat-ranking-table";
 
-type StatOption = PlayerStatCategory["id"];
+type PlayerStatDetailsProps = {
+  selectedStatId: string | null;
+  topScorers: LeagueRankingPlayer[];
+  topAssists: LeagueRankingPlayer[];
+};
 
-export default function PlayerStatDetails() {
+export default function PlayerStatDetails({
+  selectedStatId,
+  topScorers,
+  topAssists,
+}: PlayerStatDetailsProps) {
   const params = useParams<{ leagueId: string }>();
-  const searchParams = useSearchParams();
 
-  const selectedStatId =
-    searchParams.get("stat") ?? playerStatsMockData[0]?.id ?? "";
-
-  const selectedStat =
-    playerStatsMockData.find((stat) => stat.id === selectedStatId) ??
-    playerStatsMockData[0];
-
-  const options = playerStatsMockData.map((stat) => ({
-    label: stat.title,
-    value: stat.id,
-  }));
+  const selectedStat = getPlayerStatById({
+    statId: selectedStatId,
+    topScorers,
+    topAssists,
+  });
 
   const basePath = `/public/league-details/${params.leagueId}`;
 
@@ -36,16 +41,16 @@ export default function PlayerStatDetails() {
         <Link href={`${basePath}?tab=player-stats`}>
           <button
             type="button"
-            className="flex h-8 items-center gap-1.5 rounded-full border border-[#DDE8E3] bg-transparent px-3 cursor-pointer text-xs font-semibold text-[#10201B] transition hover:bg-[#EAF3EF] dark:border-white/15 dark:text-white dark:hover:bg-white/5"
+            className="flex h-8 cursor-pointer items-center gap-1.5 rounded-full border border-[#DDE8E3] bg-transparent px-3 text-xs font-semibold text-[#10201B] transition hover:bg-[#EAF3EF] dark:border-white/15 dark:text-white dark:hover:bg-white/5"
           >
             <ChevronLeft size={15} />
             Back
           </button>
         </Link>
 
-        <CustomSelect<StatOption>
+        <CustomSelect<PlayerStatId>
           value={selectedStat.id}
-          options={options}
+          options={PLAYER_STAT_OPTIONS}
           onChange={(value) => {
             window.history.pushState(
               null,

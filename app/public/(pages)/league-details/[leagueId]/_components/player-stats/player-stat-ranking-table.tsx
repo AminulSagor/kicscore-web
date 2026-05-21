@@ -1,7 +1,9 @@
-import type { PlayerStatItem } from "@/mock/league-details/league-player-stats.mock.types";
+import Image from "next/image";
+
+import type { LeagueRankingPlayer } from "@/types/football/leagues/league.rankings";
 
 type PlayerStatRankingTableProps = {
-  players: PlayerStatItem[];
+  players: LeagueRankingPlayer[];
 };
 
 export default function PlayerStatRankingTable({
@@ -26,8 +28,21 @@ export default function PlayerStatRankingTable({
             </span>
 
             <div className="flex min-w-0 items-center gap-3">
-              <div className="relative size-12 shrink-0 rounded-full border border-secondary bg-white/30 dark:bg-[#111d1a]">
-                <span className="absolute bottom-0 right-0 size-4 rounded-full border border-secondary bg-[#EAF3EF] dark:bg-[#25302B]" />
+              <div className="relative size-12 shrink-0 overflow-hidden rounded-full border border-secondary bg-white/30 dark:bg-[#111d1a]">
+                {player.image ? (
+                  <Image
+                    src={player.image}
+                    alt={player.name}
+                    fill
+                    sizes="48px"
+                    className="object-cover"
+                    unoptimized
+                  />
+                ) : (
+                  <span className="grid size-full place-items-center text-sm font-bold text-secondary">
+                    {player.name.charAt(0)}
+                  </span>
+                )}
               </div>
 
               <div className="min-w-0">
@@ -35,8 +50,7 @@ export default function PlayerStatRankingTable({
                   {player.name}
                 </h4>
                 <p className="truncate text-xs text-[#6B7A75] dark:text-white/45">
-                  Penalty goals:{" "}
-                  {player.rank === 1 ? 3 : player.rank === 2 ? 7 : 1}
+                  {player.teamName}
                 </p>
               </div>
             </div>
@@ -46,6 +60,12 @@ export default function PlayerStatRankingTable({
             </span>
           </div>
         ))}
+
+        {players.length === 0 && (
+          <div className="px-4 py-8 text-center text-sm font-semibold text-[#6B7A75] dark:text-white/45">
+            No player stats available.
+          </div>
+        )}
       </div>
     </div>
   );

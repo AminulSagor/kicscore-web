@@ -2,32 +2,50 @@
 
 import { useSearchParams } from "next/navigation";
 
-import { playerStatsMockData } from "@/mock/league-details/league-player-stats.mock.data";
+import type { LeagueRankingPlayer } from "@/types/football/leagues/league.rankings";
 import PlayerStatCard from "./player-stat-card";
 import PlayerStatDetails from "./player-stat-details";
 
-function getCardClassName(layout: "full" | "half" | "third" | "quarter") {
-  if (layout === "full") return "lg:col-span-12";
-  if (layout === "half") return "lg:col-span-6";
-  if (layout === "third") return "lg:col-span-4";
-  return "lg:col-span-3";
-}
+type PlayerStatsTabProps = {
+  topScorers: LeagueRankingPlayer[];
+  topAssists: LeagueRankingPlayer[];
+};
 
-export default function PlayerStatsTab() {
+export default function PlayerStatsTab({
+  topScorers,
+  topAssists,
+}: PlayerStatsTabProps) {
   const searchParams = useSearchParams();
   const selectedStat = searchParams.get("stat");
 
   if (selectedStat) {
-    return <PlayerStatDetails />;
+    return (
+      <PlayerStatDetails
+        selectedStatId={selectedStat}
+        topScorers={topScorers}
+        topAssists={topAssists}
+      />
+    );
   }
 
   return (
     <div className="mt-6 grid gap-5 lg:grid-cols-12 lg:gap-6">
-      {playerStatsMockData.map((stat) => (
-        <div key={stat.id} className={getCardClassName(stat.layout)}>
-          <PlayerStatCard stat={stat} />
-        </div>
-      ))}
+      <div className="lg:col-span-12">
+        <PlayerStatCard
+          title="Top Scorers"
+          statId="top-scorers"
+          players={topScorers}
+          layout="full"
+        />
+      </div>
+
+      <div className="lg:col-span-6">
+        <PlayerStatCard
+          title="Top Assists"
+          statId="top-assists"
+          players={topAssists}
+        />
+      </div>
     </div>
   );
 }

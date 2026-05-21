@@ -22,6 +22,7 @@ type LeagueDetailsPageProps = {
     season?: string;
     fixturePage?: string;
     fixtureDate?: string;
+    stat?: string;
   }>;
 };
 
@@ -50,17 +51,19 @@ export default async function page({
   const shouldFetchStandings =
     activeTab === "overview" || activeTab === "table";
   const shouldFetchFixtures = activeTab === "fixtures";
+  const shouldFetchPlayerRankings =
+    activeTab === "overview" || activeTab === "player-stats";
 
   const [standings, topScorers, topAssists, fixtureData] = await Promise.all([
     shouldFetchStandings
       ? getLeagueStandings(leagueId, selectedSeason)
       : Promise.resolve([]),
 
-    activeTab === "overview"
+    shouldFetchPlayerRankings
       ? getLeagueTopScorers({ leagueId, season: selectedSeason, limit: 5 })
       : Promise.resolve([]),
 
-    activeTab === "overview"
+    shouldFetchPlayerRankings
       ? getLeagueTopAssists({ leagueId, season: selectedSeason, limit: 5 })
       : Promise.resolve([]),
 
@@ -105,7 +108,10 @@ export default async function page({
           />
         )}
 
-        {activeTab === "player-stats" && <PlayerStatsTab />}
+        {activeTab === "player-stats" && (
+          <PlayerStatsTab topScorers={topScorers} topAssists={topAssists} />
+        )}
+
         {activeTab === "team-stats" && <TeamStatsTab />}
       </div>
     </main>
