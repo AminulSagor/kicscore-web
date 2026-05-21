@@ -1,7 +1,15 @@
 import Image from "next/image";
 
 import Card from "@/components/UI/cards/card";
-import type { LineupPerson } from "@/mock/match-details/match-lineup.mock.types";
+import { getValidImage } from "@/utils/image/image.utils";
+
+export interface LineupPerson {
+  id: string;
+  name: string;
+  image?: string | null;
+  number?: number | null;
+  meta?: string | null;
+}
 
 type LineupPlayerGroupCardProps = {
   title: string;
@@ -9,7 +17,7 @@ type LineupPlayerGroupCardProps = {
   columns?: "two" | "four";
 };
 
-//*============= Lineup Player Group Card =============*//
+//======= Lineup Player Group Card =======//
 export default function LineupPlayerGroupCard({
   title,
   players,
@@ -31,33 +39,52 @@ export default function LineupPlayerGroupCard({
         <h3 className="text-sm font-bold">{title}</h3>
       </div>
 
-      <div className={`grid ${gridClass} gap-x-10 gap-y-10 px-6 py-8 sm:px-10`}>
-        {players.map((player) => (
-          <PlayerItem key={player.id} player={player} />
-        ))}
-      </div>
+      {players.length ? (
+        <div
+          className={`grid ${gridClass} gap-x-10 gap-y-10 px-6 py-8 sm:px-10`}
+        >
+          {players.map((player) => (
+            <PlayerItem key={player.id} player={player} />
+          ))}
+        </div>
+      ) : (
+        <div className="px-6 py-8 text-center sm:px-10">
+          <p className="text-sm font-medium text-[#6B7A75] dark:text-white/55">
+            {title} data is not available yet.
+          </p>
+        </div>
+      )}
     </Card>
   );
 }
 
-//*============= Player Item =============*//
+//======= Player Item =======//
 function PlayerItem({ player }: { player: LineupPerson }) {
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative size-14 overflow-hidden rounded-full border border-mint-green bg-[#F4F8F6] dark:bg-[#232628]">
-        {player.image && (
+    <div className="flex flex-col items-center text-center">
+      <div className="relative flex size-14 items-center justify-center overflow-hidden rounded-full border border-mint-green bg-[#F4F8F6] text-sm font-bold text-secondary dark:bg-[#232628]">
+        {player.image ? (
           <Image
-            src={player.image}
+            src={getValidImage(player.image)}
             alt={player.name}
             fill
+            sizes="56px"
             className="object-cover"
           />
+        ) : (
+          <span>{player.number ?? "-"}</span>
         )}
       </div>
 
       <p className="mt-2 text-xs font-medium text-[#10201B] dark:text-white">
         {player.name}
       </p>
+
+      {player.meta && (
+        <p className="mt-1 text-xs font-medium text-[#6B7A75] dark:text-white/45">
+          {player.meta}
+        </p>
+      )}
     </div>
   );
 }

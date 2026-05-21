@@ -1,12 +1,18 @@
+import { MatchStatsSectionView } from "@/app/public/(pages)/match-details/_utils/match.stats.utils";
 import Card from "@/components/UI/cards/card";
-import type { MatchStatsSection } from "@/mock/match-details/match-stats.mock.types";
 
 type MatchStatsCardProps = {
-  section: MatchStatsSection;
+  section: MatchStatsSectionView;
 };
 
-//*============= Match Stats Card =============*//
+//======= Match Stats Card =======//
 export default function MatchStatsCard({ section }: MatchStatsCardProps) {
+  const showPossession =
+    section.showPossession &&
+    section.possession &&
+    section.possession.home !== null &&
+    section.possession.away !== null;
+
   return (
     <Card
       variant="white"
@@ -19,7 +25,7 @@ export default function MatchStatsCard({ section }: MatchStatsCardProps) {
       </div>
 
       <div className="space-y-6 p-5 sm:p-7">
-        {section.showPossession && section.possession && (
+        {showPossession && (
           <div>
             <p className="mb-4 text-center text-sm font-bold">
               Ball possession
@@ -28,16 +34,16 @@ export default function MatchStatsCard({ section }: MatchStatsCardProps) {
             <div className="flex h-8 overflow-hidden rounded-md bg-[#F8FAF9] dark:bg-white">
               <div
                 className="flex items-center bg-mint-green px-3 text-xs font-bold text-[#10201B]"
-                style={{ width: `${section.possession.home}%` }}
+                style={{ width: `${section.possession?.home}%` }}
               >
-                {section.possession.home}%
+                {section.possession?.home}%
               </div>
 
               <div
                 className="flex items-center justify-center text-xs font-bold text-[#10201B]"
-                style={{ width: `${section.possession.away}%` }}
+                style={{ width: `${section.possession?.away}%` }}
               >
-                {section.possession.away}%
+                {section.possession?.away}%
               </div>
             </div>
           </div>

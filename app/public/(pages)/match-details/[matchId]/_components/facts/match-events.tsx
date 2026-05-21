@@ -1,11 +1,21 @@
 import { RefreshCcw } from "lucide-react";
 
 import Card from "@/components/UI/cards/card";
-import { matchEvents } from "@/mock/match-details/match-facts.mock.data";
-import type { MatchEvent } from "@/mock/match-details/match-facts.mock.types";
+import { MatchDetailsItem } from "@/types/football/matches/match.details.types";
 
-//*============= Match Events =============*//
-export default function MatchEvents() {
+import {
+  buildMatchFactEvents,
+  MatchFactEventType,
+  MatchFactEventView,
+} from "@/app/public/(pages)/match-details/_utils/match.facts.utils";
+
+interface MatchEventsProps {
+  match: MatchDetailsItem;
+}
+
+export default function MatchEvents({ match }: MatchEventsProps) {
+  const matchEvents = buildMatchFactEvents(match);
+
   return (
     <Card
       variant="white"
@@ -18,19 +28,26 @@ export default function MatchEvents() {
       </div>
 
       <div className="mx-auto max-w-[980px] px-5 py-10 sm:px-8 md:px-12">
-        {matchEvents.map((event) => (
-          <MatchEventRow key={event.id} event={event} />
-        ))}
+        {matchEvents.length ? (
+          matchEvents.map((event) => (
+            <MatchEventRow key={event.id} event={event} />
+          ))
+        ) : (
+          <p className="text-center text-sm font-medium text-[#6B7A75] dark:text-white/55">
+            Events are not available yet.
+          </p>
+        )}
       </div>
     </Card>
   );
 }
 
-//*============= Match Event Row =============*//
-function MatchEventRow({ event }: { event: MatchEvent }) {
+function MatchEventRow({ event }: { event: MatchFactEventView }) {
   if (event.type === "period") {
     return <PeriodEvent title={event.title} />;
   }
+
+  if (!event.side) return null;
 
   const isHome = event.side === "home";
 
@@ -51,12 +68,11 @@ function MatchEventRow({ event }: { event: MatchEvent }) {
   );
 }
 
-//*============= Event Content =============*//
 function EventContent({
   event,
   align,
 }: {
-  event: MatchEvent;
+  event: MatchFactEventView;
   align: "left" | "right";
 }) {
   const isRight = align === "right";
@@ -80,18 +96,17 @@ function EventContent({
   );
 }
 
-//*============= Event Text =============*//
 function EventText({
   event,
   align,
 }: {
-  event: MatchEvent;
+  event: MatchFactEventView;
   align: "left" | "right";
 }) {
   return (
     <div className={align === "right" ? "text-right" : ""}>
       <h4 className="text-sm font-bold text-[#10201B] dark:text-white">
-        {event.title}{" "}
+        {event.title ?? "Match event"}{" "}
         {event.score && (
           <span className="text-mint-green">({event.score})</span>
         )}
@@ -112,8 +127,7 @@ function EventText({
   );
 }
 
-//*============= Event Icon =============*//
-function EventIcon({ type }: { type: MatchEvent["type"] }) {
+function EventIcon({ type }: { type: MatchFactEventType }) {
   if (type === "substitution") {
     return (
       <span className="flex size-8 items-center justify-center rounded-full bg-black text-mint-green">
@@ -146,10 +160,9 @@ function EventIcon({ type }: { type: MatchEvent["type"] }) {
     );
   }
 
-  return null;
+  return <span className="size-3 rounded-full bg-[#DDE8E3] dark:bg-white/20" />;
 }
 
-//*============= Minute Badge =============*//
 function MinuteBadge({ minute }: { minute?: string }) {
   if (!minute) return null;
 
@@ -160,7 +173,6 @@ function MinuteBadge({ minute }: { minute?: string }) {
   );
 }
 
-//*============= Period Event =============*//
 function PeriodEvent({ title }: { title?: string }) {
   return (
     <div className="mx-auto flex w-full items-center gap-5 py-10">

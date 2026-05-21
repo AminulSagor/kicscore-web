@@ -1,11 +1,11 @@
+import { MatchStatRowView } from "@/app/public/(pages)/match-details/_utils/match.stats.utils";
 import Card from "@/components/UI/cards/card";
-import type { MatchStatRow } from "@/mock/match-details/match-stats.mock.types";
 
 type MiniStatsCardProps = {
-  item: MatchStatRow;
+  item: MatchStatRowView;
 };
 
-//*============= Mini Stats Card =============*//
+//======= Mini Stats Card =======//
 export default function MiniStatsCard({ item }: MiniStatsCardProps) {
   return (
     <Card

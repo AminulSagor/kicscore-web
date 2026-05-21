@@ -2,11 +2,23 @@ import { ChevronDown } from "lucide-react";
 
 import Button from "@/components/UI/buttons/button";
 import Card from "@/components/UI/cards/card";
-import { h2hMatches } from "@/mock/match-details/match-head-to-head.mock.data";
-import type { H2HMatch } from "@/mock/match-details/match-head-to-head.mock.types";
+import { MatchHeadToHeadItem } from "@/types/football/matches/match.head-to-head.types";
 
-//*============= Head To Head Matches Card =============*//
-export default function HeadToHeadMatchesCard() {
+import {
+  buildHeadToHeadMatchRows,
+  HeadToHeadMatchRowView,
+} from "@/app/public/(pages)/match-details/_utils/match.head-to-head.utils";
+
+interface HeadToHeadMatchesCardProps {
+  matches: MatchHeadToHeadItem[];
+}
+
+//======= Head To Head Matches Card =======//
+export default function HeadToHeadMatchesCard({
+  matches,
+}: HeadToHeadMatchesCardProps) {
+  const matchRows = buildHeadToHeadMatchRows(matches);
+
   return (
     <Card
       variant="white"
@@ -19,22 +31,28 @@ export default function HeadToHeadMatchesCard() {
       </div>
 
       <div className="mx-auto max-w-[900px] px-5 py-7">
-        {h2hMatches.map((match) => (
-          <H2HMatchRow key={match.id} match={match} />
-        ))}
+        {matchRows.length ? (
+          matchRows.map((match) => <H2HMatchRow key={match.id} match={match} />)
+        ) : (
+          <p className="text-center text-sm font-medium text-[#6B7A75] dark:text-white/55">
+            Head-to-head matches are not available yet.
+          </p>
+        )}
 
-        <div className="mt-7 flex justify-center">
-          <Button rounded="lg" size="base" className="px-6">
-            Load More <ChevronDown className="size-4" />
-          </Button>
-        </div>
+        {matchRows.length > 0 && (
+          <div className="mt-7 flex justify-center">
+            <Button rounded="lg" size="base" className="px-6">
+              Load More <ChevronDown className="size-4" />
+            </Button>
+          </div>
+        )}
       </div>
     </Card>
   );
 }
 
-//*============= H2H Match Row =============*//
-function H2HMatchRow({ match }: { match: H2HMatch }) {
+//======= H2H Match Row =======//
+function H2HMatchRow({ match }: { match: HeadToHeadMatchRowView }) {
   return (
     <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 border-b border-[#DDE8E3] py-5 last:border-b-0 dark:border-white/10">
       <div>
@@ -43,19 +61,13 @@ function H2HMatchRow({ match }: { match: H2HMatch }) {
         </p>
 
         <TeamName
-          name={match.homeTeam}
-          isWinner={match.winner === "home"}
+          name={match.homeTeam.name}
+          isWinner={match.homeTeam.isWinner}
           align="left"
         />
       </div>
 
-      <span
-        className={`rounded px-3 py-1 text-sm font-bold ${
-          match.score.includes(":")
-            ? "bg-[#EAF3EF] text-[#6B7A75] dark:bg-white/10 dark:text-white/60"
-            : "text-[#10201B] dark:text-white"
-        }`}
-      >
+      <span className="rounded px-3 py-1 text-sm font-bold text-[#10201B] dark:text-white">
         {match.score}
       </span>
 
@@ -65,8 +77,8 @@ function H2HMatchRow({ match }: { match: H2HMatch }) {
         </p>
 
         <TeamName
-          name={match.awayTeam}
-          isWinner={match.winner === "away"}
+          name={match.awayTeam.name}
+          isWinner={match.awayTeam.isWinner}
           align="right"
         />
       </div>
@@ -74,7 +86,7 @@ function H2HMatchRow({ match }: { match: H2HMatch }) {
   );
 }
 
-//*============= Team Name =============*//
+//======= Team Name =======//
 function TeamName({
   name,
   isWinner,
