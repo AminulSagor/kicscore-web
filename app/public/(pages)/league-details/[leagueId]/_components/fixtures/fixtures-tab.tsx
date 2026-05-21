@@ -3,42 +3,37 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
-import {
-  CalendarDays,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 
 import Button from "@/components/UI/buttons/button";
 import DatePickerDialog from "@/components/UI/dialogs/date-picker-dialog";
-import CustomSelect from "@/components/UI/select/custom-select";
 import type {
   LeagueFixtureItem,
   LeagueFixturesBackendPaging,
 } from "@/types/football/fixtures/fixture.types";
-import FixtureDateSeparator from "./fixture-date-separator";
-import FixtureMatchRow from "./fixture-match-row";
-import {
-  FixtureViewMode,
-  getFixtureGroups,
-} from "@/app/public/(pages)/league-details/_utils/fixture-groups.utils";
 import {
   formatDateKey,
   parseFixtureDate,
 } from "@/app/public/(pages)/league-details/_utils/fixture-date.utils";
+import {
+  getFixtureGroups,
+  type FixtureViewMode,
+} from "@/app/public/(pages)/league-details/_utils/fixture-groups.utils";
+import {
+  ALL_TEAMS_VALUE,
+  filterFixturesByTeam,
+  getFixtureTeamOptions,
+} from "@/app/public/(pages)/league-details/_utils/fixture-team.utils";
+
+import FixtureDateSeparator from "./fixture-date-separator";
+import FixtureMatchRow from "./fixture-match-row";
+import FixtureViewControls from "./fixture-view-controls";
 
 type FixturesTabProps = {
   fixtures: LeagueFixtureItem[];
   pagination?: LeagueFixturesBackendPaging;
   selectedSeason: string;
 };
-
-const modeOptions: { label: string; value: FixtureViewMode }[] = [
-  { label: "By date", value: "date" },
-  { label: "By round", value: "round" },
-  { label: "By team", value: "team" },
-];
 
 export default function FixturesTab({
   fixtures,
@@ -52,6 +47,8 @@ export default function FixturesTab({
 
   const [mode, setMode] = useState<FixtureViewMode>("date");
   const [openDatePicker, setOpenDatePicker] = useState(false);
+  const [selectedRoundId, setSelectedRoundId] = useState<string | null>(null);
+  const [selectedTeamId, setSelectedTeamId] = useState(ALL_TEAMS_VALUE);
 
   const selectedDateFromQuery = searchParams.get("fixtureDate");
 
@@ -70,7 +67,55 @@ export default function FixturesTab({
     return new Date(selectedSeasonYear, today.getMonth(), today.getDate());
   }, [selectedDateFromQuery, selectedSeasonYear]);
 
-  const groups = getFixtureGroups(fixtures, mode);
+  const teamOptions = useMemo(
+    () => getFixtureTeamOptions(fixtures),
+    [fixtures],
+  );
+
+  const activeTeamId = useMemo(() => {
+    const selectedTeamExists = teamOptions.some(
+      (option) => option.value === selectedTeamId,
+    );
+
+    return selectedTeamExists ? selectedTeamId : ALL_TEAMS_VALUE;
+  }, [selectedTeamId, teamOptions]);
+
+  const visibleFixtures = useMemo(() => {
+    if (mode !== "team") return fixtures;
+
+    return filterFixturesByTeam(fixtures, activeTeamId);
+  }, [activeTeamId, fixtures, mode]);
+
+  const groups = useMemo(
+    () => getFixtureGroups(visibleFixtures, mode),
+    [visibleFixtures, mode],
+  );
+
+  const roundOptions = useMemo(() => {
+    if (mode !== "round") return [];
+
+    return groups.map((group) => ({
+      label: group.label,
+      value: String(group.id),
+    }));
+  }, [groups, mode]);
+
+  const activeRoundId = useMemo(() => {
+    if (mode !== "round" || roundOptions.length === 0) return null;
+
+    const selectedRoundExists = selectedRoundId
+      ? roundOptions.some((option) => option.value === selectedRoundId)
+      : false;
+
+    return selectedRoundExists ? selectedRoundId : roundOptions[0].value;
+  }, [mode, roundOptions, selectedRoundId]);
+
+  const displayedGroups = useMemo(() => {
+    if (mode !== "round" || !activeRoundId) return groups;
+
+    return groups.filter((group) => String(group.id) === activeRoundId);
+  }, [activeRoundId, groups, mode]);
+
   const currentPage = pagination?.page ?? 1;
   const totalPages = pagination?.totalPages ?? 1;
 
@@ -101,42 +146,17 @@ export default function FixturesTab({
 
   return (
     <div className="mt-6 rounded-2xl border border-[#DDE8E3] bg-white p-4 dark:border-white/10 dark:bg-[#111d1a] sm:p-5">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex flex-col gap-3 sm:flex-1">
-          <div className="w-fit">
-            <CustomSelect
-              value={mode}
-              options={modeOptions}
-              onChange={setMode}
-            />
-          </div>
-
-          {mode === "team" && (
-            <button
-              type="button"
-              className="flex h-9 w-full items-center justify-between rounded-lg bg-[#EAF3EF] px-3 text-sm font-semibold text-[#10201B] dark:bg-[#25302B] dark:text-white"
-            >
-              <span className="flex items-center gap-2">
-                <span className="size-5 rounded-full border border-[#8A98A3]" />
-                All Teams
-              </span>
-              <ChevronDown size={16} />
-            </button>
-          )}
-        </div>
-
-        {mode === "date" && (
-          <Button
-            size="base"
-            rounded="lg"
-            className="h-9 shrink-0 px-4 text-sm font-bold"
-            onClick={() => setOpenDatePicker(true)}
-          >
-            <CalendarDays size={16} />
-            Jump to date
-          </Button>
-        )}
-      </div>
+      <FixtureViewControls
+        mode={mode}
+        roundOptions={roundOptions}
+        teamOptions={teamOptions}
+        activeRoundId={activeRoundId}
+        activeTeamId={activeTeamId}
+        onModeChange={setMode}
+        onRoundChange={setSelectedRoundId}
+        onTeamChange={setSelectedTeamId}
+        onOpenDatePicker={() => setOpenDatePicker(true)}
+      />
 
       {mode === "date" && (
         <div className="mt-7 flex items-center justify-between">
@@ -163,8 +183,8 @@ export default function FixturesTab({
       )}
 
       <div className="mt-5">
-        {groups.length > 0 ? (
-          groups.map((group) => (
+        {displayedGroups.length > 0 ? (
+          displayedGroups.map((group) => (
             <div key={group.id}>
               <FixtureDateSeparator label={group.label} />
 
