@@ -1,9 +1,18 @@
 "use client";
 
-import { matchDetailsTabs } from "@/mock/match-details/match-details.mock.data";
+import { MatchDetailsTab } from "@/types/football/matches/match.details.tab";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 
+//tabs
+export const matchDetailsTabs: { label: string; value: MatchDetailsTab }[] = [
+  { label: "Facts", value: "facts" },
+  { label: "Lineup", value: "lineup" },
+  { label: "Stats", value: "stats" },
+  { label: "Head-to-head", value: "head-to-head" },
+];
+
+//component
 export default function MatchDetailsTabs() {
   const params = useParams<{ matchId: string }>();
   const searchParams = useSearchParams();
