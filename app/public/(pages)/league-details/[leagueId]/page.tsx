@@ -12,6 +12,7 @@ import {
   getLeagueTopScorers,
 } from "@/service/football/leagues/league.rankings.service";
 import { getLeagueStandings } from "@/service/football/leagues/league.standing.service";
+import { DEFAULT_PLAYER_STATS_LIMIT } from "@/app/public/(pages)/league-details/_utils/player-stats.utils";
 
 type LeagueDetailsPageProps = {
   params: Promise<{
@@ -23,7 +24,22 @@ type LeagueDetailsPageProps = {
     fixturePage?: string;
     fixtureDate?: string;
     stat?: string;
+    playerStatsLimit?: string;
   }>;
+};
+
+//======= Get Valid Player Stats Limit =======//
+const getValidPlayerStatsLimit = (limit?: string) => {
+  const parsedLimit = Number(limit);
+
+  if (
+    !Number.isFinite(parsedLimit) ||
+    parsedLimit < DEFAULT_PLAYER_STATS_LIMIT
+  ) {
+    return DEFAULT_PLAYER_STATS_LIMIT;
+  }
+
+  return parsedLimit;
 };
 
 export default async function page({
@@ -48,6 +64,11 @@ export default async function page({
   const fixtureDate = queryParams?.fixtureDate;
   const fixtureLimit = 20;
 
+  const playerStatsLimit =
+    activeTab === "player-stats"
+      ? getValidPlayerStatsLimit(queryParams?.playerStatsLimit)
+      : DEFAULT_PLAYER_STATS_LIMIT;
+
   const shouldFetchStandings =
     activeTab === "overview" || activeTab === "table";
   const shouldFetchFixtures = activeTab === "fixtures";
@@ -60,11 +81,19 @@ export default async function page({
       : Promise.resolve([]),
 
     shouldFetchPlayerRankings
-      ? getLeagueTopScorers({ leagueId, season: selectedSeason, limit: 5 })
+      ? getLeagueTopScorers({
+          leagueId,
+          season: selectedSeason,
+          limit: playerStatsLimit,
+        })
       : Promise.resolve([]),
 
     shouldFetchPlayerRankings
-      ? getLeagueTopAssists({ leagueId, season: selectedSeason, limit: 5 })
+      ? getLeagueTopAssists({
+          leagueId,
+          season: selectedSeason,
+          limit: playerStatsLimit,
+        })
       : Promise.resolve([]),
 
     shouldFetchFixtures
@@ -109,7 +138,11 @@ export default async function page({
         )}
 
         {activeTab === "player-stats" && (
-          <PlayerStatsTab topScorers={topScorers} topAssists={topAssists} />
+          <PlayerStatsTab
+            topScorers={topScorers}
+            topAssists={topAssists}
+            playerStatsLimit={playerStatsLimit}
+          />
         )}
 
         {activeTab === "team-stats" && <TeamStatsTab />}

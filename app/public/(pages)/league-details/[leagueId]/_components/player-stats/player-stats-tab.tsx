@@ -9,11 +9,13 @@ import PlayerStatDetails from "./player-stat-details";
 type PlayerStatsTabProps = {
   topScorers: LeagueRankingPlayer[];
   topAssists: LeagueRankingPlayer[];
+  playerStatsLimit: number;
 };
 
 export default function PlayerStatsTab({
   topScorers,
   topAssists,
+  playerStatsLimit,
 }: PlayerStatsTabProps) {
   const searchParams = useSearchParams();
   const selectedStat = searchParams.get("stat");
@@ -24,6 +26,7 @@ export default function PlayerStatsTab({
         selectedStatId={selectedStat}
         topScorers={topScorers}
         topAssists={topAssists}
+        playerStatsLimit={playerStatsLimit}
       />
     );
   }

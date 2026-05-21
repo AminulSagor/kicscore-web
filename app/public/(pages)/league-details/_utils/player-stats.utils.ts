@@ -1,8 +1,9 @@
-// app/public/(pages)/league-details/[leagueId]/_components/player-stats/_utils/player-stats.utils.ts
-
 import type { LeagueRankingPlayer } from "@/types/football/leagues/league.rankings";
 
 export type PlayerStatId = "top-scorers" | "top-assists";
+
+export const DEFAULT_PLAYER_STATS_LIMIT = 5;
+export const PLAYER_STATS_LIMIT_STEP = 5;
 
 export interface PlayerStatViewData {
   id: PlayerStatId;
