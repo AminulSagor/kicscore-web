@@ -1,11 +1,12 @@
 "use client";
 
-import NavbarSearchField from "@/components/layout/navbar/navbar-search-field";
-import UserAvatar from "@/components/layout/navbar/user-avatar";
-import { authStore } from "@/z_store/auth/auth.store";
 import { LogIn, LogOut, Newspaper, Star, User, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
+import NavbarSearchField from "@/components/layout/navbar/navbar-search-field";
+import UserAvatar from "@/components/layout/navbar/user-avatar";
+import { authStore } from "@/z_store/auth/auth.store";
 
 interface MobileSidebarProps {
   isOpen: boolean;
@@ -19,14 +20,14 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
   const loggedIn = authStore((state) => state.loggedIn);
   const logout = authStore((state) => state.logout);
 
-  //======= Handle logout =======//
+  //======= Handle Logout =======//
   const handleLogout = () => {
     logout();
     onClose();
     router.replace("/");
   };
 
-  //======= Handle sign in navigation =======//
+  //======= Handle Sign In Navigation =======//
   const handleSignIn = () => {
     onClose();
     router.push("/public/auth/sign-in");
@@ -51,7 +52,11 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             KICSCORE
           </h2>
 
-          <button onClick={onClose} className="text-[#10201B] dark:text-white">
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-[#10201B] dark:text-white"
+          >
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -60,6 +65,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
           className="mb-5"
           inputClassName="w-full"
           popoverWidth="mobile"
+          onResultSelect={onClose}
         />
 
         <nav>
