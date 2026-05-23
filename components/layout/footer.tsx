@@ -1,53 +1,10 @@
+import { IMAGE } from "@/constants/image.path";
+import { Play } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
-import { IMAGE } from "@/constants/image.path";
-import { getPopularFootballEntities } from "@/service/football/popular/popular.service";
-import type { PopularFootballItem } from "@/types/football/popular/popular.types";
-
-const POPULAR_LEAGUES_PAGE = 1;
-const POPULAR_LEAGUES_LIMIT = 5;
-
-const exploreLinks = [
-  { name: "Matches", url: "#" },
-  { name: "News", url: "/public/news" },
-  { name: "Leagues", url: "#" },
-];
-
-const kicscoreLinks = [{ name: "About Us", url: "#" }];
-
-const policyLinks = [
-  { name: "Privacy Policy", url: "/public/privacy-policy" },
-  { name: "Terms of Service", url: "/public/terms-condition" },
-  { name: "Cookie Policy", url: "#" },
-  { name: "Data Settings", url: "#" },
-];
-
-const socialLinks = [
-  { icon: FaInstagram, label: "Instagram" },
-  { icon: FaFacebookF, label: "Facebook" },
-  { icon: FaXTwitter, label: "X" },
-];
-
-async function getPopularLeagues(): Promise<PopularFootballItem[]> {
-  try {
-    const response = await getPopularFootballEntities({
-      entityType: "LEAGUE",
-      page: POPULAR_LEAGUES_PAGE,
-      limit: POPULAR_LEAGUES_LIMIT,
-    });
-
-    return response.data.items;
-  } catch {
-    return [];
-  }
-}
-
-const Footer = async () => {
-  const popularLeagues = await getPopularLeagues();
-
+const Footer = () => {
   return (
     <footer className="w-full">
       <div className="mx-auto w-full border-t border-[#D8E7DF] bg-white/90 pt-16 pb-7 text-[#0B1F1A] padding-x dark:border-transparent dark:bg-[#091716] dark:text-white">
@@ -72,7 +29,7 @@ const Footer = async () => {
                   src={IMAGE.playStoreIcon}
                   height={24}
                   width={24}
-                  alt="playStoreIcon"
+                  alt={"playStoreIcon"}
                 />
               </div>
 
@@ -87,70 +44,54 @@ const Footer = async () => {
             </button>
           </div>
 
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0B1F1A] dark:text-white">
-              Explore
-            </h3>
+          {[
+            { title: "Explore", links: ["Matches", "News", "Leagues"] },
+            {
+              title: "Popular Leagues",
+              links: [
+                "Premier League",
+                "La Liga",
+                "Serie A",
+                "Bundesliga",
+                "Champions League",
+              ],
+            },
+            { title: "Kicscore", links: ["About Us"] },
+          ].map((section) => (
+            <div key={section.title}>
+              <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0B1F1A] dark:text-white">
+                {section.title}
+              </h3>
 
-            <div className="mt-8 flex flex-col gap-5 text-[#61736D] dark:text-white/70">
-              {exploreLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.url}
-                  className="text-sm transition hover:text-[#008A63] dark:hover:text-[#79e2c5]"
-                >
-                  {link.name}
-                </Link>
-              ))}
+              <div className="mt-8 flex flex-col gap-5 text-[#61736D] dark:text-white/70">
+                {section.links.map((link) => (
+                  <a
+                    key={link}
+                    href="#"
+                    className="text-sm transition hover:text-[#008A63] dark:hover:text-[#79e2c5]"
+                  >
+                    {link}
+                  </a>
+                ))}
+              </div>
             </div>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0B1F1A] dark:text-white">
-              Popular Leagues
-            </h3>
-
-            <div className="mt-8 flex flex-col gap-5 text-[#61736D] dark:text-white/70">
-              {popularLeagues.map((league) => (
-                <Link
-                  key={league.entityId}
-                  href={`/public/league-details/${league.entityId}`}
-                  className="text-sm transition hover:text-[#008A63] dark:hover:text-[#79e2c5]"
-                >
-                  {league.entityName}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0B1F1A] dark:text-white">
-              Kicscore
-            </h3>
-
-            <div className="mt-8 flex flex-col gap-5 text-[#61736D] dark:text-white/70">
-              {kicscoreLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.url}
-                  className="text-sm transition hover:text-[#008A63] dark:hover:text-[#79e2c5]"
-                >
-                  {link.name}
-                </Link>
-              ))}
-            </div>
-          </div>
+          ))}
 
           <div>
             <div className="mt-0 flex flex-col gap-5 text-[#61736D] lg:mt-10 dark:text-white/70">
-              {policyLinks.map((link) => (
-                <Link
+              {[
+                { name: "Privacy Policy", url: "/public/privacy-policy" },
+                { name: "Terms of Service", url: "/public/terms-condition" },
+                { name: "Cookie Policy", url: "#" },
+                { name: "Data Settings", url: "#" },
+              ].map((link) => (
+                <a
                   key={link.name}
                   href={link.url}
                   className="text-sm transition hover:text-[#008A63] dark:hover:text-[#79e2c5]"
                 >
                   {link.name}
-                </Link>
+                </a>
               ))}
             </div>
           </div>
@@ -164,7 +105,11 @@ const Footer = async () => {
               Follow Us on
             </span>
 
-            {socialLinks.map(({ icon: Icon, label }) => (
+            {[
+              { icon: FaInstagram, label: "Instagram" },
+              { icon: FaFacebookF, label: "Facebook" },
+              { icon: FaXTwitter, label: "X" },
+            ].map(({ icon: Icon, label }) => (
               <a
                 key={label}
                 href="#"
