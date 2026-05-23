@@ -76,7 +76,7 @@ export default function NewsDetailArticle({
           {articleText}
         </p>
 
-        {news.url && (
+        {news.url && !news.url.includes("kicscore.com") && (
           <Link
             href={news.url}
             target="_blank"

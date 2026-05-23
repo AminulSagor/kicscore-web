@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "media.api-sports.io",
       },
+      {
+        protocol: "https",
+        hostname: "kicscore-storage.s3.ap-south-1.amazonaws.com",
+      },
     ],
   },
 };

@@ -1,6 +1,6 @@
 import {
   LayoutDashboard,
-  Shield,
+  Newspaper,
   UserCircle,
   Users,
   type LucideIcon,
@@ -23,11 +23,11 @@ export const adminNavigation: AdminNavigationItem[] = [
     href: "/dashboards/admin/general-users",
     icon: Users,
   },
-  // {
-  //   label: "Managers",
-  //   href: "/dashboards/admin/managers",
-  //   icon: Shield,
-  // },
+  {
+    label: "News Management",
+    href: "/dashboards/admin/news",
+    icon: Newspaper,
+  },
   {
     label: "My Profile",
     href: "/dashboards/admin/profile",

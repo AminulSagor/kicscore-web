@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import ThemeToggle from "@/components/UI/theme/theme-toggle";
-import { Bell, CircleHelp, UserCircle } from "lucide-react";
+import { UserCircle } from "lucide-react";
 
 export default function AdminNavbar() {
   return (
@@ -9,21 +10,18 @@ export default function AdminNavbar() {
       <div className="flex items-center gap-4">
         <ThemeToggle />
 
-        {[Bell, CircleHelp, UserCircle].map((Icon, index) => (
-          <button
-            key={index}
-            type="button"
-            className="
-              text-black
-              transition
-              hover:text-secondary
-              dark:text-white
-              dark:hover:text-mint-green
-            "
-          >
-            <Icon size={20} />
-          </button>
-        ))}
+        <Link
+          href="/dashboards/admin/profile"
+          className="
+            text-black
+            transition
+            hover:text-secondary
+            dark:text-white
+            dark:hover:text-mint-green
+          "
+        >
+          <UserCircle size={20} />
+        </Link>
       </div>
     </header>
   );
