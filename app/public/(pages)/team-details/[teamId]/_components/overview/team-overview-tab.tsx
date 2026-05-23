@@ -1,21 +1,26 @@
-import { TeamFixtureItem } from "@/types/football/fixtures/team.fixtures.types";
-import { TeamDetailsItem } from "@/types/football/teams/team.details.types";
+import AboutCard from "@/app/public/(pages)/team-details/[teamId]/_components/overview/about-card";
+import type { TeamFixtureItem } from "@/types/football/fixtures/team.fixtures.types";
+import type { LeagueStandingTeam } from "@/types/football/leagues/league.standings";
+import type { TeamAboutData } from "@/types/football/teams/team.about.types";
+import type { TeamDetailsItem } from "@/types/football/teams/team.details.types";
+import type { TeamLeagueItem } from "@/types/football/teams/team.leagues.types";
 
 import LastSixMatchesCard from "./last-six-matches-card";
 import LeagueTableCard from "./league-table-card";
 import LeaguesCard from "./leagues-card";
 import NextMatchSection from "./next-match-section";
-import RankingsCard from "./rankings-card";
+// import RankingsCard from "./rankings-card";
 import StadiumCard from "./stadium-card";
 import TopPlayersCard from "./top-players-card";
-import AboutCard from "@/app/public/(pages)/team-details/[teamId]/_components/overview/about-card";
-import { TeamAboutData } from "@/types/football/teams/team.about.types";
 
 type Props = {
   teamDetails: TeamDetailsItem;
   upcomingFixtures: TeamFixtureItem[];
   lastFixtures: TeamFixtureItem[];
   aboutData: TeamAboutData | null;
+  leagues: TeamLeagueItem[];
+  standings: LeagueStandingTeam[];
+  standingLeagueTitle: string;
 };
 
 export default function TeamOverviewTab({
@@ -23,6 +28,9 @@ export default function TeamOverviewTab({
   upcomingFixtures,
   lastFixtures,
   aboutData,
+  leagues,
+  standings,
+  standingLeagueTitle,
 }: Props) {
   return (
     <section className="mt-8 pb-8">
@@ -36,8 +44,14 @@ export default function TeamOverviewTab({
           />
 
           <div className="grid gap-6 lg:grid-cols-[1.2fr_0.95fr]">
-            <LeaguesCard />
-            <RankingsCard />
+            <LeaguesCard leagues={leagues} />
+
+            {/* <RankingsCard /> */}
+
+            <LeagueTableCard
+              title={standingLeagueTitle}
+              standings={standings}
+            />
           </div>
         </div>
 
@@ -46,7 +60,10 @@ export default function TeamOverviewTab({
 
           <StadiumCard venue={teamDetails.venue} />
 
-          <LeagueTableCard />
+          {/* <LeagueTableCard
+            title={standingLeagueTitle}
+            standings={standings}
+          /> */}
         </aside>
       </div>
 

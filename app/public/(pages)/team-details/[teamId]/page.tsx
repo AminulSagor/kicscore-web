@@ -26,8 +26,10 @@ import {
   getTeamLastFixtures,
   getTeamUpcomingFixtures,
 } from "@/service/football/fixtures/team.fixtures.service";
+import { getLeagueStandings } from "@/service/football/leagues/league.standing.service";
 import { getTeamAbout } from "@/service/football/teams/team.about.service";
 import { getTeamDetails } from "@/service/football/teams/team.details.service";
+import { getTeamLeagues } from "@/service/football/teams/team.leagues.service";
 import {
   getTeamCoaches,
   getTeamPlayers,
@@ -37,6 +39,8 @@ import type {
   TeamPreviousMatch,
   TeamUpcomingMatch,
 } from "@/types/football/fixtures/team.fixtures.types";
+import type { LeagueStandingTeam } from "@/types/football/leagues/league.standings";
+import type { TeamLeagueItem } from "@/types/football/teams/team.leagues.types";
 import type {
   TeamSquadGroup,
   TeamSquadMember,
@@ -106,6 +110,15 @@ export default async function TeamDetailsPage({ params, searchParams }: Props) {
     ? getTeamAbout(teamId)
     : Promise.resolve(null);
 
+  const leaguesPromise = isOverviewTab
+    ? getTeamLeagues({
+      teamId,
+      season,
+      page: DEFAULT_API_PAGE,
+      limit: DEFAULT_API_LIMIT,
+    })
+    : Promise.resolve(null);
+
   const coachesPromise = isSquadTab
     ? getTeamCoaches({
       teamId,
@@ -138,6 +151,7 @@ export default async function TeamDetailsPage({ params, searchParams }: Props) {
     upcomingFixturesResponse,
     lastFixturesResponse,
     aboutResponse,
+    leaguesResponse,
     coachesResponse,
     playersResponse,
     trophiesResponse,
@@ -146,6 +160,7 @@ export default async function TeamDetailsPage({ params, searchParams }: Props) {
     upcomingFixturesPromise,
     lastFixturesPromise,
     aboutPromise,
+    leaguesPromise,
     coachesPromise,
     playersPromise,
     trophiesPromise,
@@ -163,9 +178,34 @@ export default async function TeamDetailsPage({ params, searchParams }: Props) {
 
   let previousMatches: TeamPreviousMatch[] = [];
   let upcomingMatches: TeamUpcomingMatch[] = [];
+  let leagues: TeamLeagueItem[] = [];
+  let standings: LeagueStandingTeam[] = [];
+  let standingLeagueTitle = "Premier League";
   let coach: TeamSquadMember | null = null;
   let squadGroups: TeamSquadGroup[] = [];
   let trophies: TeamTrophy[] = [];
+
+  if (isOverviewTab && leaguesResponse) {
+    leagues = leaguesResponse.data.response;
+
+    const standingLeague =
+      leagues.find((league) =>
+        league.seasons.some((leagueSeason) => leagueSeason.coverage.standings),
+      ) ?? null;
+
+    if (standingLeague) {
+      standingLeagueTitle = standingLeague.league.name;
+
+      standings = await getLeagueStandings(
+        String(standingLeague.league.id),
+        season,
+        {
+          page: DEFAULT_API_PAGE,
+          limit: DEFAULT_API_LIMIT,
+        },
+      );
+    }
+  }
 
   if (isMatchesTab) {
     previousMatches = mapTeamPreviousMatches(lastFixtures);
@@ -204,6 +244,9 @@ export default async function TeamDetailsPage({ params, searchParams }: Props) {
           upcomingFixtures={upcomingFixtures}
           lastFixtures={lastFixtures}
           aboutData={aboutData}
+          leagues={leagues}
+          standings={standings}
+          standingLeagueTitle={standingLeagueTitle}
         />
       )}
 
