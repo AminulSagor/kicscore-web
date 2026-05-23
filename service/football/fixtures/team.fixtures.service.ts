@@ -7,9 +7,10 @@ export async function getTeamUpcomingFixtures(
   limit = 2,
 ): Promise<TeamFixturesResponse> {
   const response = await serviceServer.get<TeamFixturesResponse>(
-    `/football/teams/${teamId}/fixtures`,
+    "/football/fixtures",
     {
       params: {
+        team: teamId,
         next: limit,
       },
     },
@@ -24,9 +25,10 @@ export async function getTeamLastFixtures(
   limit = 6,
 ): Promise<TeamFixturesResponse> {
   const response = await serviceServer.get<TeamFixturesResponse>(
-    `/football/teams/${teamId}/fixtures`,
+    "/football/fixtures",
     {
       params: {
+        team: teamId,
         last: limit,
       },
     },

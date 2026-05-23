@@ -1,11 +1,16 @@
-import { upcomingMatches } from "@/mock/team-details/team-matches.mock.data";
+import type { TeamUpcomingMatch } from "@/types/football/fixtures/team.fixtures.types";
+
 import MatchesCard from "./matches-card";
 
-export default function UpcomingMatchesCard() {
+type Props = {
+  matches: TeamUpcomingMatch[];
+};
+
+export default function UpcomingMatchesCard({ matches }: Props) {
   return (
     <MatchesCard
       title="Upcoming matches"
-      matches={upcomingMatches}
+      matches={matches}
       type="upcoming"
     />
   );

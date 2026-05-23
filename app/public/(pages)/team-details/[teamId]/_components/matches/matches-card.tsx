@@ -1,14 +1,18 @@
-import Image from "next/image";
+"use client";
+
 import { ChevronDown } from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
 
 import Button from "@/components/UI/buttons/button";
 import Card from "@/components/UI/cards/card";
-import {
-  PreviousMatch,
-  UpcomingMatch,
-} from "@/mock/team-details/team-matches.mock.types";
+import type {
+  TeamPreviousMatch,
+  TeamUpcomingMatch,
+} from "@/types/football/fixtures/team.fixtures.types";
+import { getValidImage } from "@/utils/image/image.utils";
 
-type MatchItem = PreviousMatch | UpcomingMatch;
+type MatchItem = TeamPreviousMatch | TeamUpcomingMatch;
 
 type Props = {
   title: string;
@@ -16,7 +20,25 @@ type Props = {
   type: "previous" | "upcoming";
 };
 
+const INITIAL_VISIBLE_MATCHES = 5;
+const LOAD_MORE_STEP = 5;
+
 export default function MatchesCard({ title, matches, type }: Props) {
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_MATCHES);
+
+  const visibleMatches = matches.slice(0, visibleCount);
+  const hasMore = visibleCount < matches.length;
+
+  const handleLoadMore = () => {
+    if (!hasMore) {
+      return;
+    }
+
+    setVisibleCount((currentCount) =>
+      Math.min(currentCount + LOAD_MORE_STEP, matches.length),
+    );
+  };
+
   return (
     <Card
       variant="white"
@@ -29,7 +51,7 @@ export default function MatchesCard({ title, matches, type }: Props) {
       </div>
 
       <div className="divide-y divide-[#E5ECE8] dark:divide-white/10">
-        {matches.map((match) => (
+        {visibleMatches.map((match) => (
           <div
             key={match.id}
             className="grid gap-4 px-4 py-5 md:grid-cols-[1fr_auto_1fr] md:items-center"
@@ -66,7 +88,12 @@ export default function MatchesCard({ title, matches, type }: Props) {
       </div>
 
       <div className="flex justify-center py-5">
-        <Button size="base" className="gap-2">
+        <Button
+          size="base"
+          className="gap-2"
+          onClick={handleLoadMore}
+          disabled={!hasMore}
+        >
           Load More
           <ChevronDown className="h-4 w-4" />
         </Button>
@@ -81,7 +108,7 @@ function Team({
   reverse,
 }: {
   name: string;
-  logo: string;
+  logo: string | null;
   reverse?: boolean;
 }) {
   return (
@@ -90,7 +117,7 @@ function Team({
     >
       <div className="relative h-6 w-6 overflow-hidden rounded-full border border-[#94A3B8] bg-[#F3F7F5] dark:bg-dark-green">
         <Image
-          src={logo}
+          src={getValidImage(logo)}
           alt={name}
           fill
           sizes="24px"
