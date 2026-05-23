@@ -1,57 +1,47 @@
-import Image from "next/image";
-import Card from "@/components/UI/cards/card";
-import { leagueTable } from "@/mock/team-details/team-overview.mock.data";
+"use client";
 
-export default function LeagueTableCard() {
+import { useState } from "react";
+
+import Card from "@/components/UI/cards/card";
+
+type Props = {
+  about: string;
+};
+
+export default function AboutCard({ about }: Props) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
     <Card
       variant="white"
       padding="none"
+      rounded="xl"
       shadow="none"
-      className="overflow-hidden border border-[#DDE8E3] bg-white text-[#10201B] dark:border-white/10 dark:bg-primary dark:text-white"
+      className="overflow-hidden border border-[#E4E9E7] dark:border-[#27332F] dark:bg-[#121A17] dark:text-white"
     >
-      <div className="bg-[#EAF3EF] px-4 py-3 dark:bg-dark-green">
-        <h3 className="text-sm font-bold">Premier League</h3>
+      <div className="border-b border-[#E4E9E7] bg-[#F2F5F4] px-4 py-3 dark:border-[#27332F] dark:bg-[#202B28]">
+        <h2 className="text-sm font-semibold text-[#25302B] dark:text-[#F4F7F5]">
+          About
+        </h2>
       </div>
 
-      <div className="p-4">
-        <div className="grid grid-cols-[34px_1fr_34px_54px_34px_34px] px-3 text-xs font-bold uppercase text-[#6B7A75] dark:text-white/35">
-          <span>#</span>
-          <span>Team</span>
-          <span>PL</span>
-          <span>+/-</span>
-          <span>GD</span>
-          <span>PTS</span>
-        </div>
+      <div className="px-4 pb-4 pt-4">
+        <p
+          className={`text-base text-[#37433E] dark:text-[#E4EBE8] ${
+            isExpanded ? "" : "line-clamp-3"
+          }`}
+        >
+          {about}
+        </p>
 
-        <div className="mt-3 space-y-2">
-          {leagueTable.map((row) => (
-            <div
-              key={row.id}
-              className="grid grid-cols-[34px_1fr_34px_54px_34px_34px] items-center rounded-2xl bg-[#F3F7F5] px-3 py-3 text-sm font-bold dark:bg-dark-green"
-            >
-              <span>{row.position}</span>
-
-              <div className="flex items-center gap-2">
-                <div className="relative h-5 w-5 overflow-hidden rounded-sm">
-                  <Image
-                    src={row.logo}
-                    alt={row.team}
-                    fill
-                    sizes="20px"
-                    className="object-cover"
-                  />
-                </div>
-                <span>{row.team}</span>
-              </div>
-
-              <span>{row.played}</span>
-              <span>{row.form}</span>
-              <span>{row.goalDifference}</span>
-              <span>{row.points}</span>
-            </div>
-          ))}
-        </div>
+        {/* <button
+          type="button"
+          aria-expanded={isExpanded}
+          onClick={() => setIsExpanded((previous) => !previous)}
+          className="mt-4 rounded-md bg-secondary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-secondary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-[#121A17]"
+        >
+          {isExpanded ? "Collapse" : "Expand"}
+        </button> */}
       </div>
     </Card>
   );
