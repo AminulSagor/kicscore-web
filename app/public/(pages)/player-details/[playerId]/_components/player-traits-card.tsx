@@ -1,7 +1,7 @@
-import type { PlayerTraitMock } from "@/mock/player-details/player-details.mock.types";
+import type { PlayerTrait } from "@/types/football/players/player.types";
 
 type PlayerTraitsCardProps = {
-  traits: PlayerTraitMock[];
+  traits: PlayerTrait[];
 };
 
 const traitPositions = [

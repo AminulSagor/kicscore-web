@@ -7,7 +7,7 @@ import {
   SignedUploadUrlPayload,
   SignedUploadUrlResponse,
   UploadedFileResult,
-} from "@/types/files/signed-upload.types";
+} from "@/types/admin/profile/types/files/signed-upload.types";
 
 export const getSignedUploadUrl = async (
   payload: SignedUploadUrlPayload,

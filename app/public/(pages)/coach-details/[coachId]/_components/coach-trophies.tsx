@@ -1,11 +1,34 @@
+import Link from "next/link";
+
 import Card from "@/components/UI/cards/card";
-import type { CoachTrophyMock } from "@/mock/coach-details/coach-details.mock.types";
+import type {
+  CoachBackendPaging,
+  CoachTrophy,
+} from "@/types/football/coaches/coach.types";
 
 type CoachTrophiesProps = {
-  trophies: CoachTrophyMock[];
+  coachId: string;
+  trophies: CoachTrophy[];
+  pagination: CoachBackendPaging;
 };
 
-const CoachTrophies = ({ trophies }: CoachTrophiesProps) => {
+const CoachTrophies = ({
+  coachId,
+  trophies,
+  pagination,
+}: CoachTrophiesProps) => {
+  const hasPreviousPage = pagination.page > 1;
+  const hasNextPage = pagination.page < pagination.totalPages;
+
+  const getPageHref = (page: number) => {
+    const params = new URLSearchParams({
+      trophyPage: String(page),
+      trophyLimit: String(pagination.limit),
+    });
+
+    return `/public/coach-details/${coachId}?${params.toString()}`;
+  };
+
   return (
     <Card
       padding="none"
@@ -13,8 +36,14 @@ const CoachTrophies = ({ trophies }: CoachTrophiesProps) => {
       shadow="none"
       className="mt-8 overflow-hidden bg-white text-black ring-1 ring-[#DDE8E3] dark:bg-[#101C18] dark:text-white dark:ring-white/7"
     >
-      <div className="bg-[#EAF3EF] px-5 py-4 dark:bg-[#1F2B27]">
-        <h2 className="text-sm font-bold text-black dark:text-white">Trophies</h2>
+      <div className="flex items-center justify-between gap-4 bg-[#EAF3EF] px-5 py-4 dark:bg-[#1F2B27]">
+        <h2 className="text-sm font-bold text-black dark:text-white">
+          Trophies
+        </h2>
+
+        <p className="text-xs text-[#6B7A75] dark:text-white/45">
+          {pagination.totalItems} total
+        </p>
       </div>
 
       <div className="space-y-3 px-4 py-5">
@@ -48,6 +77,40 @@ const CoachTrophies = ({ trophies }: CoachTrophiesProps) => {
           </Card>
         ))}
       </div>
+
+      {pagination.totalPages > 1 && (
+        <div className="flex items-center justify-between border-t border-[#DDE8E3] px-4 py-4 dark:border-white/10">
+          {hasPreviousPage ? (
+            <Link
+              href={getPageHref(pagination.page - 1)}
+              className="rounded-full bg-[#EAF3EF] px-4 py-2 text-xs font-bold text-[#10201B] transition hover:bg-[#DDE8E3] dark:bg-[#1F2B27] dark:text-white"
+            >
+              Previous
+            </Link>
+          ) : (
+            <span className="rounded-full bg-[#EAF3EF] px-4 py-2 text-xs font-bold text-[#6B7A75] opacity-60 dark:bg-[#1F2B27] dark:text-white/45">
+              Previous
+            </span>
+          )}
+
+          <span className="text-xs font-semibold text-[#6B7A75] dark:text-white/55">
+            Page {pagination.page} of {pagination.totalPages}
+          </span>
+
+          {hasNextPage ? (
+            <Link
+              href={getPageHref(pagination.page + 1)}
+              className="rounded-full bg-[#0B8F68] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#0A7C58]"
+            >
+              Next
+            </Link>
+          ) : (
+            <span className="rounded-full bg-[#0B8F68] px-4 py-2 text-xs font-bold text-white opacity-50">
+              Next
+            </span>
+          )}
+        </div>
+      )}
     </Card>
   );
 };

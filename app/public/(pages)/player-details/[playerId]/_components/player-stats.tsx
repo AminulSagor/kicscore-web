@@ -1,17 +1,20 @@
 import { ChevronDown } from "lucide-react";
+
 import type {
-    PlayerPerformanceGroupMock,
-    PlayerStatMock,
-} from "@/mock/player-details/player-details.mock.types";
+    PlayerPerformanceGroup,
+    PlayerStat,
+} from "@/types/football/players/player.types";
 
 type PlayerStatsProps = {
     season: string;
-    seasonStats: PlayerStatMock[];
-    performanceGroups: PlayerPerformanceGroupMock[];
+    minutesPlayed: string;
+    seasonStats: PlayerStat[];
+    performanceGroups: PlayerPerformanceGroup[];
 };
 
 const PlayerStats = ({
     season,
+    minutesPlayed,
     seasonStats,
     performanceGroups,
 }: PlayerStatsProps) => {
@@ -30,7 +33,7 @@ const PlayerStats = ({
 
             <div className="mt-5 rounded-[22px] bg-white p-4 shadow-sm ring-1 ring-[#D8E7DF] dark:bg-white/5 dark:ring-white/7">
                 <div className="rounded-2xl bg-[#0B8F68] px-5 py-4 text-white">
-                    <p className="text-2xl font-bold">2,083</p>
+                    <p className="text-2xl font-bold">{minutesPlayed}</p>
                     <p className="text-xs text-white/75">Minutes Played</p>
                 </div>
 

@@ -1,8 +1,8 @@
 import Card from "@/components/UI/cards/card";
-import type { CoachCareerMock } from "@/mock/coach-details/coach-details.mock.types";
+import type { CoachCareer } from "@/types/football/coaches/coach.types";
 
 type CoachCareerProps = {
-  career: CoachCareerMock[];
+  career: CoachCareer[];
 };
 
 const CoachCareer = ({ career }: CoachCareerProps) => {
