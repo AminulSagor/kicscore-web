@@ -2,7 +2,15 @@ import { Users } from "lucide-react";
 
 import Card from "@/components/UI/cards/card";
 
-export default function GeneralUsersHeader() {
+type GeneralUsersHeaderProps = {
+  totalUsers: number;
+};
+
+export default function GeneralUsersHeader({
+  totalUsers,
+}: GeneralUsersHeaderProps) {
+  const formattedTotalUsers = new Intl.NumberFormat("en-US").format(totalUsers);
+
   return (
     <>
       <div>
@@ -24,7 +32,7 @@ export default function GeneralUsersHeader() {
             </p>
 
             <div className="mt-4 flex items-end gap-2">
-              <h2 className="text-3xl font-bold">14,205</h2>
+              <h2 className="text-3xl font-bold">{formattedTotalUsers}</h2>
               <span className="mb-1 rounded-md bg-secondary px-2 py-1 text-xs font-bold text-white">
                 ↗ 12%
               </span>
