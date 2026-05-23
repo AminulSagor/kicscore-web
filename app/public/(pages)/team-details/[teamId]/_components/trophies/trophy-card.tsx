@@ -1,7 +1,8 @@
 import Image from "next/image";
 
 import Card from "@/components/UI/cards/card";
-import type { TeamTrophy } from "@/mock/team-details/team-trophies.mock.types";
+import type { TeamTrophy } from "@/types/football/teams/team.trophies.types";
+import { getValidImage } from "@/utils/image/image.utils";
 
 import TrophyAchievementRow from "./trophy-achievement-row";
 
@@ -20,7 +21,7 @@ export default function TrophyCard({ trophy }: Props) {
       <div className="flex items-center gap-3 bg-[#EAF3EF] px-4 py-4 dark:bg-dark-green">
         <div className="relative h-8 w-8 overflow-hidden rounded-full border border-[#94A3B8] bg-white dark:bg-primary">
           <Image
-            src={trophy.logo}
+            src={getValidImage(trophy.logo)}
             alt={trophy.title}
             fill
             sizes="32px"

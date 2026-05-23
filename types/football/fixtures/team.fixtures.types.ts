@@ -78,6 +78,7 @@ export interface TeamFixtureItem {
 export interface TeamFixturesData {
   get: string;
   parameters: {
+    team?: string;
     next?: string;
     last?: string;
   };
@@ -98,3 +99,21 @@ export interface TeamFixturesResponse {
   timestamp: string;
   path: string;
 }
+
+export type TeamMatchBase = {
+  id: string;
+  date: string;
+  homeTeam: string;
+  homeLogo: string;
+  awayTeam: string;
+  awayLogo: string;
+  competition: string;
+};
+
+export type TeamPreviousMatch = TeamMatchBase & {
+  score: string;
+};
+
+export type TeamUpcomingMatch = TeamMatchBase & {
+  time: string;
+};

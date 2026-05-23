@@ -1,4 +1,4 @@
-import type { TeamTrophyAchievement } from "@/mock/team-details/team-trophies.mock.types";
+import type { TeamTrophyAchievement } from "@/types/football/teams/team.trophies.types";
 
 type Props = {
   achievement: TeamTrophyAchievement;
