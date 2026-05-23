@@ -3,6 +3,7 @@ import type {
     FootballPlayerResponse,
     PlayerCareerTotalsResponse,
     PlayerRecentMatchesResponse,
+    PlayerTraitsResponse,
     PlayerTrophiesResponse,
 } from "@/types/football/players/player.types";
 
@@ -32,6 +33,12 @@ type GetPlayerCareerTotalsParams = {
     toSeason: string;
     page: number;
     limit: number;
+};
+
+type GetPlayerTraitsParams = {
+    playerId: string;
+    leagueId: string;
+    season: string;
 };
 
 export const getFootballPlayer = async ({
@@ -109,6 +116,24 @@ export const getPlayerCareerTotals = async ({
                 toSeason,
                 page,
                 limit,
+            },
+        },
+    );
+
+    return response.data;
+};
+
+export const getPlayerTraits = async ({
+    playerId,
+    leagueId,
+    season,
+}: GetPlayerTraitsParams): Promise<PlayerTraitsResponse> => {
+    const response = await serviceServer.get<PlayerTraitsResponse>(
+        `/football/players/${playerId}/traits`,
+        {
+            params: {
+                league: leagueId,
+                season,
             },
         },
     );

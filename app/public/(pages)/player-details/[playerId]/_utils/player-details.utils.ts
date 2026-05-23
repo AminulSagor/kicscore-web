@@ -143,6 +143,7 @@ export const mapPlayerDetails = (
     season: string,
 ): PlayerDetails => {
     const primaryStatistic = getPrimaryStatistic(playerEntry.statistics);
+    const leagueId = primaryStatistic?.league.id;
 
     return {
         id: String(playerEntry.player.id),
@@ -150,6 +151,7 @@ export const mapPlayerDetails = (
         avatar: playerEntry.player.photo,
         club: primaryStatistic?.team.name ?? "-",
         teamId: primaryStatistic ? String(primaryStatistic.team.id) : null,
+        leagueId: typeof leagueId === "number" ? String(leagueId) : null,
         season,
         competitionLabel: primaryStatistic
             ? `${primaryStatistic.league.name} ${primaryStatistic.league.season}`

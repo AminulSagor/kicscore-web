@@ -4,6 +4,7 @@ import {
   getFootballPlayer,
   getPlayerCareerTotals,
   getPlayerRecentMatches,
+  getPlayerTraits,
   getPlayerTrophies,
 } from "@/service/football/players/player.service";
 import type {
@@ -11,6 +12,7 @@ import type {
   PlayerDetailsTabKey,
   PlayerMatchGroup,
   PlayerStatsData,
+  PlayerTrait,
   PlayerTrophy,
 } from "@/types/football/players/player.types";
 
@@ -33,6 +35,7 @@ import {
   mapPlayerDetails,
 } from "./_utils/player-details.utils";
 import { mapPlayerMatchGroups } from "./_utils/player-matches.utils";
+import { mapPlayerTraits } from "./_utils/player-traits.utils";
 import { mapPlayerTrophies } from "./_utils/player-trophies.utils";
 
 type PlayerDetailsPageProps = {
@@ -98,6 +101,7 @@ export default async function PlayerDetailsPage({
   );
 
   let trophies: PlayerTrophy[] = [];
+  let traits: PlayerTrait[] = [];
   let matchGroups: PlayerMatchGroup[] = [];
   let hasMoreMatches = false;
   let loadMoreMatchesHref: string | undefined;
@@ -105,13 +109,25 @@ export default async function PlayerDetailsPage({
   let careerGroups: PlayerCareerGroup[] = [];
 
   if (activeTab === "profile") {
-    const trophiesResponse = await getPlayerTrophies({
-      playerId,
-      page: getPositiveNumber(query.trophyPage, 1),
-      limit: getPositiveNumber(query.trophyLimit, 2),
-    });
+    const [trophiesResponse, traitsResponse] = await Promise.all([
+      getPlayerTrophies({
+        playerId,
+        page: getPositiveNumber(query.trophyPage, 1),
+        limit: getPositiveNumber(query.trophyLimit, 2),
+      }),
+      player.leagueId
+        ? getPlayerTraits({
+          playerId,
+          leagueId: player.leagueId,
+          season,
+        })
+        : Promise.resolve(null),
+    ]);
 
     trophies = mapPlayerTrophies(trophiesResponse.data.response);
+    traits = traitsResponse
+      ? mapPlayerTraits(traitsResponse.data.traits)
+      : [];
   }
 
   if (activeTab === "matches" && player.teamId) {
@@ -203,7 +219,7 @@ export default async function PlayerDetailsPage({
           <>
             <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-[1fr_350px]">
               <PlayerProfileOverview player={player} />
-              <PlayerTraitsCard traits={player.traits} />
+              <PlayerTraitsCard traits={traits} />
             </div>
 
             <PlayerTrophies trophies={trophies} />
