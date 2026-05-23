@@ -1,5 +1,7 @@
 import type { PlayerTrait } from "@/types/football/players/player.types";
 
+import { getPlayerTraitPolygonPoints } from "../_utils/player-traits.utils";
+
 type PlayerTraitsCardProps = {
   traits: PlayerTrait[];
 };
@@ -14,7 +16,7 @@ const traitPositions = [
 ];
 
 const PlayerTraitsCard = ({ traits }: PlayerTraitsCardProps) => {
-  const polygonPoints = "150,52 250,105 205,180 150,218 115,170 118,95";
+  const polygonPoints = getPlayerTraitPolygonPoints(traits);
 
   return (
     <section className="relative min-h-[360px] overflow-hidden rounded-[22px] bg-white shadow-sm ring-1 ring-[#D8E7DF] dark:bg-white/5 dark:ring-white/7">
@@ -83,7 +85,7 @@ const PlayerTraitsCard = ({ traits }: PlayerTraitsCardProps) => {
 
         {traits.map((trait, index) => (
           <div
-            key={trait.label}
+            key={trait.key}
             className={`absolute max-w-[95px] text-[10px] font-bold uppercase leading-4 text-[#61736D] dark:text-white/55 ${traitPositions[index] ?? ""
               }`}
           >

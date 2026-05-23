@@ -1,157 +1,104 @@
 import type {
-    FootballPlayerStatistic,
     PlayerCareerGroup,
+    PlayerCareerRecord,
     PlayerCareerTotalsData,
     PlayerPerformanceGroup,
     PlayerStatsData,
 } from "@/types/football/players/player.types";
 
-type SeasonStatisticItem = {
-    season: number;
-    nationality: string | null;
-    statistic: FootballPlayerStatistic;
-};
-
-type CareerAggregateItem = {
-    id: string;
-    title: string;
-    club: string;
-    fromSeason: number;
-    toSeason: number;
-    matches: number;
-    goals: number;
-};
-
-const getNumber = (value: number | null | undefined) => value ?? 0;
+const EMPTY_VALUE = "-";
 
 const formatNumber = (value: number) => {
     return new Intl.NumberFormat("en-US").format(value);
 };
 
-const normalizeName = (value: string | null) => {
-    return value?.trim().toLowerCase() ?? "";
+const getYear = (dateValue: string | null) => {
+    if (!dateValue) {
+        return null;
+    }
+
+    const date = new Date(dateValue);
+
+    if (Number.isNaN(date.getTime())) {
+        return null;
+    }
+
+    return String(date.getFullYear());
 };
 
-const getStatistics = (
-    careerTotals: PlayerCareerTotalsData,
-): SeasonStatisticItem[] => {
-    return careerTotals.items.flatMap((item) => {
-        const playerEntry = item.player.response[0];
+const formatCareerPeriod = (item: PlayerCareerRecord) => {
+    const fromYear = getYear(item.from);
+    const toYear = getYear(item.to);
 
-        if (!playerEntry) {
-            return [];
-        }
+    if (!fromYear && !toYear) {
+        return EMPTY_VALUE;
+    }
 
-        return playerEntry.statistics.map((statistic) => ({
-            season: item.season,
-            nationality: playerEntry.player.nationality,
-            statistic,
-        }));
-    });
+    if (item.isCurrent && fromYear) {
+        return `${fromYear} - Present`;
+    }
+
+    if (fromYear && toYear && fromYear !== toYear) {
+        return `${fromYear} - ${toYear}`;
+    }
+
+    return fromYear ?? toYear ?? EMPTY_VALUE;
 };
 
-const sumStatistics = (
-    statistics: SeasonStatisticItem[],
-    selector: (statistic: FootballPlayerStatistic) => number | null | undefined,
-) => {
-    return statistics.reduce((total, item) => {
-        return total + getNumber(selector(item.statistic));
-    }, 0);
+const mapCareerItems = (items: PlayerCareerRecord[]) => {
+    return items.map((item) => ({
+        id: `${item.team.id}-${item.from ?? "unknown"}`,
+        club: item.team.name,
+        clubLogo: item.team.logo,
+        period: formatCareerPeriod(item),
+        stats: [
+            {
+                label: "Matches Played",
+                value: formatNumber(item.matchesPlayed),
+            },
+            {
+                label: "Goals",
+                value: formatNumber(item.goals),
+            },
+        ],
+    }));
 };
 
-const buildPerformanceGroups = (
-    statistics: SeasonStatisticItem[],
-): PlayerPerformanceGroup[] => {
+const buildUnavailablePerformanceGroups = (): PlayerPerformanceGroup[] => {
     return [
         {
             id: "shooting",
             title: "Shooting",
             stats: [
-                {
-                    label: "Goals",
-                    value: formatNumber(
-                        sumStatistics(statistics, (statistic) => statistic.goals.total),
-                    ),
-                },
-                {
-                    label: "Penalty Goals",
-                    value: formatNumber(
-                        sumStatistics(statistics, (statistic) => statistic.penalty.scored),
-                    ),
-                },
-                {
-                    label: "Shots",
-                    value: formatNumber(
-                        sumStatistics(statistics, (statistic) => statistic.shots.total),
-                    ),
-                },
-                {
-                    label: "Shots On Target",
-                    value: formatNumber(
-                        sumStatistics(statistics, (statistic) => statistic.shots.on),
-                    ),
-                },
-                {
-                    label: "Headed Shots",
-                    value: "-",
-                },
+                { label: "Goals", value: EMPTY_VALUE },
+                { label: "Penalty Goals", value: EMPTY_VALUE },
+                { label: "Shots", value: EMPTY_VALUE },
+                { label: "Shots On Target", value: EMPTY_VALUE },
+                { label: "Headed Shots", value: EMPTY_VALUE },
             ],
         },
         {
             id: "passing",
             title: "Passing",
             stats: [
-                {
-                    label: "Passes",
-                    value: formatNumber(
-                        sumStatistics(statistics, (statistic) => statistic.passes.total),
-                    ),
-                },
-                {
-                    label: "Key Passes",
-                    value: formatNumber(
-                        sumStatistics(statistics, (statistic) => statistic.passes.key),
-                    ),
-                },
+                { label: "Passes", value: EMPTY_VALUE },
+                { label: "Key Passes", value: EMPTY_VALUE },
             ],
         },
         {
             id: "possession",
             title: "Possession",
             stats: [
-                {
-                    label: "Duels Won",
-                    value: formatNumber(
-                        sumStatistics(statistics, (statistic) => statistic.duels.won),
-                    ),
-                },
-                {
-                    label: "Successful Dribbles",
-                    value: formatNumber(
-                        sumStatistics(statistics, (statistic) => statistic.dribbles.success),
-                    ),
-                },
+                { label: "Duels Won", value: EMPTY_VALUE },
+                { label: "Successful Dribbles", value: EMPTY_VALUE },
             ],
         },
         {
             id: "defending",
             title: "Defending",
             stats: [
-                {
-                    label: "Tackles",
-                    value: formatNumber(
-                        sumStatistics(statistics, (statistic) => statistic.tackles.total),
-                    ),
-                },
-                {
-                    label: "Interceptions",
-                    value: formatNumber(
-                        sumStatistics(
-                            statistics,
-                            (statistic) => statistic.tackles.interceptions,
-                        ),
-                    ),
-                },
+                { label: "Tackles", value: EMPTY_VALUE },
+                { label: "Interceptions", value: EMPTY_VALUE },
             ],
         },
         {
@@ -160,142 +107,64 @@ const buildPerformanceGroups = (
             stats: [
                 {
                     label: "Yellow Cards",
-                    value: formatNumber(
-                        sumStatistics(statistics, (statistic) => statistic.cards.yellow),
-                    ),
+                    value: EMPTY_VALUE,
                     variant: "warning",
                 },
-                {
-                    label: "Red Cards",
-                    value: formatNumber(
-                        sumStatistics(statistics, (statistic) => statistic.cards.red),
-                    ),
-                },
+                { label: "Red Cards", value: EMPTY_VALUE },
             ],
         },
     ];
 };
 
 export const mapPlayerStatsData = (
-    careerTotals: PlayerCareerTotalsData,
+    _careerTotals: PlayerCareerTotalsData,
     fromSeason: string,
     toSeason: string,
 ): PlayerStatsData => {
-    const statistics = getStatistics(careerTotals);
-
     return {
         season: `${fromSeason} - ${toSeason}`,
-        minutesPlayed: formatNumber(
-            sumStatistics(statistics, (statistic) => statistic.games.minutes),
-        ),
+        minutesPlayed: EMPTY_VALUE,
         seasonStats: [
             {
                 label: "Matches",
-                value: formatNumber(
-                    sumStatistics(statistics, (statistic) => statistic.games.appearences),
-                ),
+                value: EMPTY_VALUE,
             },
             {
                 label: "Assists",
-                value: formatNumber(
-                    sumStatistics(statistics, (statistic) => statistic.goals.assists),
-                ),
+                value: EMPTY_VALUE,
             },
             {
                 label: "Goals",
-                value: formatNumber(
-                    sumStatistics(statistics, (statistic) => statistic.goals.total),
-                ),
+                value: EMPTY_VALUE,
             },
         ],
-        performanceGroups: buildPerformanceGroups(statistics),
+        performanceGroups: buildUnavailablePerformanceGroups(),
     };
-};
-
-const getCareerGroupTitle = (item: SeasonStatisticItem) => {
-    const teamName = normalizeName(item.statistic.team.name);
-    const nationality = normalizeName(item.nationality);
-
-    return teamName && nationality && teamName === nationality
-        ? "National Team"
-        : "Senior Career";
 };
 
 export const mapPlayerCareerGroups = (
     careerTotals: PlayerCareerTotalsData,
 ): PlayerCareerGroup[] => {
-    const statistics = getStatistics(careerTotals);
-    const aggregatedItems = new Map<string, CareerAggregateItem>();
+    const seniorCareerItems = mapCareerItems(careerTotals.seniorCareer.items);
+    const nationalTeamItems = mapCareerItems(careerTotals.nationalTeams);
 
-    statistics.forEach((item) => {
-        const matches = getNumber(item.statistic.games.appearences);
-        const goals = getNumber(item.statistic.goals.total);
+    const groups: PlayerCareerGroup[] = [];
 
-        if (matches === 0 && goals === 0) {
-            return;
-        }
-
-        const title = getCareerGroupTitle(item);
-        const key = `${title}-${item.statistic.team.id}`;
-
-        const existingItem = aggregatedItems.get(key);
-
-        if (existingItem) {
-            existingItem.fromSeason = Math.min(existingItem.fromSeason, item.season);
-            existingItem.toSeason = Math.max(existingItem.toSeason, item.season);
-            existingItem.matches += matches;
-            existingItem.goals += goals;
-            return;
-        }
-
-        aggregatedItems.set(key, {
-            id: key,
-            title,
-            club: item.statistic.team.name,
-            fromSeason: item.season,
-            toSeason: item.season,
-            matches,
-            goals,
+    if (seniorCareerItems.length > 0) {
+        groups.push({
+            id: "senior-career",
+            title: "Senior Career",
+            items: seniorCareerItems,
         });
-    });
+    }
 
-    const groupedItems = new Map<string, PlayerCareerGroup>();
-
-    Array.from(aggregatedItems.values())
-        .sort((firstItem, secondItem) => secondItem.toSeason - firstItem.toSeason)
-        .forEach((item) => {
-            const careerItem = {
-                id: item.id,
-                club: item.club,
-                period:
-                    item.fromSeason === item.toSeason
-                        ? String(item.fromSeason)
-                        : `${item.fromSeason} - ${item.toSeason}`,
-                stats: [
-                    {
-                        label: "Matches Played",
-                        value: formatNumber(item.matches),
-                    },
-                    {
-                        label: "Goals",
-                        value: formatNumber(item.goals),
-                    },
-                ],
-            };
-
-            const existingGroup = groupedItems.get(item.title);
-
-            if (existingGroup) {
-                existingGroup.items.push(careerItem);
-                return;
-            }
-
-            groupedItems.set(item.title, {
-                id: item.title.toLowerCase().replaceAll(" ", "-"),
-                title: item.title,
-                items: [careerItem],
-            });
+    if (nationalTeamItems.length > 0) {
+        groups.push({
+            id: "national-team",
+            title: "National Team",
+            items: nationalTeamItems,
         });
+    }
 
-    return Array.from(groupedItems.values());
+    return groups;
 };
