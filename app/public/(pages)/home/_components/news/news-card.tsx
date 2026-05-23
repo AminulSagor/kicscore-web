@@ -1,7 +1,7 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { NewsArticle } from "@/types/news/news.types";
-import Link from "next/link";
 import { getValidImage } from "@/utils/image/image.utils";
 
 interface NewsCardProps {
@@ -11,10 +11,14 @@ interface NewsCardProps {
 export default function NewsCard({ item }: NewsCardProps) {
   const imageUrl = getValidImage(item.imageUrl);
   const source = item.source || "KICScore";
+  const href = `/public/news/${item.uuid}`;
 
   return (
     <article>
-      <div className="relative h-[180px] overflow-hidden rounded-2xl bg-[#EAF3EF] dark:bg-white/5">
+      <Link
+        href={href}
+        className="relative block h-[180px] overflow-hidden rounded-2xl bg-[#EAF3EF] dark:bg-white/5"
+      >
         <Image
           src={imageUrl}
           alt={item.title}
@@ -22,11 +26,11 @@ export default function NewsCard({ item }: NewsCardProps) {
           unoptimized
           className="object-cover"
         />
-      </div>
+      </Link>
 
       <Link
-        href={`/public/news/${item.uuid}`}
-        className="mt-4 text-base font-bold leading-7 text-[#10201B] dark:text-white"
+        href={href}
+        className="mt-4 block text-base font-bold leading-7 text-[#10201B] dark:text-white"
       >
         {item.title}
       </Link>
