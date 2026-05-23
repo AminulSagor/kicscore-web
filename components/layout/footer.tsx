@@ -1,14 +1,78 @@
-import { IMAGE } from "@/constants/image.path";
-import { Play } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
+
+import FooterHomeTopLink from "@/components/layout/footer-home-top-link";
+import { IMAGE } from "@/constants/image.path";
+
+type FooterLink = {
+  name: string;
+  url: string;
+  scrollToHomeTop?: boolean;
+};
+
+type FooterSection = {
+  title: string;
+  links: FooterLink[];
+};
+
+const footerSections: FooterSection[] = [
+  {
+    title: "Explore",
+    links: [
+      {
+        name: "Matches",
+        url: "/public/home",
+        scrollToHomeTop: true,
+      },
+      {
+        name: "News",
+        url: "/public/news",
+      },
+      {
+        name: "Leagues",
+        url: "/public/home",
+        scrollToHomeTop: true,
+      },
+    ],
+  },
+  {
+    title: "Popular Leagues",
+    links: [
+      { name: "Premier League", url: "/public/league-details/39" },
+      { name: "La Liga", url: "/public/league-details/140" },
+      { name: "Serie A", url: "/public/league-details/135" },
+      { name: "Bundesliga", url: "/public/league-details/78" },
+      { name: "Champions League", url: "/public/league-details/2" },
+    ],
+  },
+  {
+    title: "Kicscore",
+    links: [
+      // { name: "About Us", url: "#" },
+      { name: "Privacy Policy", url: "/public/privacy-policy" },
+      { name: "Terms of Service", url: "/public/terms-condition" },
+      // { name: "Cookie Policy", url: "#" },
+      // { name: "Data Settings", url: "#" },
+    ],
+  },
+];
+
+const socialLinks = [
+  { icon: FaInstagram, label: "Instagram" },
+  { icon: FaFacebookF, label: "Facebook" },
+  { icon: FaXTwitter, label: "X" },
+];
+
+const footerLinkClassName =
+  "text-sm transition hover:text-[#008A63] dark:hover:text-[#79e2c5]";
 
 const Footer = () => {
   return (
     <footer className="w-full">
       <div className="mx-auto w-full border-t border-[#D8E7DF] bg-white/90 pt-16 pb-7 text-[#0B1F1A] padding-x dark:border-transparent dark:bg-[#091716] dark:text-white">
-        <div className="grid grid-cols-1 gap-12 border-b border-[#D8E7DF] pb-14 md:grid-cols-2 lg:grid-cols-5 dark:border-white/5">
+        <div className="grid grid-cols-1 gap-12 border-b border-[#D8E7DF] pb-14 md:grid-cols-2 lg:grid-cols-4 dark:border-white/5">
           <div className="max-w-[280px]">
             <h2 className="text-[18px] font-semibold tracking-tight text-[#008A63] dark:text-[#79e2c5]">
               KICSCORE
@@ -23,13 +87,16 @@ const Footer = () => {
               Get The App
             </h3>
 
-            <button className="mt-5 flex items-center gap-3 rounded-full border border-[#D8E7DF] bg-white px-5 py-3 shadow-[0_10px_30px_rgba(16,32,27,0.08)] transition hover:border-[#008A63]/30 hover:bg-[#F8FBFA] dark:border-transparent dark:bg-white/6 dark:shadow-none dark:hover:bg-white/10">
+            <button
+              type="button"
+              className="mt-5 flex items-center gap-3 rounded-full border border-[#D8E7DF] bg-white px-5 py-3 shadow-[0_10px_30px_rgba(16,32,27,0.08)] transition hover:border-[#008A63]/30 hover:bg-[#F8FBFA] dark:border-transparent dark:bg-white/6 dark:shadow-none dark:hover:bg-white/10"
+            >
               <div className="flex h-9 w-9 items-center justify-center">
                 <Image
                   src={IMAGE.playStoreIcon}
                   height={24}
                   width={24}
-                  alt={"playStoreIcon"}
+                  alt="playStoreIcon"
                 />
               </div>
 
@@ -44,57 +111,34 @@ const Footer = () => {
             </button>
           </div>
 
-          {[
-            { title: "Explore", links: ["Matches", "News", "Leagues"] },
-            {
-              title: "Popular Leagues",
-              links: [
-                "Premier League",
-                "La Liga",
-                "Serie A",
-                "Bundesliga",
-                "Champions League",
-              ],
-            },
-            { title: "Kicscore", links: ["About Us"] },
-          ].map((section) => (
+          {footerSections.map((section) => (
             <div key={section.title}>
               <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0B1F1A] dark:text-white">
                 {section.title}
               </h3>
 
               <div className="mt-8 flex flex-col gap-5 text-[#61736D] dark:text-white/70">
-                {section.links.map((link) => (
-                  <a
-                    key={link}
-                    href="#"
-                    className="text-sm transition hover:text-[#008A63] dark:hover:text-[#79e2c5]"
-                  >
-                    {link}
-                  </a>
-                ))}
+                {section.links.map((link) =>
+                  link.scrollToHomeTop ? (
+                    <FooterHomeTopLink
+                      key={link.name}
+                      className={footerLinkClassName}
+                    >
+                      {link.name}
+                    </FooterHomeTopLink>
+                  ) : (
+                    <Link
+                      key={link.name}
+                      href={link.url}
+                      className={footerLinkClassName}
+                    >
+                      {link.name}
+                    </Link>
+                  ),
+                )}
               </div>
             </div>
           ))}
-
-          <div>
-            <div className="mt-0 flex flex-col gap-5 text-[#61736D] lg:mt-10 dark:text-white/70">
-              {[
-                { name: "Privacy Policy", url: "/public/privacy-policy" },
-                { name: "Terms of Service", url: "/public/terms-condition" },
-                { name: "Cookie Policy", url: "#" },
-                { name: "Data Settings", url: "#" },
-              ].map((link) => (
-                <a
-                  key={link.name}
-                  href={link.url}
-                  className="text-sm transition hover:text-[#008A63] dark:hover:text-[#79e2c5]"
-                >
-                  {link.name}
-                </a>
-              ))}
-            </div>
-          </div>
         </div>
 
         <div className="flex flex-col gap-5 pt-7 text-[#61736D] md:flex-row md:items-center md:justify-between dark:text-white/60">
@@ -105,11 +149,7 @@ const Footer = () => {
               Follow Us on
             </span>
 
-            {[
-              { icon: FaInstagram, label: "Instagram" },
-              { icon: FaFacebookF, label: "Facebook" },
-              { icon: FaXTwitter, label: "X" },
-            ].map(({ icon: Icon, label }) => (
+            {socialLinks.map(({ icon: Icon, label }) => (
               <a
                 key={label}
                 href="#"
