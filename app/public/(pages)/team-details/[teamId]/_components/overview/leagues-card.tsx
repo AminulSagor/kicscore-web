@@ -1,8 +1,24 @@
 import Image from "next/image";
-import Card from "@/components/UI/cards/card";
-import { leagues } from "@/mock/team-details/team-overview.mock.data";
 
-export default function LeaguesCard() {
+import Card from "@/components/UI/cards/card";
+import type { TeamLeagueItem } from "@/types/football/teams/team.leagues.types";
+import { getValidImage } from "@/utils/image/image.utils";
+
+type Props = {
+  leagues: TeamLeagueItem[];
+};
+
+const getSeasonLabel = (league: TeamLeagueItem) => {
+  const season = league.seasons[0];
+
+  if (!season) {
+    return "-";
+  }
+
+  return `${season.year}/${season.year + 1}`;
+};
+
+export default function LeaguesCard({ leagues }: Props) {
   return (
     <Card
       variant="white"
@@ -17,13 +33,13 @@ export default function LeaguesCard() {
       <div className="space-y-3 p-4">
         {leagues.map((league) => (
           <div
-            key={league.id}
+            key={league.league.id}
             className="flex items-center gap-4 rounded-2xl bg-[#F3F7F5] p-4 dark:bg-dark-green"
           >
             <div className="relative h-12 w-12 overflow-hidden rounded-full border border-mint-green">
               <Image
-                src={league.logo}
-                alt={league.name}
+                src={getValidImage(league.league.logo)}
+                alt={league.league.name}
                 fill
                 sizes="48px"
                 className="object-cover"
@@ -31,9 +47,9 @@ export default function LeaguesCard() {
             </div>
 
             <div>
-              <p className="text-sm font-bold">{league.name}</p>
+              <p className="text-sm font-bold">{league.league.name}</p>
               <p className="text-xs text-[#6B7A75] dark:text-white/40">
-                {league.season}
+                {getSeasonLabel(league)}
               </p>
             </div>
           </div>
