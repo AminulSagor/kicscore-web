@@ -47,9 +47,9 @@ export default function MatchDetailsHeader({
       <div className="flex items-center justify-between">
         <BackArrowButton />
 
-        <Button type="button" size="base" rounded="full" className="px-7">
+        {/* <Button type="button" size="base" rounded="full" className="px-7">
           {follow?.isFollowed ? "Following" : "Follow"}
-        </Button>
+        </Button> */}
       </div>
 
       <div className="relative mt-8">
