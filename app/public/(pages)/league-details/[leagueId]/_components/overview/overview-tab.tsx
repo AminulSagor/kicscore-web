@@ -23,14 +23,17 @@ export default function OverviewTab({
         <div className="min-w-0 space-y-5 lg:space-y-6">
           <StandingsTable teams={standings} />
 
-          <div className="grid gap-5 md:grid-cols-2 lg:gap-6">
+          {/* <div className="grid gap-5 md:grid-cols-2 lg:gap-6">
             <RankingCard title="Top Scorers" players={topScorers} />
             <RankingCard title="Top Assists" players={topAssists} />
-          </div>
+          </div> */}
         </div>
 
-        <div className="min-w-0 xl:sticky xl:top-20">
-          <TeamOfWeekCard team={teamOfWeekMockData} />
+        <div className="min-w-0 xl:sticky xl:top-20 flex flex-col gap-5">
+          {/* <TeamOfWeekCard team={teamOfWeekMockData} /> */}
+
+          <RankingCard title="Top Scorers" players={topScorers} />
+          <RankingCard title="Top Assists" players={topAssists} />
         </div>
       </div>
     </div>
