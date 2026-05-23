@@ -1,14 +1,15 @@
+import HeadToHeadTab from "@/app/public/(pages)/match-details/[matchId]/_components/head-to-head/head-to-head-tab";
 import LineupTab from "@/app/public/(pages)/match-details/[matchId]/_components/lineup/lineup-tab";
 import StatsTab from "@/app/public/(pages)/match-details/[matchId]/_components/stats/stats-tab";
-import HeadToHeadTab from "@/app/public/(pages)/match-details/[matchId]/_components/head-to-head/head-to-head-tab";
-import { getMatchDetails } from "@/service/football/matches/match.details.service";
 import { getMatchHeadToHead } from "@/service/football/matches/match.head-to-head.service";
+import { getMatchDetails } from "@/service/football/matches/match.details.service";
+import { getUpcomingFixtures } from "@/service/football/fixtures/upcoming.fixtures.service";
 
 import FactsTab from "./_components/facts/facts-tab";
 import MatchDetailsHeader from "./_components/match-details-header";
 import MatchDetailsTabs from "./_components/match-details-tabs";
 
-//props type
+//======= Props Type =======//
 type MatchDetailsPageProps = {
   params: Promise<{
     matchId: string;
@@ -18,7 +19,7 @@ type MatchDetailsPageProps = {
   }>;
 };
 
-//===== Main Component =====//
+//======= Main Component =======//
 export default async function MatchDetailsPage({
   params,
   searchParams,
@@ -41,6 +42,9 @@ export default async function MatchDetailsPage({
     );
   }
 
+  const nextMatches =
+    activeTab === "facts" ? (await getUpcomingFixtures(2)).data.response : [];
+
   const headToHeadMatches =
     activeTab === "head-to-head"
       ? await getMatchHeadToHead({
@@ -56,9 +60,13 @@ export default async function MatchDetailsPage({
         <MatchDetailsHeader match={match} follow={follow} />
         <MatchDetailsTabs />
 
-        {activeTab === "facts" && <FactsTab match={match} />}
+        {activeTab === "facts" && (
+          <FactsTab match={match} nextMatches={nextMatches} />
+        )}
+
         {activeTab === "lineup" && <LineupTab match={match} />}
         {activeTab === "stats" && <StatsTab match={match} />}
+
         {activeTab === "head-to-head" && (
           <HeadToHeadTab match={match} matches={headToHeadMatches} />
         )}
