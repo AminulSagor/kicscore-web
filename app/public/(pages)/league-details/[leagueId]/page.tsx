@@ -1,21 +1,25 @@
 import LeagueDetailsHeader from "./_components/league-details-header";
 import LeagueDetailsTabs from "./_components/league-details-tabs";
+import FixturesTab from "./_components/fixtures/fixtures-tab";
 import OverviewTab from "./_components/overview/overview-tab";
-import TableTab from "@/app/public/(pages)/league-details/[leagueId]/_components/table/table.tab";
-import FixturesTab from "@/app/public/(pages)/league-details/[leagueId]/_components/fixtures/fixtures-tab";
-import PlayerStatsTab from "@/app/public/(pages)/league-details/[leagueId]/_components/player-stats/player-stats-tab";
-import TeamStatsTab from "@/app/public/(pages)/league-details/[leagueId]/_components/team-stats/team-stats-tab";
+import PlayerStatsTab from "./_components/player-stats/player-stats-tab";
+import TableTab from "./_components/table/table.tab";
+import TeamStatsTab from "./_components/team-stats/team-stats-tab";
+
+import {
+  DEFAULT_PLAYER_STATS_LIMIT,
+  PLAYER_STATS_CATEGORIES,
+  PLAYER_STATS_END_CHECK_OFFSET,
+} from "@/app/public/(pages)/league-details/_utils/player-stats.utils";
 import { getLeagueFixtures } from "@/service/football/fixtures/league.fixtures.service";
 import { getLeagueDetails } from "@/service/football/leagues/league.details.service";
+import { getLeaguePlayerStats } from "@/service/football/leagues/league.player-stats.service";
 import {
   getLeagueTopAssists,
   getLeagueTopScorers,
 } from "@/service/football/leagues/league.rankings.service";
 import { getLeagueStandings } from "@/service/football/leagues/league.standing.service";
-import {
-  DEFAULT_PLAYER_STATS_LIMIT,
-  PLAYER_STATS_END_CHECK_OFFSET,
-} from "@/app/public/(pages)/league-details/_utils/player-stats.utils";
+
 type LeagueDetailsPageProps = {
   params: Promise<{
     leagueId: string;
@@ -44,7 +48,7 @@ const getValidPlayerStatsLimit = (limit?: string) => {
   return parsedLimit;
 };
 
-export default async function page({
+export default async function Page({
   params,
   searchParams,
 }: LeagueDetailsPageProps) {
@@ -81,38 +85,56 @@ export default async function page({
   const shouldFetchFixtures = activeTab === "fixtures";
   const shouldFetchPlayerRankings =
     activeTab === "overview" || activeTab === "player-stats";
+  const shouldFetchCategoryPlayerStats = activeTab === "player-stats";
 
-  const [standings, topScorers, topAssists, fixtureData] = await Promise.all([
-    shouldFetchStandings
-      ? getLeagueStandings(leagueId, selectedSeason)
-      : Promise.resolve([]),
+  const categoryPlayerStatsPromise = shouldFetchCategoryPlayerStats
+    ? Promise.all(
+        PLAYER_STATS_CATEGORIES.map((category) =>
+          getLeaguePlayerStats({
+            leagueId,
+            season: selectedSeason,
+            category,
+            page: 1,
+            limit: playerRankingRequestLimit,
+          }),
+        ),
+      )
+    : Promise.resolve([]);
 
-    shouldFetchPlayerRankings
-      ? getLeagueTopScorers({
-          leagueId,
-          season: selectedSeason,
-          limit: playerRankingRequestLimit,
-        })
-      : Promise.resolve([]),
+  const [standings, topScorers, topAssists, fixtureData, categoryPlayerStats] =
+    await Promise.all([
+      shouldFetchStandings
+        ? getLeagueStandings(leagueId, selectedSeason)
+        : Promise.resolve([]),
 
-    shouldFetchPlayerRankings
-      ? getLeagueTopAssists({
-          leagueId,
-          season: selectedSeason,
-          limit: playerRankingRequestLimit,
-        })
-      : Promise.resolve([]),
+      shouldFetchPlayerRankings
+        ? getLeagueTopScorers({
+            leagueId,
+            season: selectedSeason,
+            limit: playerRankingRequestLimit,
+          })
+        : Promise.resolve([]),
 
-    shouldFetchFixtures
-      ? getLeagueFixtures({
-          leagueId,
-          season: selectedSeason,
-          page: fixturePage,
-          limit: fixtureLimit,
-          date: fixtureDate,
-        })
-      : Promise.resolve(null),
-  ]);
+      shouldFetchPlayerRankings
+        ? getLeagueTopAssists({
+            leagueId,
+            season: selectedSeason,
+            limit: playerRankingRequestLimit,
+          })
+        : Promise.resolve([]),
+
+      shouldFetchFixtures
+        ? getLeagueFixtures({
+            leagueId,
+            season: selectedSeason,
+            page: fixturePage,
+            limit: fixtureLimit,
+            date: fixtureDate,
+          })
+        : Promise.resolve(null),
+
+      categoryPlayerStatsPromise,
+    ]);
 
   return (
     <main>
@@ -148,6 +170,7 @@ export default async function page({
           <PlayerStatsTab
             topScorers={topScorers}
             topAssists={topAssists}
+            categoryPlayerStats={categoryPlayerStats}
             playerStatsLimit={playerStatsLimit}
           />
         )}

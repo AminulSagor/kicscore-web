@@ -1,34 +1,33 @@
 "use client";
 
-import Link from "next/link";
 import { ChevronDown, ChevronLeft } from "lucide-react";
+import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 
-import Button from "@/components/UI/buttons/button";
-import CustomSelect from "@/components/UI/select/custom-select";
-import type { LeagueRankingPlayer } from "@/types/football/leagues/league.rankings";
 import {
   getPlayerStatById,
-  PLAYER_STAT_OPTIONS,
+  getPlayerStatOptions,
   PLAYER_STATS_LIMIT_STEP,
   type PlayerStatId,
+  type PlayerStatViewData,
 } from "@/app/public/(pages)/league-details/_utils/player-stats.utils";
-import PlayerStatRankingTable from "./player-stat-ranking-table";
+import Button from "@/components/UI/buttons/button";
 import ButtonLoader from "@/components/UI/loaders/button-loader";
+import CustomSelect from "@/components/UI/select/custom-select";
+
+import PlayerStatRankingTable from "./player-stat-ranking-table";
 
 type PlayerStatDetailsProps = {
   selectedStatId: string | null;
-  topScorers: LeagueRankingPlayer[];
-  topAssists: LeagueRankingPlayer[];
+  playerStats: PlayerStatViewData[];
   playerStatsLimit: number;
   hasMore: boolean;
 };
 
 export default function PlayerStatDetails({
   selectedStatId,
-  topScorers,
-  topAssists,
+  playerStats,
   playerStatsLimit,
   hasMore,
 }: PlayerStatDetailsProps) {
@@ -39,10 +38,10 @@ export default function PlayerStatDetails({
 
   const selectedStat = getPlayerStatById({
     statId: selectedStatId,
-    topScorers,
-    topAssists,
+    playerStats,
   });
 
+  const playerStatOptions = getPlayerStatOptions(playerStats);
   const basePath = `/public/league-details/${params.leagueId}`;
 
   //======= Build Player Stats URL =======//
@@ -118,7 +117,7 @@ export default function PlayerStatDetails({
 
         <CustomSelect<PlayerStatId>
           value={selectedStat.id}
-          options={PLAYER_STAT_OPTIONS}
+          options={playerStatOptions}
           onChange={handleStatChange}
         />
       </div>

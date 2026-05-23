@@ -1,10 +1,22 @@
+import type { LeaguePlayerStatsCategory } from "@/types/football/leagues/league.player-stats.types";
 import type { LeagueRankingPlayer } from "@/types/football/leagues/league.rankings";
 
-export type PlayerStatId = "top-scorers" | "top-assists";
+export type PlayerStatId =
+  | "top-scorers"
+  | "top-assists"
+  | `${LeaguePlayerStatsCategory}:${string}`;
 
 export const DEFAULT_PLAYER_STATS_LIMIT = 5;
 export const PLAYER_STATS_LIMIT_STEP = 5;
 export const PLAYER_STATS_END_CHECK_OFFSET = 1;
+
+export const PLAYER_STATS_CATEGORIES: LeaguePlayerStatsCategory[] = [
+  "attack",
+  "minutes",
+  "defense",
+  "goalkeeping",
+  "discipline",
+];
 
 export interface PlayerStatViewData {
   id: PlayerStatId;
@@ -14,41 +26,33 @@ export interface PlayerStatViewData {
 
 interface GetPlayerStatByIdParams {
   statId: string | null;
-  topScorers: LeagueRankingPlayer[];
-  topAssists: LeagueRankingPlayer[];
+  playerStats: PlayerStatViewData[];
 }
-
-export const PLAYER_STAT_OPTIONS: {
-  label: string;
-  value: PlayerStatId;
-}[] = [
-  {
-    label: "Top Scorers",
-    value: "top-scorers",
-  },
-  {
-    label: "Top Assists",
-    value: "top-assists",
-  },
-];
 
 //======= Get Player Stat By ID =======//
 export const getPlayerStatById = ({
   statId,
-  topScorers,
-  topAssists,
+  playerStats,
 }: GetPlayerStatByIdParams): PlayerStatViewData => {
-  if (statId === "top-assists") {
-    return {
-      id: "top-assists",
-      title: "Top Assists",
-      players: topAssists,
-    };
+  const selectedStat = playerStats.find((stat) => stat.id === statId);
+
+  if (selectedStat) {
+    return selectedStat;
   }
 
-  return {
-    id: "top-scorers",
-    title: "Top Scorers",
-    players: topScorers,
-  };
+  return (
+    playerStats[0] ?? {
+      id: "top-scorers",
+      title: "Top Scorers",
+      players: [],
+    }
+  );
+};
+
+//======= Get Player Stat Select Options =======//
+export const getPlayerStatOptions = (playerStats: PlayerStatViewData[]) => {
+  return playerStats.map((stat) => ({
+    label: stat.title,
+    value: stat.id,
+  }));
 };
