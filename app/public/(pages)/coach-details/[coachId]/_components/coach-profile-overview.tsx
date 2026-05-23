@@ -1,8 +1,8 @@
 import Card from "@/components/UI/cards/card";
-import type { CoachDetailsMock } from "@/mock/coach-details/coach-details.mock.types";
+import type { CoachDetails } from "@/types/football/coaches/coach.types";
 
 type CoachProfileOverviewProps = {
-  coach: CoachDetailsMock;
+  coach: CoachDetails;
 };
 
 const CoachProfileOverview = ({ coach }: CoachProfileOverviewProps) => {
@@ -21,19 +21,17 @@ const CoachProfileOverview = ({ coach }: CoachProfileOverviewProps) => {
               padding="none"
               rounded="xl"
               shadow="none"
-              className={`px-4 py-4 ${
-                index === 0
-                  ? "bg-secondary text-white"
-                  : "bg-[#EAF3EF] text-[#10201B] dark:bg-[#1F2B27] dark:text-white"
-              }`}
+              className={`px-4 py-4 ${index === 0
+                ? "bg-secondary text-white"
+                : "bg-[#EAF3EF] text-[#10201B] dark:bg-[#1F2B27] dark:text-white"
+                }`}
             >
               <p className="text-base font-bold">{stat.value}</p>
               <p
-                className={`mt-1 text-xs ${
-                  index === 0
-                    ? "text-white/75"
-                    : "text-[#6B7A75] dark:text-white/45"
-                }`}
+                className={`mt-1 text-xs ${index === 0
+                  ? "text-white/75"
+                  : "text-[#6B7A75] dark:text-white/45"
+                  }`}
               >
                 {stat.label}
               </p>
@@ -82,11 +80,10 @@ const CoachProfileOverview = ({ coach }: CoachProfileOverviewProps) => {
 
                 <div className="h-2 rounded-full bg-[#DDE8E3] dark:bg-[#101C18]">
                   <div
-                    className={`h-full rounded-full ${
-                      rating.label === "Losses"
-                        ? "bg-[#FF6B6B]"
-                        : "bg-[#34D399]"
-                    }`}
+                    className={`h-full rounded-full ${rating.label === "Losses"
+                      ? "bg-[#FF6B6B]"
+                      : "bg-[#34D399]"
+                      }`}
                     style={{ width: `${rating.value}%` }}
                   />
                 </div>

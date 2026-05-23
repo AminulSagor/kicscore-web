@@ -1,7 +1,7 @@
-import type { PlayerDetailsMock } from "@/mock/player-details/player-details.mock.types";
+import type { PlayerDetails } from "@/types/football/players/player.types";
 
 type PlayerProfileOverviewProps = {
-    player: PlayerDetailsMock;
+    player: PlayerDetails;
 };
 
 const PlayerProfileOverview = ({ player }: PlayerProfileOverviewProps) => {
@@ -37,7 +37,7 @@ const PlayerProfileOverview = ({ player }: PlayerProfileOverviewProps) => {
             </div>
 
             <p className="mt-5 text-center text-[11px] text-[#61736D] dark:text-white/65">
-                Squad Pro League 2025/2026
+                {player.competitionLabel}
             </p>
 
             <div className="mt-4 grid grid-cols-3 gap-3">

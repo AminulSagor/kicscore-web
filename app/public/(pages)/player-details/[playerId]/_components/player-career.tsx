@@ -1,7 +1,7 @@
-import type { PlayerCareerGroupMock } from "@/mock/player-details/player-details.mock.types";
+import type { PlayerCareerGroup } from "@/types/football/players/player.types";
 
 type PlayerCareerProps = {
-    careerGroups: PlayerCareerGroupMock[];
+    careerGroups: PlayerCareerGroup[];
 };
 
 const PlayerCareer = ({ careerGroups }: PlayerCareerProps) => {

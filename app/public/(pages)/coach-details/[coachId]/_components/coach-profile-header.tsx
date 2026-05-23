@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-import type { CoachDetailsMock } from "@/mock/coach-details/coach-details.mock.types";
+import type { CoachDetails } from "@/types/football/coaches/coach.types";
 import BackArrowButton from "@/components/UI/buttons/back-arrow-button";
 import {
   followEntity,
@@ -16,14 +16,14 @@ import { getOrCreateInstallationId } from "@/utils/device/installation-id.utils"
 import { authStore } from "@/z_store/auth/auth.store";
 
 type CoachProfileHeaderProps = {
-  coach: CoachDetailsMock;
+  coach: CoachDetails;
 };
 
 const CoachProfileHeader = ({ coach }: CoachProfileHeaderProps) => {
   const loggedIn = authStore((state) => state.loggedIn);
   const authHydrated = authStore((state) => state.authHydrated);
 
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(coach.isFollowed);
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingStatus, setIsCheckingStatus] = useState(false);
 
@@ -46,7 +46,7 @@ const CoachProfileHeader = ({ coach }: CoachProfileHeaderProps) => {
 
         setIsFollowing(response.data.followed);
       } catch {
-        setIsFollowing(false);
+        setIsFollowing(coach.isFollowed);
       } finally {
         setIsCheckingStatus(false);
       }

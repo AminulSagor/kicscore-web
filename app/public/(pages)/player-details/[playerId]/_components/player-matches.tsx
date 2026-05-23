@@ -1,11 +1,19 @@
-import type { PlayerMatchGroupMock } from "@/mock/player-details/player-details.mock.types";
 import { ChevronDown } from "lucide-react";
+import Link from "next/link";
+
+import type { PlayerMatchGroup } from "@/types/football/players/player.types";
 
 type PlayerMatchesProps = {
-    matchGroups: PlayerMatchGroupMock[];
+    matchGroups: PlayerMatchGroup[];
+    hasMore: boolean;
+    loadMoreHref?: string;
 };
 
-const PlayerMatches = ({ matchGroups }: PlayerMatchesProps) => {
+const PlayerMatches = ({
+    matchGroups,
+    hasMore,
+    loadMoreHref,
+}: PlayerMatchesProps) => {
     return (
         <section className="mt-8 space-y-5">
             {matchGroups.map((group) => (
@@ -65,10 +73,24 @@ const PlayerMatches = ({ matchGroups }: PlayerMatchesProps) => {
             ))}
 
             <div className="flex justify-center pt-2">
-                <button className="inline-flex items-center gap-2 rounded-full bg-[#0B8F68] px-5 py-2 text-xs font-bold text-white transition hover:bg-[#0A7C58]">
-                    Load More
-                    <ChevronDown className="h-4 w-4" />
-                </button>
+                {hasMore && loadMoreHref ? (
+                    <Link
+                        href={loadMoreHref}
+                        className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#0B8F68] px-5 py-2 text-xs font-bold text-white transition hover:bg-[#0A7C58]"
+                    >
+                        Load More
+                        <ChevronDown className="h-4 w-4" />
+                    </Link>
+                ) : (
+                    <button
+                        type="button"
+                        disabled
+                        className="inline-flex cursor-not-allowed items-center gap-2 rounded-full bg-[#0B8F68] px-5 py-2 text-xs font-bold text-white transition"
+                    >
+                        Load More
+                        <ChevronDown className="h-4 w-4" />
+                    </button>
+                )}
             </div>
         </section>
     );

@@ -1,7 +1,7 @@
-import type { PlayerTrophyMock } from "@/mock/player-details/player-details.mock.types";
+import type { PlayerTrophy } from "@/types/football/players/player.types";
 
 type PlayerTrophiesProps = {
-    trophies: PlayerTrophyMock[];
+    trophies: PlayerTrophy[];
 };
 
 const PlayerTrophies = ({ trophies }: PlayerTrophiesProps) => {

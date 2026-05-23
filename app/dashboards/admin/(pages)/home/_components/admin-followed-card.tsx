@@ -1,4 +1,5 @@
 import { CircleGauge } from "lucide-react";
+import Link from "next/link";
 
 import Card from "@/components/UI/cards/card";
 
@@ -11,11 +12,15 @@ interface FollowedItem {
 interface AdminFollowedCardProps {
   title: string;
   items: FollowedItem[];
+  viewAllHref?: string;
+  showViewAll?: boolean;
 }
 
 export default function AdminFollowedCard({
   title,
   items,
+  viewAllHref,
+  showViewAll = true,
 }: AdminFollowedCardProps) {
   return (
     <Card
@@ -26,12 +31,24 @@ export default function AdminFollowedCard({
       <div className="mb-5 flex items-center justify-between">
         <h3 className="text-base font-bold">{title}</h3>
 
-        <button
-          type="button"
-          className="text-sm font-medium text-secondary transition hover:opacity-80 dark:text-mint-green"
-        >
-          View All
-        </button>
+        {showViewAll &&
+          (viewAllHref ? (
+            <Link
+              href={viewAllHref}
+              className="cursor-pointer text-sm font-medium text-secondary transition hover:opacity-80 dark:text-mint-green"
+            >
+              View All
+            </Link>
+          ) : (
+            <button
+              type="button"
+              disabled
+              aria-disabled="true"
+              className="cursor-not-allowed text-sm font-medium text-secondary dark:text-mint-green"
+            >
+              View All
+            </button>
+          ))}
       </div>
 
       <div className="space-y-4">

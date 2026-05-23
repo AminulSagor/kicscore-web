@@ -5,25 +5,25 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-import type { PlayerDetailsMock } from "@/mock/player-details/player-details.mock.types";
 import BackArrowButton from "@/components/UI/buttons/back-arrow-button";
 import {
   followEntity,
   getFollowStatus,
   unfollowEntity,
 } from "@/service/follows/follow.service";
+import type { PlayerDetails } from "@/types/football/players/player.types";
 import { getOrCreateInstallationId } from "@/utils/device/installation-id.utils";
 import { authStore } from "@/z_store/auth/auth.store";
 
 type PlayerProfileHeaderProps = {
-  player: PlayerDetailsMock;
+  player: PlayerDetails;
 };
 
 const PlayerProfileHeader = ({ player }: PlayerProfileHeaderProps) => {
   const loggedIn = authStore((state) => state.loggedIn);
   const authHydrated = authStore((state) => state.authHydrated);
 
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(player.isFollowed);
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingStatus, setIsCheckingStatus] = useState(false);
 
@@ -46,14 +46,14 @@ const PlayerProfileHeader = ({ player }: PlayerProfileHeaderProps) => {
 
         setIsFollowing(response.data.followed);
       } catch {
-        setIsFollowing(false);
+        setIsFollowing(player.isFollowed);
       } finally {
         setIsCheckingStatus(false);
       }
     };
 
     fetchFollowStatus();
-  }, [authHydrated, loggedIn, player.id]);
+  }, [authHydrated, loggedIn, player.id, player.isFollowed]);
 
   const handleFollowToggle = async () => {
     if (isLoading || isCheckingStatus) return;
