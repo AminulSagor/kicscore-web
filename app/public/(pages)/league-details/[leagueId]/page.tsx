@@ -11,6 +11,11 @@ import {
   PLAYER_STATS_CATEGORIES,
   PLAYER_STATS_END_CHECK_OFFSET,
 } from "@/app/public/(pages)/league-details/_utils/player-stats.utils";
+import {
+  DEFAULT_TEAM_STATS_LIMIT,
+  TEAM_STATS_CATEGORIES,
+  TEAM_STATS_END_CHECK_OFFSET,
+} from "@/app/public/(pages)/league-details/_utils/team-stats.utils";
 import { getLeagueFixtures } from "@/service/football/fixtures/league.fixtures.service";
 import { getLeagueDetails } from "@/service/football/leagues/league.details.service";
 import { getLeaguePlayerStats } from "@/service/football/leagues/league.player-stats.service";
@@ -19,6 +24,7 @@ import {
   getLeagueTopScorers,
 } from "@/service/football/leagues/league.rankings.service";
 import { getLeagueStandings } from "@/service/football/leagues/league.standing.service";
+import { getLeagueTeamStats } from "@/service/football/leagues/league.team-stats.service";
 
 type LeagueDetailsPageProps = {
   params: Promise<{
@@ -31,6 +37,8 @@ type LeagueDetailsPageProps = {
     fixtureDate?: string;
     stat?: string;
     playerStatsLimit?: string;
+    teamStat?: string;
+    teamStatsLimit?: string;
   }>;
 };
 
@@ -43,6 +51,20 @@ const getValidPlayerStatsLimit = (limit?: string) => {
     parsedLimit < DEFAULT_PLAYER_STATS_LIMIT
   ) {
     return DEFAULT_PLAYER_STATS_LIMIT;
+  }
+
+  return parsedLimit;
+};
+
+//======= Get Valid Team Stats Limit =======//
+const getValidTeamStatsLimit = (limit?: string) => {
+  const parsedLimit = Number(limit);
+
+  if (
+    !Number.isInteger(parsedLimit) ||
+    parsedLimit < DEFAULT_TEAM_STATS_LIMIT
+  ) {
+    return DEFAULT_TEAM_STATS_LIMIT;
   }
 
   return parsedLimit;
@@ -80,12 +102,23 @@ export default async function Page({
       ? playerStatsLimit + PLAYER_STATS_END_CHECK_OFFSET
       : DEFAULT_PLAYER_STATS_LIMIT;
 
+  const teamStatsLimit =
+    activeTab === "team-stats"
+      ? getValidTeamStatsLimit(queryParams?.teamStatsLimit)
+      : DEFAULT_TEAM_STATS_LIMIT;
+
+  const teamStatsRequestLimit =
+    activeTab === "team-stats"
+      ? teamStatsLimit + TEAM_STATS_END_CHECK_OFFSET
+      : DEFAULT_TEAM_STATS_LIMIT;
+
   const shouldFetchStandings =
     activeTab === "overview" || activeTab === "table";
   const shouldFetchFixtures = activeTab === "fixtures";
   const shouldFetchPlayerRankings =
     activeTab === "overview" || activeTab === "player-stats";
   const shouldFetchCategoryPlayerStats = activeTab === "player-stats";
+  const shouldFetchCategoryTeamStats = activeTab === "team-stats";
 
   const categoryPlayerStatsPromise = shouldFetchCategoryPlayerStats
     ? Promise.all(
@@ -101,40 +134,62 @@ export default async function Page({
       )
     : Promise.resolve([]);
 
-  const [standings, topScorers, topAssists, fixtureData, categoryPlayerStats] =
-    await Promise.all([
-      shouldFetchStandings
-        ? getLeagueStandings(leagueId, selectedSeason)
-        : Promise.resolve([]),
-
-      shouldFetchPlayerRankings
-        ? getLeagueTopScorers({
+  const categoryTeamStatsPromise = shouldFetchCategoryTeamStats
+    ? Promise.all(
+        TEAM_STATS_CATEGORIES.map((category) =>
+          getLeagueTeamStats({
             leagueId,
             season: selectedSeason,
-            limit: playerRankingRequestLimit,
-          })
-        : Promise.resolve([]),
+            category,
+            page: 1,
+            limit: teamStatsRequestLimit,
+          }),
+        ),
+      )
+    : Promise.resolve([]);
 
-      shouldFetchPlayerRankings
-        ? getLeagueTopAssists({
-            leagueId,
-            season: selectedSeason,
-            limit: playerRankingRequestLimit,
-          })
-        : Promise.resolve([]),
+  const [
+    standings,
+    topScorers,
+    topAssists,
+    fixtureData,
+    categoryPlayerStats,
+    categoryTeamStats,
+  ] = await Promise.all([
+    shouldFetchStandings
+      ? getLeagueStandings(leagueId, selectedSeason)
+      : Promise.resolve([]),
 
-      shouldFetchFixtures
-        ? getLeagueFixtures({
-            leagueId,
-            season: selectedSeason,
-            page: fixturePage,
-            limit: fixtureLimit,
-            date: fixtureDate,
-          })
-        : Promise.resolve(null),
+    shouldFetchPlayerRankings
+      ? getLeagueTopScorers({
+          leagueId,
+          season: selectedSeason,
+          limit: playerRankingRequestLimit,
+        })
+      : Promise.resolve([]),
 
-      categoryPlayerStatsPromise,
-    ]);
+    shouldFetchPlayerRankings
+      ? getLeagueTopAssists({
+          leagueId,
+          season: selectedSeason,
+          limit: playerRankingRequestLimit,
+        })
+      : Promise.resolve([]),
+
+    shouldFetchFixtures
+      ? getLeagueFixtures({
+          leagueId,
+          season: selectedSeason,
+          page: fixturePage,
+          limit: fixtureLimit,
+          date: fixtureDate,
+        })
+      : Promise.resolve(null),
+
+    categoryPlayerStatsPromise,
+
+    categoryTeamStatsPromise,
+  ]);
 
   return (
     <main>
@@ -175,7 +230,12 @@ export default async function Page({
           />
         )}
 
-        {activeTab === "team-stats" && <TeamStatsTab />}
+        {activeTab === "team-stats" && (
+          <TeamStatsTab
+            categoryTeamStats={categoryTeamStats}
+            teamStatsLimit={teamStatsLimit}
+          />
+        )}
       </div>
     </main>
   );

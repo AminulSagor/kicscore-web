@@ -1,7 +1,10 @@
-import type { TeamStatItem } from "@/mock/league-details/league-team-stats.mock.types";
+import Image from "next/image";
+import Link from "next/link";
+
+import type { LeagueTeamStatItem } from "@/types/football/leagues/league.team-stats.types";
 
 type TeamStatRankingTableProps = {
-  teams: TeamStatItem[];
+  teams: LeagueTeamStatItem[];
 };
 
 export default function TeamStatRankingTable({
@@ -25,18 +28,43 @@ export default function TeamStatRankingTable({
               {team.rank}
             </span>
 
-            <div className="flex min-w-0 items-center gap-3">
-              <div className="size-12 shrink-0 rounded-full border border-secondary bg-white/30 dark:bg-[#111d1a]" />
+            <Link
+              href={`/public/team-details/${team.id}`}
+              className="flex min-w-0 items-center gap-3"
+            >
+              <div className="relative size-12 shrink-0 overflow-hidden rounded-full border border-secondary bg-white/30 dark:bg-[#111d1a]">
+                {team.logo ? (
+                  <Image
+                    src={team.logo}
+                    alt={team.name}
+                    fill
+                    sizes="48px"
+                    className="object-contain p-1.5"
+                    unoptimized
+                  />
+                ) : (
+                  <span className="grid size-full place-items-center text-sm font-bold text-secondary">
+                    {team.name.charAt(0)}
+                  </span>
+                )}
+              </div>
+
               <h4 className="truncate text-sm font-bold text-[#10201B] dark:text-white">
                 {team.name}
               </h4>
-            </div>
+            </Link>
 
             <span className="text-right text-sm font-bold text-[#10201B] dark:text-white">
               {team.value}
             </span>
           </div>
         ))}
+
+        {teams.length === 0 && (
+          <div className="px-4 py-8 text-center text-sm font-semibold text-[#6B7A75] dark:text-white/45">
+            No team stats available.
+          </div>
+        )}
       </div>
     </div>
   );

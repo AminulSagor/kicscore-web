@@ -2,30 +2,70 @@
 
 import { useSearchParams } from "next/navigation";
 
-import { teamStatsMockData } from "@/mock/league-details/league-team-stats.mock.data";
+import { buildTeamStatViewData } from "@/app/public/(pages)/league-details/_utils/team-stats.mapper.utils";
+import {
+  getTeamStatById,
+  type TeamStatViewData,
+} from "@/app/public/(pages)/league-details/_utils/team-stats.utils";
+import { getTeamStatCardLayoutClassName } from "@/app/public/(pages)/league-details/_utils/team-stats-layout.utils";
+import type { LeagueTeamStatsData } from "@/types/football/leagues/league.team-stats.types";
+
 import TeamStatCard from "./team-stat-card";
 import TeamStatDetails from "./team-stat-details";
 
-function getCardClassName(layout: "full" | "half" | "third" | "quarter") {
-  if (layout === "full") return "lg:col-span-12";
-  if (layout === "half") return "lg:col-span-6";
-  if (layout === "third") return "lg:col-span-4";
-  return "lg:col-span-3";
-}
+type TeamStatsTabProps = {
+  categoryTeamStats: LeagueTeamStatsData[];
+  teamStatsLimit: number;
+};
 
-export default function TeamStatsTab() {
+export default function TeamStatsTab({
+  categoryTeamStats,
+  teamStatsLimit,
+}: TeamStatsTabProps) {
   const searchParams = useSearchParams();
-  const selectedStat = searchParams.get("teamStat");
+  const selectedStatId = searchParams.get("teamStat");
 
-  if (selectedStat) {
-    return <TeamStatDetails />;
+  const teamStats = buildTeamStatViewData({
+    categoryTeamStats,
+  });
+
+  const visibleTeamStats: TeamStatViewData[] = teamStats.map((stat) => ({
+    ...stat,
+    teams: stat.teams.slice(0, teamStatsLimit),
+  }));
+
+  const selectedStat = getTeamStatById({
+    statId: selectedStatId,
+    teamStats,
+  });
+
+  const selectedStatHasMore = selectedStat.teams.length > teamStatsLimit;
+
+  if (selectedStatId) {
+    return (
+      <TeamStatDetails
+        selectedStatId={selectedStatId}
+        teamStats={visibleTeamStats}
+        teamStatsLimit={teamStatsLimit}
+        hasMore={selectedStatHasMore}
+      />
+    );
   }
 
   return (
-    <div className="mt-6 grid gap-5 lg:grid-cols-12 lg:gap-6">
-      {teamStatsMockData.map((stat) => (
-        <div key={stat.id} className={getCardClassName(stat.layout)}>
-          <TeamStatCard stat={stat} />
+    <div className="mt-6 grid grid-cols-12 gap-5 lg:gap-6">
+      {visibleTeamStats.map((stat) => (
+        <div
+          key={stat.id}
+          className={getTeamStatCardLayoutClassName({
+            statId: stat.id,
+          })}
+        >
+          <TeamStatCard
+            title={stat.title}
+            statId={stat.id}
+            teams={stat.teams}
+          />
         </div>
       ))}
     </div>
