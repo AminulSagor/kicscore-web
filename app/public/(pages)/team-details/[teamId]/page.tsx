@@ -75,6 +75,7 @@ export default async function TeamDetailsPage({ params, searchParams }: Props) {
   const activeTab = queryParams.tab ?? "overview";
 
   const isOverviewTab = activeTab === "overview";
+  const isTableTab = activeTab === "table";
   const isMatchesTab = activeTab === "matches";
   const isSquadTab = activeTab === "squad";
   const isTrophiesTab = activeTab === "trophies";
@@ -110,14 +111,15 @@ export default async function TeamDetailsPage({ params, searchParams }: Props) {
     ? getTeamAbout(teamId)
     : Promise.resolve(null);
 
-  const leaguesPromise = isOverviewTab
-    ? getTeamLeagues({
-      teamId,
-      season,
-      page: DEFAULT_API_PAGE,
-      limit: DEFAULT_API_LIMIT,
-    })
-    : Promise.resolve(null);
+  const leaguesPromise =
+    isOverviewTab || isTableTab
+      ? getTeamLeagues({
+        teamId,
+        season,
+        page: DEFAULT_API_PAGE,
+        limit: DEFAULT_API_LIMIT,
+      })
+      : Promise.resolve(null);
 
   const coachesPromise = isSquadTab
     ? getTeamCoaches({
@@ -185,7 +187,7 @@ export default async function TeamDetailsPage({ params, searchParams }: Props) {
   let squadGroups: TeamSquadGroup[] = [];
   let trophies: TeamTrophy[] = [];
 
-  if (isOverviewTab && leaguesResponse) {
+  if ((isOverviewTab || isTableTab) && leaguesResponse) {
     leagues = leaguesResponse.data.response;
 
     const standingLeague =
@@ -250,7 +252,7 @@ export default async function TeamDetailsPage({ params, searchParams }: Props) {
         />
       )}
 
-      {activeTab === "table" && <TableTab />}
+      {activeTab === "table" && <TableTab teams={standings} />}
 
       {activeTab === "matches" && (
         <TeamMatchesTab
