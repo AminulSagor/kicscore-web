@@ -4,12 +4,8 @@ import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
-
 import { getFollows } from "@/service/follows/follow.service";
 import { FollowEntityType, FollowItem } from "@/types/follows/follow.types";
-import { getInstallationId } from "@/utils/device/installation-id.utils";
-import { authStore } from "@/z_store/auth/auth.store";
-
 import FollowingList from "./_components/following-list";
 import FollowingTabs from "./_components/following-tabs";
 import TrendingList from "./_components/trending-list";
@@ -38,8 +34,6 @@ export default function FollowingPage() {
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
 
-  const loggedIn = authStore((state) => state.loggedIn);
-
   const activeTab: FollowingTabKey = isFollowingTabKey(tabParam)
     ? tabParam
     : "leagues";
@@ -50,13 +44,16 @@ export default function FollowingPage() {
   useEffect(() => {
     const fetchFollows = async () => {
       try {
-        const installationId = loggedIn ? undefined : getInstallationId();
+        setIsLoading(true);
 
-        const response = await getFollows(installationId ?? undefined);
+        const response = await getFollows();
+
         setFollows(response.data);
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          toast.error(error.response?.data?.message || "Unable to load follows.");
+          toast.error(
+            error.response?.data?.message || "Unable to load follows.",
+          );
           return;
         }
 
@@ -67,7 +64,7 @@ export default function FollowingPage() {
     };
 
     fetchFollows();
-  }, [loggedIn]);
+  }, []);
 
   const followingItems = useMemo(() => {
     return follows.filter(
@@ -91,7 +88,9 @@ export default function FollowingPage() {
             setFollows((prev) =>
               prev.filter(
                 (item) =>
-                  !(item.entityType === entityType && item.entityId === entityId),
+                  !(
+                    item.entityType === entityType && item.entityId === entityId
+                  ),
               ),
             );
           }}
