@@ -1,4 +1,5 @@
 import { ChevronDown } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 import type { PlayerMatchGroup } from "@/types/football/players/player.types";
@@ -22,7 +23,19 @@ const PlayerMatches = ({
                     className="rounded-[22px] bg-white p-5 shadow-sm ring-1 ring-[#D8E7DF] dark:bg-white/5 dark:ring-white/7"
                 >
                     <div className="flex items-center gap-3 border-b border-[#D8E7DF] pb-4 dark:border-white/10">
-                        <span className="h-7 w-7 rounded-full border border-[#008A63] dark:border-[#79e2c5]" />
+                        {group.teamLogo ? (
+                            <span className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full border border-[#008A63] dark:border-[#79e2c5]">
+                                <Image
+                                    src={group.teamLogo}
+                                    alt={group.team}
+                                    fill
+                                    sizes="28px"
+                                    className="object-contain"
+                                />
+                            </span>
+                        ) : (
+                            <span className="h-7 w-7 shrink-0 rounded-full border border-[#008A63] dark:border-[#79e2c5]" />
+                        )}
 
                         <div>
                             <h2 className="text-base font-bold text-[#0B1F1A] dark:text-white">
@@ -41,7 +54,19 @@ const PlayerMatches = ({
                                 className="flex items-center justify-between rounded-xl bg-[#F2F7F5] px-4 py-4 dark:bg-white/6"
                             >
                                 <div className="flex items-center gap-3">
-                                    <span className="h-5 w-5 rounded-full border border-[#61736D] dark:border-white/35" />
+                                    {match.opponentLogo ? (
+                                        <span className="relative h-5 w-5 shrink-0 overflow-hidden rounded-full border border-[#61736D] dark:border-white/35">
+                                            <Image
+                                                src={match.opponentLogo}
+                                                alt={match.opponent}
+                                                fill
+                                                sizes="20px"
+                                                className="object-contain"
+                                            />
+                                        </span>
+                                    ) : (
+                                        <span className="h-5 w-5 shrink-0 rounded-full border border-[#61736D] dark:border-white/35" />
+                                    )}
 
                                     <div>
                                         <div className="flex items-center gap-2">
@@ -64,7 +89,9 @@ const PlayerMatches = ({
 
                                 <div className="rounded-xl bg-[#0B8F68] px-3 py-2 text-center text-white">
                                     <p className="text-xs font-bold">{match.goal}</p>
-                                    <p className="text-[10px] text-white/70">{match.minute}</p>
+                                    <p className="text-[10px] text-white/70">
+                                        {match.minute}
+                                    </p>
                                 </div>
                             </div>
                         ))}

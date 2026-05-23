@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import type { PlayerCareerGroup } from "@/types/football/players/player.types";
 
 type PlayerCareerProps = {
@@ -26,7 +28,19 @@ const PlayerCareer = ({ careerGroups }: PlayerCareerProps) => {
                             >
                                 <div className="flex items-start justify-between gap-4">
                                     <div className="flex items-start gap-4">
-                                        <span className="mt-1 h-5 w-5 shrink-0 rounded-full border border-[#61736D] dark:border-white/35" />
+                                        {item.clubLogo && !item.isPlaceholder ? (
+                                            <span className="relative mt-1 h-5 w-5 shrink-0 overflow-hidden rounded-full border border-[#61736D] dark:border-white/35">
+                                                <Image
+                                                    src={item.clubLogo}
+                                                    alt={item.club}
+                                                    fill
+                                                    sizes="20px"
+                                                    className="object-contain"
+                                                />
+                                            </span>
+                                        ) : (
+                                            <span className="mt-1 h-5 w-5 shrink-0 rounded-full border border-[#61736D] dark:border-white/35" />
+                                        )}
 
                                         {item.isPlaceholder ? (
                                             <div className="space-y-2">

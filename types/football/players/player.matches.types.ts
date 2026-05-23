@@ -110,6 +110,7 @@ export type PlayerMatch = {
     date: string;
     league: string;
     opponent: string;
+    opponentLogo: string | null;
     score: string;
     goal: string;
     minute: string;
@@ -118,6 +119,7 @@ export type PlayerMatch = {
 export type PlayerMatchGroup = {
     id: string;
     team: string;
+    teamLogo: string | null;
     country: string;
     matches: PlayerMatch[];
 };

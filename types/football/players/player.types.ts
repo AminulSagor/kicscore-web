@@ -41,12 +41,17 @@ export type {
 } from "./player.matches.types";
 
 export type {
+    PlayerCareerCache,
     PlayerCareerGroup,
     PlayerCareerItem,
-    PlayerCareerSeasonItem,
+    PlayerCareerRecord,
+    PlayerCareerSection,
     PlayerCareerStat,
+    PlayerCareerTeam,
     PlayerCareerTotalsData,
     PlayerCareerTotalsResponse,
+    PlayerTransferItem,
+    PlayerTransferSection,
 } from "./player.career.types";
 
 export type {

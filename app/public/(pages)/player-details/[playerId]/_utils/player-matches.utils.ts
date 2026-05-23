@@ -95,6 +95,7 @@ const mapMatch = (
         date: formatMatchDate(item.fixture.fixture.date),
         league: item.fixture.league.name,
         opponent: opponentTeam.name,
+        opponentLogo: opponentTeam.logo,
         score: getScore(item),
         goal: getGoalLabel(item),
         minute: primaryEvent?.minute ?? "-",
@@ -121,7 +122,6 @@ export const mapPlayerMatchGroups = (
 
         const teamId = String(playerTeam.id);
         const existingGroup = groups.get(teamId);
-
         const match = mapMatch(item, playerTeam);
 
         if (existingGroup) {
@@ -132,6 +132,7 @@ export const mapPlayerMatchGroups = (
         groups.set(teamId, {
             id: teamId,
             team: playerTeam.name,
+            teamLogo: playerTeam.logo,
             country: item.fixture.league.country ?? "",
             matches: [match],
         });
