@@ -33,17 +33,18 @@ export default function NavbarActions() {
       </button>
 
       <div className="mx-2 hidden h-6 w-px bg-[#DDE8E3] md:block dark:bg-white/15" />
-      <div className="px-2 py-2 md:py-4">
+
+      <div className="px-1 py-1 md:px-2 md:py-4">
         <ThemeToggle />
       </div>
 
       {loggedIn ? (
         <>
           <button
-            className="flex h-10 w-10 items-center justify-center pr-2 text-[#10201B] transition hover:text-[#078B63] dark:text-white dark:hover:text-[#72e3c6]"
+            className="flex h-8 w-8 items-center justify-center pr-1 text-[#10201B] transition hover:text-[#078B63] md:h-10 md:w-10 md:pr-2 dark:text-white dark:hover:text-[#72e3c6]"
             onClick={() => setIsNotificationPopoverOpen((prev) => !prev)}
           >
-            <Bell className="h-4.5 w-4.5" />
+            <Bell className="h-4 w-4 md:h-4.5 md:w-4.5" />
           </button>
 
           {isNotificationPopoverOpen && <NotificationPopover />}
@@ -55,9 +56,9 @@ export default function NavbarActions() {
           <button
             type="button"
             onClick={() => setIsAuthPopoverOpen((prev) => !prev)}
-            className="flex h-10 w-10 cursor-pointer items-center justify-center text-[#10201B] transition hover:text-[#078B63] dark:text-white dark:hover:text-[#72e3c6]"
+            className="flex h-8 w-8 cursor-pointer items-center justify-center text-[#10201B] transition hover:text-[#078B63] md:h-10 md:w-10 dark:text-white dark:hover:text-[#72e3c6]"
           >
-            <User className="h-4.5 w-4.5" />
+            <User className="h-4 w-4 md:h-4.5 md:w-4.5" />
           </button>
 
           {isAuthPopoverOpen && <AuthPopover onSignIn={handleSignIn} />}

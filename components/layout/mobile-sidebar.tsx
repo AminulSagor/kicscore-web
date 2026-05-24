@@ -4,7 +4,6 @@ import { LogIn, LogOut, Newspaper, Star, User, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import NavbarSearchField from "@/components/layout/navbar/navbar-search-field";
 import UserAvatar from "@/components/layout/navbar/user-avatar";
 import { authStore } from "@/z_store/auth/auth.store";
 
@@ -60,13 +59,6 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
             <X className="h-5 w-5" />
           </button>
         </div>
-
-        <NavbarSearchField
-          className="mb-5"
-          inputClassName="w-full"
-          popoverWidth="mobile"
-          onResultSelect={onClose}
-        />
 
         <nav>
           <Link

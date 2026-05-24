@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import MobileSidebar from "../mobile-sidebar";
 import NavbarSearch from "@/components/layout/navbar/navbar-search";
+import NavbarSearchField from "@/components/layout/navbar/navbar-search-field";
 import NavbarActions from "@/components/layout/navbar/navbar-actions";
 
 export default function Navbar() {
@@ -13,24 +14,34 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full">
-      <div className="mx-auto flex items-center justify-between border-b border-[#D8E7DF] bg-white/90 py-2 text-[#0B1F1A] padding-x shadow-[0_8px_30px_rgba(16,32,27,0.04)] backdrop-blur-xl dark:border-transparent dark:bg-[#0b1718]/95 dark:text-white dark:shadow-none">
-        <div className="flex items-center gap-4 md:gap-7">
+      <div className="mx-auto flex items-center justify-between gap-1.5 border-b border-[#D8E7DF] bg-white/90 py-2 text-[#0B1F1A] padding-x shadow-[0_8px_30px_rgba(16,32,27,0.04)] backdrop-blur-xl md:gap-3 dark:border-transparent dark:bg-[#0b1718]/95 dark:text-white dark:shadow-none">
+        <div className="flex shrink-0 items-center gap-2 md:gap-7">
           <button
             type="button"
             onClick={() => setIsSidebarOpen(true)}
             className="text-[#0B1F1A] md:hidden dark:text-white"
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-4.5 w-4.5 md:h-5 md:w-5" />
           </button>
 
-          <h1 className="text-[14px] font-semibold tracking-tight text-[#008A63] md:text-[18px] dark:text-[#72e3c6]">
-            <Link href="/public/home">KICSCORE</Link>
+          <h1 className="text-[13px] font-semibold tracking-tight text-[#008A63] md:text-[18px] dark:text-[#72e3c6]">
+            <Link href="/public/home">
+              <span className="hidden md:inline">KICSCORE</span>
+            </Link>
           </h1>
 
-          <NavbarSearch />
+          <div className="hidden md:block">
+            <NavbarSearch />
+          </div>
         </div>
 
-        <NavbarActions />
+        <div className="min-w-0 flex-1 md:hidden">
+          <NavbarSearchField inputClassName="w-full" popoverWidth="mobile" />
+        </div>
+
+        <div className="shrink-0">
+          <NavbarActions />
+        </div>
       </div>
 
       <MobileSidebar
