@@ -13,7 +13,11 @@ import { signinSchema, SigninFormValues } from "@/schema/auth/signin.schema";
 import { setAccessToken } from "@/utils/token/cookie.utils";
 import ButtonLoader from "@/components/UI/loaders/button-loader";
 import { authStore } from "@/z_store/auth/auth.store";
-import { mapSigninUserToAuthUser } from "@/utils/auth/auth-user.mapper";
+import {
+  mapGetMeUserToAuthUser,
+  mapSigninUserToAuthUser,
+} from "@/utils/auth/auth-user.mapper";
+import { getMe } from "@/service/auth/get-me.service";
 
 type SigninErrors = Partial<Record<keyof SigninFormValues, string>>;
 
@@ -60,7 +64,6 @@ export default function SignInPage() {
       setIsLoading(true);
 
       const response = await signin(validatedFields.data);
-
       setAccessToken(response.data.token.accessToken);
 
       //======= Merge guest follows after login =======//
@@ -83,7 +86,8 @@ export default function SignInPage() {
         return;
       }
 
-      setAuthUser(mapSigninUserToAuthUser(response.data.user));
+      const meResponse = await getMe();
+      setAuthUser(mapGetMeUserToAuthUser(meResponse.data));
       router.push("/public/home");
     } catch {
       toast.error("Invalid email or password");
