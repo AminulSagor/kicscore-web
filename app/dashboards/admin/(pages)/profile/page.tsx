@@ -14,7 +14,11 @@ import {
   getAdminProfile,
   updateAdminProfile,
 } from "@/service/admin/profile/admin-profile.service";
-import { uploadSignedFile } from "@/service/files/signed-upload.service";
+import {
+  deleteUploadedFile,
+  getSignedReadUrl,
+  uploadSignedFile,
+} from "@/service/files/signed-upload.service";
 import { AdminProfileUser } from "@/types/admin/profile/admin-profile.types";
 
 export default function AdminProfileSettingsPage() {
@@ -27,6 +31,9 @@ export default function AdminProfileSettingsPage() {
   const [profilePhotoFileId, setProfilePhotoFileId] = useState<string | null>(
     null,
   );
+  const [savedProfilePhotoUrl, setSavedProfilePhotoUrl] = useState<
+    string | null
+  >(null);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -38,10 +45,24 @@ export default function AdminProfileSettingsPage() {
     const fetchAdminProfile = async () => {
       try {
         const response = await getAdminProfile();
+        const savedPhotoFileId =
+          response.data.profile?.profilePhotoFileId ?? null;
 
         setAdminProfile(response.data);
         setFullName(response.data.profile?.fullName ?? "");
-        setProfilePhotoFileId(response.data.profile?.profilePhotoFileId ?? null);
+        setProfilePhotoFileId(savedPhotoFileId);
+
+        if (savedPhotoFileId) {
+          try {
+            const signedReadUrlResponse =
+              await getSignedReadUrl(savedPhotoFileId);
+
+            setSavedProfilePhotoUrl(signedReadUrlResponse.data.readUrl);
+          } catch {
+            setSavedProfilePhotoUrl(null);
+            toast.error("Failed to load profile photo");
+          }
+        }
       } catch {
         toast.error("Failed to load admin profile");
       } finally {
@@ -51,6 +72,14 @@ export default function AdminProfileSettingsPage() {
 
     fetchAdminProfile();
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (previewImageUrl) {
+        URL.revokeObjectURL(previewImageUrl);
+      }
+    };
+  }, [previewImageUrl]);
 
   const handleProfilePhotoChange = async (
     event: ChangeEvent<HTMLInputElement>,
@@ -73,7 +102,6 @@ export default function AdminProfileSettingsPage() {
     }
 
     const localPreviewUrl = URL.createObjectURL(file);
-    setPreviewImageUrl(localPreviewUrl);
 
     try {
       setIsUploadingPhoto(true);
@@ -81,8 +109,11 @@ export default function AdminProfileSettingsPage() {
       const uploadedFile = await uploadSignedFile(file, "profile-photos");
 
       setProfilePhotoFileId(uploadedFile.fileId);
+      setPreviewImageUrl(localPreviewUrl);
       toast.success("Profile photo uploaded");
     } catch (error) {
+      URL.revokeObjectURL(localPreviewUrl);
+
       const axiosError = error as AxiosError<{ message?: string | string[] }>;
       const message = axiosError.response?.data?.message;
 
@@ -103,6 +134,9 @@ export default function AdminProfileSettingsPage() {
       toast.error("Full name is required");
       return;
     }
+
+    const previousSavedPhotoFileId =
+      adminProfile?.profile?.profilePhotoFileId ?? null;
 
     try {
       setIsUpdating(true);
@@ -136,6 +170,35 @@ export default function AdminProfileSettingsPage() {
           profile: profileResponse.data,
         };
       });
+
+      setProfilePhotoFileId(profileResponse.data.profilePhotoFileId);
+
+      if (profileResponse.data.profilePhotoFileId) {
+        try {
+          const signedReadUrlResponse = await getSignedReadUrl(
+            profileResponse.data.profilePhotoFileId,
+          );
+
+          setSavedProfilePhotoUrl(signedReadUrlResponse.data.readUrl);
+          setPreviewImageUrl(null);
+        } catch {
+          toast.error("Profile saved, but failed to load profile photo");
+        }
+      } else {
+        setSavedProfilePhotoUrl(null);
+        setPreviewImageUrl(null);
+      }
+
+      if (
+        previousSavedPhotoFileId &&
+        previousSavedPhotoFileId !== profileResponse.data.profilePhotoFileId
+      ) {
+        try {
+          await deleteUploadedFile(previousSavedPhotoFileId);
+        } catch {
+          toast.error("Profile updated, but failed to remove previous photo");
+        }
+      }
 
       toast.success("Profile updated successfully");
     } catch (error) {
@@ -179,7 +242,11 @@ export default function AdminProfileSettingsPage() {
           <>
             <div className="flex items-center gap-5">
               <Image
-                src={previewImageUrl ?? IMAGE.profile_image}
+                src={
+                  previewImageUrl ??
+                  savedProfilePhotoUrl ??
+                  IMAGE.profile_image
+                }
                 alt="Admin avatar"
                 width={72}
                 height={72}

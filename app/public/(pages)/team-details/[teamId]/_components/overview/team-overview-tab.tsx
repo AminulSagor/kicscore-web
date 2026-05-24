@@ -4,6 +4,7 @@ import type { LeagueStandingTeam } from "@/types/football/leagues/league.standin
 import type { TeamAboutData } from "@/types/football/teams/team.about.types";
 import type { TeamDetailsItem } from "@/types/football/teams/team.details.types";
 import type { TeamLeagueItem } from "@/types/football/teams/team.leagues.types";
+import type { TeamTopPlayer } from "@/types/football/teams/team.squad.types";
 
 import LastSixMatchesCard from "./last-six-matches-card";
 import LeagueTableCard from "./league-table-card";
@@ -21,6 +22,7 @@ type Props = {
   leagues: TeamLeagueItem[];
   standings: LeagueStandingTeam[];
   standingLeagueTitle: string;
+  topPlayers: TeamTopPlayer[];
 };
 
 export default function TeamOverviewTab({
@@ -31,6 +33,7 @@ export default function TeamOverviewTab({
   leagues,
   standings,
   standingLeagueTitle,
+  topPlayers,
 }: Props) {
   return (
     <section className="mt-8 pb-8">
@@ -56,7 +59,7 @@ export default function TeamOverviewTab({
         </div>
 
         <aside className="space-y-6 xl:sticky xl:top-24 xl:self-start">
-          <TopPlayersCard />
+          <TopPlayersCard players={topPlayers} />
 
           <StadiumCard venue={teamDetails.venue} />
 

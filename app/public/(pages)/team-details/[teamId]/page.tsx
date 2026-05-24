@@ -21,6 +21,7 @@ import {
   mapCurrentTeamCoach,
   mapTeamSquadGroups,
 } from "@/app/public/(pages)/team-details/[teamId]/_utils/team-squad.utils";
+import { mapTeamTopPlayers } from "@/app/public/(pages)/team-details/[teamId]/_utils/team-top-players.utils";
 import { mapTeamTrophies } from "@/app/public/(pages)/team-details/[teamId]/_utils/team-trophies.utils";
 import {
   getTeamLastFixtures,
@@ -31,6 +32,7 @@ import { getTeamAbout } from "@/service/football/teams/team.about.service";
 import { getTeamDetails } from "@/service/football/teams/team.details.service";
 import { getTeamLeagues } from "@/service/football/teams/team.leagues.service";
 import {
+  getAllTeamPlayers,
   getTeamCoaches,
   getTeamPlayers,
 } from "@/service/football/teams/team.squad.service";
@@ -44,6 +46,7 @@ import type { TeamLeagueItem } from "@/types/football/teams/team.leagues.types";
 import type {
   TeamSquadGroup,
   TeamSquadMember,
+  TeamTopPlayer,
 } from "@/types/football/teams/team.squad.types";
 import type { TeamTrophy } from "@/types/football/teams/team.trophies.types";
 
@@ -121,6 +124,13 @@ export default async function TeamDetailsPage({ params, searchParams }: Props) {
       })
       : Promise.resolve(null);
 
+  const topPlayerEntriesPromise = isOverviewTab
+    ? getAllTeamPlayers({
+      teamId,
+      season,
+    })
+    : Promise.resolve([]);
+
   const coachesPromise = isSquadTab
     ? getTeamCoaches({
       teamId,
@@ -154,6 +164,7 @@ export default async function TeamDetailsPage({ params, searchParams }: Props) {
     lastFixturesResponse,
     aboutResponse,
     leaguesResponse,
+    topPlayerEntries,
     coachesResponse,
     playersResponse,
     trophiesResponse,
@@ -163,6 +174,7 @@ export default async function TeamDetailsPage({ params, searchParams }: Props) {
     lastFixturesPromise,
     aboutPromise,
     leaguesPromise,
+    topPlayerEntriesPromise,
     coachesPromise,
     playersPromise,
     trophiesPromise,
@@ -183,6 +195,7 @@ export default async function TeamDetailsPage({ params, searchParams }: Props) {
   let leagues: TeamLeagueItem[] = [];
   let standings: LeagueStandingTeam[] = [];
   let standingLeagueTitle = "Premier League";
+  let topPlayers: TeamTopPlayer[] = [];
   let coach: TeamSquadMember | null = null;
   let squadGroups: TeamSquadGroup[] = [];
   let trophies: TeamTrophy[] = [];
@@ -207,6 +220,10 @@ export default async function TeamDetailsPage({ params, searchParams }: Props) {
         },
       );
     }
+  }
+
+  if (isOverviewTab) {
+    topPlayers = mapTeamTopPlayers(topPlayerEntries);
   }
 
   if (isMatchesTab) {
@@ -249,6 +266,7 @@ export default async function TeamDetailsPage({ params, searchParams }: Props) {
           leagues={leagues}
           standings={standings}
           standingLeagueTitle={standingLeagueTitle}
+          topPlayers={topPlayers}
         />
       )}
 

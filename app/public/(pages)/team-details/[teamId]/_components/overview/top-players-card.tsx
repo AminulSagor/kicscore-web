@@ -1,9 +1,15 @@
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
-import Card from "@/components/UI/cards/card";
-import { topPlayers } from "@/mock/team-details/team-overview.mock.data";
 
-export default function TopPlayersCard() {
+import Card from "@/components/UI/cards/card";
+import type { TeamTopPlayer } from "@/types/football/teams/team.squad.types";
+import { getValidImage } from "@/utils/image/image.utils";
+
+type Props = {
+  players: TeamTopPlayer[];
+};
+
+export default function TopPlayersCard({ players }: Props) {
   return (
     <Card
       variant="white"
@@ -17,7 +23,7 @@ export default function TopPlayersCard() {
       </div>
 
       <div className="space-y-3 p-4">
-        {topPlayers.map((player) => (
+        {players.map((player) => (
           <div
             key={player.id}
             className="flex items-center justify-between rounded-2xl bg-[#F3F7F5] p-3 dark:bg-dark-green"
@@ -25,7 +31,7 @@ export default function TopPlayersCard() {
             <div className="flex items-center gap-3">
               <div className="relative h-11 w-11 overflow-hidden rounded-full border border-mint-green">
                 <Image
-                  src={player.image}
+                  src={getValidImage(player.image)}
                   alt={player.name}
                   fill
                   sizes="44px"

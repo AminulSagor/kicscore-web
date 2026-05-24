@@ -4,11 +4,14 @@ import serviceClient from "@/service/base/service.client";
 import {
   ConfirmUploadPayload,
   ConfirmUploadResponse,
+  DeleteFileResponse,
+  SignedReadUrlResponse,
   SignedUploadUrlPayload,
   SignedUploadUrlResponse,
   UploadedFileResult,
 } from "@/types/admin/profile/types/files/signed-upload.types";
 
+//======= Get Signed Upload URL =======//
 export const getSignedUploadUrl = async (
   payload: SignedUploadUrlPayload,
 ): Promise<SignedUploadUrlResponse> => {
@@ -20,6 +23,7 @@ export const getSignedUploadUrl = async (
   return response.data;
 };
 
+//======= Upload File Directly To S3 =======//
 export const uploadFileToS3 = async (
   uploadUrl: string,
   file: File,
@@ -32,6 +36,7 @@ export const uploadFileToS3 = async (
   });
 };
 
+//======= Confirm Upload =======//
 export const confirmUpload = async (
   payload: ConfirmUploadPayload,
 ): Promise<ConfirmUploadResponse> => {
@@ -43,6 +48,29 @@ export const confirmUpload = async (
   return response.data;
 };
 
+//======= Get Signed Read URL =======//
+export const getSignedReadUrl = async (
+  fileId: string,
+): Promise<SignedReadUrlResponse> => {
+  const response = await serviceClient.get<SignedReadUrlResponse>(
+    `/files/${fileId}/signed-read-url`,
+  );
+
+  return response.data;
+};
+
+//======= Delete Uploaded File =======//
+export const deleteUploadedFile = async (
+  fileId: string,
+): Promise<DeleteFileResponse> => {
+  const response = await serviceClient.delete<DeleteFileResponse>(
+    `/files/${fileId}`,
+  );
+
+  return response.data;
+};
+
+//======= Upload Signed File =======//
 export const uploadSignedFile = async (
   file: File,
   folder = "profile-photos",

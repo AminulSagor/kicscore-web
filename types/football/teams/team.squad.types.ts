@@ -100,3 +100,11 @@ export type TeamSquadGroup = {
     title: string;
     players: TeamSquadMember[];
 };
+
+export type TeamTopPlayer = {
+    id: string;
+    name: string;
+    image: string | null;
+    role: string;
+    value: string;
+};

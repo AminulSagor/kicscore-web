@@ -45,6 +45,29 @@ export interface ConfirmUploadResponse {
   path: string;
 }
 
+export interface SignedReadUrlResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    fileId: string;
+    fileKey: string;
+    readUrl: string;
+    expiresInSeconds: number;
+  };
+  timestamp: string;
+  path: string;
+}
+
+export interface DeleteFileResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: null;
+  timestamp: string;
+  path: string;
+}
+
 export interface UploadedFileResult {
   fileId: string;
   fileKey: string;
