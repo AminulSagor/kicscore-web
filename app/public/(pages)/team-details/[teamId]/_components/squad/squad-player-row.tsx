@@ -11,7 +11,7 @@ type Props = {
 
 export default function SquadPlayerRow({ player, showNumber = true }: Props) {
   return (
-    <Link href={player.link}>
+    <Link href={player.link} className="block w-full">
       <div className="flex items-center justify-between gap-4 rounded-2xl bg-[#F3F7F5] px-4 py-4 dark:bg-dark-green">
         <div className="flex min-w-0 items-center gap-4">
           <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border border-mint-green bg-white dark:bg-primary">

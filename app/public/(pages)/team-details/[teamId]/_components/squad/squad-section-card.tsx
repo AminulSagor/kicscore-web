@@ -27,7 +27,7 @@ export default function SquadSectionCard({
         </h3>
       </div>
 
-      <div className="space-y-3 p-4">
+      <div className="flex flex-col gap-3 p-4">
         {players.map((player) => (
           <SquadPlayerRow
             key={player.id}

@@ -14,20 +14,14 @@ export default function TeamSquadTab({ coach, squadGroups }: Props) {
   return (
     <section className="mt-8 space-y-6 pb-8">
       {coach && (
-        <SquadSectionCard
-          title="Coach"
-          players={[coach]}
-          showNumber={false}
-        />
+        <SquadSectionCard title="Coach" players={[coach]} showNumber={false} />
       )}
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="columns-1 gap-6 lg:columns-2">
         {squadGroups.map((group) => (
-          <SquadSectionCard
-            key={group.title}
-            title={group.title}
-            players={group.players}
-          />
+          <div key={group.title} className="mb-6 break-inside-avoid">
+            <SquadSectionCard title={group.title} players={group.players} />
+          </div>
         ))}
       </div>
     </section>
