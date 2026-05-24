@@ -26,6 +26,7 @@ export default function AdminAvatarSection({
                 alt="Admin avatar"
                 width={72}
                 height={72}
+                unoptimized
                 className="h-18 w-18 rounded-full object-cover"
             />
 

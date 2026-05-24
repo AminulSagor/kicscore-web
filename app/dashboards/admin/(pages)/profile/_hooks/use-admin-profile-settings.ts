@@ -4,6 +4,7 @@ import { AxiosError } from "axios";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
+import { getMe } from "@/service/auth/get-me.service";
 import {
     changeAdminPassword,
     getAdminProfile,
@@ -11,7 +12,6 @@ import {
 } from "@/service/admin/profile/admin-profile.service";
 import {
     deleteUploadedFile,
-    getSignedReadUrl,
     uploadSignedFile,
 } from "@/service/files/signed-upload.service";
 import type { AdminProfileUser } from "@/types/admin/profile/admin-profile.types";
@@ -39,25 +39,20 @@ export const useAdminProfileSettings = () => {
     useEffect(() => {
         const fetchAdminProfile = async () => {
             try {
-                const response = await getAdminProfile();
+                const [adminProfileResponse, currentUserResponse] = await Promise.all([
+                    getAdminProfile(),
+                    getMe(),
+                ]);
+
                 const savedPhotoFileId =
-                    response.data.profile?.profilePhotoFileId ?? null;
+                    adminProfileResponse.data.profile?.profilePhotoFileId ?? null;
+                const savedPhotoReadUrl =
+                    currentUserResponse.data.profile?.photoReadUrl ?? null;
 
-                setAdminProfile(response.data);
-                setFullName(response.data.profile?.fullName ?? "");
+                setAdminProfile(adminProfileResponse.data);
+                setFullName(adminProfileResponse.data.profile?.fullName ?? "");
                 setProfilePhotoFileId(savedPhotoFileId);
-
-                if (savedPhotoFileId) {
-                    try {
-                        const signedReadUrlResponse =
-                            await getSignedReadUrl(savedPhotoFileId);
-
-                        setSavedProfilePhotoUrl(signedReadUrlResponse.data.readUrl);
-                    } catch {
-                        setSavedProfilePhotoUrl(null);
-                        toast.error("Failed to load profile photo");
-                    }
-                }
+                setSavedProfilePhotoUrl(savedPhotoReadUrl);
             } catch {
                 toast.error("Failed to load admin profile");
             } finally {
@@ -170,11 +165,11 @@ export const useAdminProfileSettings = () => {
 
             if (profileResponse.data.profilePhotoFileId) {
                 try {
-                    const signedReadUrlResponse = await getSignedReadUrl(
-                        profileResponse.data.profilePhotoFileId,
-                    );
+                    const currentUserResponse = await getMe();
 
-                    setSavedProfilePhotoUrl(signedReadUrlResponse.data.readUrl);
+                    setSavedProfilePhotoUrl(
+                        currentUserResponse.data.profile?.photoReadUrl ?? null,
+                    );
                     setPreviewImageUrl(null);
                 } catch {
                     toast.error("Profile saved, but failed to load profile photo");
