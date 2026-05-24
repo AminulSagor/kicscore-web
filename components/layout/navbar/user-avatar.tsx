@@ -53,7 +53,7 @@ export default function UserAvatar({ action }: { action?: boolean }) {
         }}
         className="flex h-9 w-9 cursor-pointer items-center justify-center"
       >
-        <Image
+        <img
           src={user?.photoReadUrl || IMAGE.profile_avatar}
           alt="Profile"
           width={36}
