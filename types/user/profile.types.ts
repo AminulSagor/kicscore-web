@@ -4,11 +4,16 @@ export interface UpdateProfilePhotoPayload {
   fileId: string;
 }
 
+export interface UpdateProfilePhotoData {
+  profilePhotoFileId: string;
+  photoReadUrl: string;
+}
+
 export interface UpdateProfilePhotoResponse {
   success: boolean;
   statusCode: number;
   message: string;
-  data: null;
+  data: UpdateProfilePhotoData;
   timestamp: string;
   path: string;
 }
