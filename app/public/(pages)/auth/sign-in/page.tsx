@@ -83,8 +83,8 @@ export default function SignInPage() {
         return;
       }
 
-      router.push("/public/home");
       setAuthUser(mapSigninUserToAuthUser(response.data.user));
+      router.push("/public/home");
     } catch {
       toast.error("Invalid email or password");
     } finally {
