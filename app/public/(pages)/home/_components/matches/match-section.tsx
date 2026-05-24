@@ -232,9 +232,11 @@ export default function MatchSection() {
 
       {!isLoading && matchGroups.length > 0 && (
         <>
-          <div className="grid items-start gap-5 xl:grid-cols-2">
+          <div className="columns-1 gap-5 xl:columns-2">
             {sortedMatchGroups.map((group) => (
-              <MatchCard key={group.league.id} group={group} />
+              <div key={group.league.id} className="mb-5 break-inside-avoid">
+                <MatchCard group={group} />
+              </div>
             ))}
           </div>
 
