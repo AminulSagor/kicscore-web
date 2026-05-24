@@ -62,7 +62,6 @@ export default function SignInPage() {
       const response = await signin(validatedFields.data);
 
       setAccessToken(response.data.token.accessToken);
-      setAuthUser(mapSigninUserToAuthUser(response.data.user));
 
       //======= Merge guest follows after login =======//
       try {
@@ -85,6 +84,7 @@ export default function SignInPage() {
       }
 
       router.push("/public/home");
+      setAuthUser(mapSigninUserToAuthUser(response.data.user));
     } catch {
       toast.error("Invalid email or password");
     } finally {
