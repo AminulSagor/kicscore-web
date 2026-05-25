@@ -12,4 +12,5 @@ export const IMAGE = {
   Liverpool_Logo: "/images/Liverpool_FC.svg",
   profile_avatar: "/images/profile_avatar.webp",
   fallback_image: "/images/not_found.webp",
+  logo: "/Kickscore Logo.svg",
 } as const;

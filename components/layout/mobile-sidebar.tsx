@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 import UserAvatar from "@/components/layout/navbar/user-avatar";
 import { authStore } from "@/z_store/auth/auth.store";
+import AppLogo from "@/components/logo/app-logo";
 
 interface MobileSidebarProps {
   isOpen: boolean;
@@ -47,9 +48,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
         }`}
       >
         <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-[16px] font-semibold text-[#078B63] dark:text-[#72e3c6]">
-            KICSCORE
-          </h2>
+          <AppLogo className="items-center md:hidden" width={120} />
 
           <button
             type="button"

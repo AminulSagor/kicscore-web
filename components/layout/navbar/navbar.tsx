@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import { LogOut, Menu } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -8,6 +8,9 @@ import MobileSidebar from "../mobile-sidebar";
 import NavbarSearch from "@/components/layout/navbar/navbar-search";
 import NavbarSearchField from "@/components/layout/navbar/navbar-search-field";
 import NavbarActions from "@/components/layout/navbar/navbar-actions";
+import Image from "next/image";
+import { IMAGE } from "@/constants/image.path";
+import AppLogo from "@/components/logo/app-logo";
 
 export default function Navbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -24,11 +27,7 @@ export default function Navbar() {
             <Menu className="h-4.5 w-4.5 md:h-5 md:w-5" />
           </button>
 
-          <h1 className="text-[13px] font-semibold tracking-tight text-[#008A63] md:text-[18px] dark:text-[#72e3c6]">
-            <Link href="/public/home">
-              <span className="hidden md:inline">KICSCORE</span>
-            </Link>
-          </h1>
+          <AppLogo className="hidden items-center md:inline-flex" width={130}/>
 
           <div className="hidden md:block">
             <NavbarSearch />
