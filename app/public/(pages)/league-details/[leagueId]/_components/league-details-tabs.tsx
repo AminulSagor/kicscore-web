@@ -8,6 +8,7 @@ import type { LeagueDetailsTab } from "@/mock/league-details/league-details.mock
 const leagueDetailsTabs: { label: string; value: LeagueDetailsTab }[] = [
   { label: "Overview", value: "overview" },
   { label: "Table", value: "table" },
+  { label: "Knockout", value: "knockout" },
   { label: "Fixtures", value: "fixtures" },
   { label: "Player stats", value: "player-stats" },
   { label: "Team stats", value: "team-stats" },

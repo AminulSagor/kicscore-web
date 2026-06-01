@@ -5,6 +5,7 @@ import OverviewTab from "./_components/overview/overview-tab";
 import PlayerStatsTab from "./_components/player-stats/player-stats-tab";
 import TableTab from "./_components/table/table.tab";
 import TeamStatsTab from "./_components/team-stats/team-stats-tab";
+import KnockoutTab from "./_components/knockout/knockout-tab";
 
 import {
   DEFAULT_PLAYER_STATS_LIMIT,
@@ -115,6 +116,7 @@ export default async function Page({
   const shouldFetchStandings =
     activeTab === "overview" || activeTab === "table";
   const shouldFetchFixtures = activeTab === "fixtures";
+  const shouldFetchKnockout = activeTab === "knockout";
   const shouldFetchPlayerRankings =
     activeTab === "overview" || activeTab === "player-stats";
   const shouldFetchCategoryPlayerStats = activeTab === "player-stats";
@@ -184,6 +186,13 @@ export default async function Page({
           limit: fixtureLimit,
           date: fixtureDate,
         })
+      : shouldFetchKnockout
+      ? getLeagueFixtures({
+          leagueId,
+          season: selectedSeason,
+          page: 1,
+          limit: 500,
+        })
       : Promise.resolve(null),
 
     categoryPlayerStatsPromise,
@@ -212,6 +221,10 @@ export default async function Page({
         )}
 
         {activeTab === "table" && <TableTab standings={standings} />}
+
+        {activeTab === "knockout" && (
+          <KnockoutTab fixtures={fixtureData?.response ?? []} />
+        )}
 
         {activeTab === "fixtures" && (
           <FixturesTab

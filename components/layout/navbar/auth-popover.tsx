@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "@/components/UI/buttons/button";
+import Link from "next/link";
 
 interface AuthPopoverProps {
   onSignIn: () => void;
@@ -22,12 +23,12 @@ export default function AuthPopover({ onSignIn }: AuthPopoverProps) {
         Sign In
       </Button>
 
-      <button
-        type="button"
-        className="mt-4 w-full text-center text-xs text-[#078B63] dark:text-[#72e3c6]"
-      >
-        New to Kicscore? Join Kicscore
-      </button>
+        <Link
+          href="/public/auth/sign-up"
+          className="mt-4 w-full text-center text-xs text-[#078B63] dark:text-[#72e3c6]"
+        >
+          New to Kicscore? Join Kicscore
+        </Link>
     </div>
   );
 }
