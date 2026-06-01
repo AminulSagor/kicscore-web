@@ -53,6 +53,7 @@ const footerSections: FooterSection[] = [
       // { name: "About Us", url: "#" },
       { name: "Privacy Policy", url: "/public/privacy-policy" },
       { name: "Terms of Service", url: "/public/terms-condition" },
+      { name: "Account Deletion", url: "/public/account-deletion" },
       // { name: "Cookie Policy", url: "#" },
       // { name: "Data Settings", url: "#" },
     ],
@@ -73,7 +74,7 @@ const Footer = () => {
     <footer className="w-full">
       <div className="mx-auto w-full border-t border-[#D8E7DF] bg-white/90 pt-16 pb-7 text-[#0B1F1A] padding-x dark:border-transparent dark:bg-[#091716] dark:text-white">
         <div className="grid grid-cols-1 gap-12 border-b border-[#D8E7DF] pb-14 md:grid-cols-2 lg:grid-cols-4 dark:border-white/5">
-          <div className="max-w-[280px]">
+          <div className="max-w-70">
             <h2 className="text-[18px] font-semibold tracking-tight text-[#008A63] dark:text-[#79e2c5]">
               KICSCORE
             </h2>
