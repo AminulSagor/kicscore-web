@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Build before pushing. Use pnpm when available, otherwise npm.
+if [ -f pnpm-lock.yaml ]; then
+  pnpm build || { echo "Build failed — aborting push."; exit 1; }
+else
+  npm run build || { echo "Build failed — aborting push."; exit 1; }
+fi
