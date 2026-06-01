@@ -1,6 +1,7 @@
 export type LeagueDetailsTab =
   | "overview"
   | "table"
+  | "knockout"
   | "fixtures"
   | "player-stats"
   | "team-stats";
