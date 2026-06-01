@@ -68,10 +68,10 @@ const LegalPage = ({
                   {contactText}
                 </p>
                 <a
-                  href={`mailto:${contactEmail ?? 'support@kicscore.com'}`}
+                  href={`mailto:${contactEmail ?? 'hello@kicscore.com'}`}
                   className="mt-3 inline-block text-sm font-semibold text-[#008A63] transition hover:text-[#006C4D] dark:text-[#79e2c5]"
                 >
-                  {contactEmail ?? 'support@kicscore.com'} →
+                  {contactEmail ?? 'hello@kicscore.com'} →
                 </a>
               </div>
             </div>
