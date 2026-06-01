@@ -12,6 +12,7 @@ type LegalPageProps = {
   sections: LegalSection[];
   contactText?: string;
   showContact?: boolean;
+  contactEmail?: string;
 };
 
 const LegalPage = ({
@@ -20,6 +21,7 @@ const LegalPage = ({
   sections,
   contactText,
   showContact = false,
+  contactEmail,
 }: LegalPageProps) => {
   return (
     <main className="">
@@ -66,10 +68,10 @@ const LegalPage = ({
                   {contactText}
                 </p>
                 <a
-                  href="mailto:support@kicscore.com"
+                  href={`mailto:${contactEmail ?? 'support@kicscore.com'}`}
                   className="mt-3 inline-block text-sm font-semibold text-[#008A63] transition hover:text-[#006C4D] dark:text-[#79e2c5]"
                 >
-                  support@kicscore.com →
+                  {contactEmail ?? 'support@kicscore.com'} →
                 </a>
               </div>
             </div>
