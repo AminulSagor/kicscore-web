@@ -235,14 +235,19 @@ export default function KnockoutTab({ fixtures = [] }: Props) {
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const { width } = entry.contentRect;
-        // Assume our bracket needs around 800px to look good without squishing
-        const targetWidth = 800;
-        if (width < targetWidth) {
-          const newScale = width / targetWidth;
+        const innerContainer = container.firstElementChild as HTMLElement;
+        if (!innerContainer) continue;
+
+        // Use a fixed virtual width based on max possible matches to prevent feedback loops
+        const isMobile = window.innerWidth < 768;
+        const virtualWidth = isMobile ? Math.max(leftRounds[0]?.matches.length * 150 + 40, 800) : 800;
+
+        if (width < virtualWidth) {
+          const newScale = width / virtualWidth;
           setScale(newScale);
-          // Assuming the bracket's unscaled height is around 500px min.
-          // We let the inner content dictate its height, then scale it.
-          const innerHeight = container.firstElementChild?.scrollHeight || 500;
+          
+          // Let the inner content dictate its height, then scale it
+          const innerHeight = innerContainer.scrollHeight;
           setScaledHeight(innerHeight * newScale);
         } else {
           setScale(1);
@@ -253,7 +258,7 @@ export default function KnockoutTab({ fixtures = [] }: Props) {
 
     observer.observe(container);
     return () => observer.disconnect();
-  }, []);
+  }, [leftRounds]);
 
   if (rounds.length === 0) {
     return (
@@ -265,87 +270,94 @@ export default function KnockoutTab({ fixtures = [] }: Props) {
 
   return (
     <div className="mt-6 w-full" ref={containerRef} style={{ height: scaledHeight ? `${scaledHeight}px` : "auto" }}>
-      {/* Knockout Bracket */}
+      {/* Responsive Bracket Container */}
       <div 
-        className="w-full origin-top-left rounded-2xl border border-[#DDE8E3] bg-[#F4F8F6] dark:border-white/10 dark:bg-[#111d1a]"
+        className="w-full origin-top-left rounded-2xl border border-[#DDE8E3] bg-[#F4F8F6] dark:border-white/10 dark:bg-[#111d1a] overflow-hidden"
         style={{ 
           transform: scale < 1 ? `scale(${scale})` : "none", 
-          width: scale < 1 ? "800px" : "100%",
+          width: scale < 1 ? `${Math.max((leftRounds[0]?.matches.length || 0) * 150 + 40, 800)}px` : "100%",
         }}
       >
-        <div className="flex min-h-[480px] w-full items-stretch justify-center gap-2 px-2 py-6 sm:gap-4 sm:px-4 sm:py-10 md:gap-6 lg:px-6">
-          {/* Left Tree */}
-          <div className="flex flex-1 min-w-0 items-stretch justify-end gap-1 sm:gap-4 lg:gap-8">
+        <div className="flex flex-col md:flex-row min-w-fit min-h-[480px] w-full items-center md:items-stretch justify-center gap-4 px-4 py-10 lg:gap-6 lg:px-6">
+          
+          {/* Top Tree (Mobile) / Left Tree (Desktop) */}
+          <div className="flex flex-col md:flex-row flex-1 min-w-0 items-center md:items-stretch justify-center md:justify-end gap-12 md:gap-4 lg:gap-8">
             {leftRounds.map((round, rIdx) => {
               const isLastRound = rIdx === leftRounds.length - 1;
               return (
-                <div key={`left-r${rIdx}`} className="flex w-[110px] flex-col items-center">
-                  <div className="mb-3 w-full truncate text-center text-[10px] font-bold uppercase tracking-widest text-[#6B7A75] dark:text-white/40 sm:mb-4">
+                <div key={`left-r${rIdx}`} className="flex flex-col items-center md:w-[120px]">
+                  <div className="mb-4 w-full truncate text-center text-[10px] font-bold uppercase tracking-widest text-[#6B7A75] dark:text-white/40">
                     {round.label}
                   </div>
-                  {round.matches.map((match, mIdx) => (
-                    <div key={match.fixture.id} className="relative flex w-full flex-1 flex-col justify-center py-2 sm:py-3">
-                      {/* Horizontal In */}
-                      {rIdx > 0 && (
-                        <div className="absolute right-full top-1/2 w-2 border-t border-[#DDE8E3] dark:border-white/15 sm:w-4" />
-                      )}
+                  <div className="flex flex-row md:flex-col flex-1 items-stretch justify-center w-full">
+                    {round.matches.map((match, mIdx) => (
+                      <div key={match.fixture.id} className="relative flex flex-1 w-[150px] md:w-full flex-col justify-center py-0 px-2 md:py-3 md:px-0">
+                        {/* Horizontal / Vertical In */}
+                        {rIdx > 0 && (
+                          <div className="absolute bottom-full md:bottom-auto md:right-full left-1/2 md:left-auto md:top-1/2 h-6 md:h-auto md:w-4 border-l md:border-l-0 md:border-t border-[#DDE8E3] dark:border-white/15" />
+                        )}
 
-                      <MatchBox match={match} />
+                        <MatchBox match={match} />
 
-                      {/* Horizontal Out */}
-                      <div className="absolute left-full top-1/2 w-2 border-t border-[#DDE8E3] dark:border-white/15 sm:w-4" />
+                        {/* Horizontal / Vertical Out */}
+                        <div className="absolute top-full md:top-auto md:left-full left-1/2 md:left-auto md:top-1/2 h-6 md:h-auto md:w-4 border-l md:border-l-0 md:border-t border-[#DDE8E3] dark:border-white/15" />
 
-                      {/* Vertical Line */}
-                      {!isLastRound && (
-                        <div
-                          className={`absolute left-[calc(100%+8px)] w-px bg-[#DDE8E3] dark:bg-white/15 sm:left-[calc(100%+16px)] ${
-                            mIdx % 2 === 0 ? "top-1/2 h-1/2" : "bottom-1/2 h-1/2"
-                          }`}
-                        />
-                      )}
-                    </div>
-                  ))}
+                        {/* Connecting Line */}
+                        {!isLastRound && (
+                          <div
+                            className={`absolute border-[#DDE8E3] dark:border-white/15 
+                              top-[calc(100%+24px)] md:top-auto md:left-[calc(100%+16px)] 
+                              h-px md:h-1/2 w-1/2 md:w-px 
+                              ${mIdx % 2 === 0 
+                                ? "left-1/2 md:left-auto md:top-1/2" 
+                                : "right-1/2 md:right-auto md:bottom-1/2"
+                              }`}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               );
             })}
           </div>
 
           {/* Center / Finals */}
-          <div className="relative flex w-[110px] flex-col items-center">
-            {/* Champion Section positioned at the very top of the column */}
+          <div className="relative flex flex-row md:flex-col w-full md:w-[120px] items-center justify-center gap-6 md:gap-0 mt-8 mb-8 md:mt-0 md:mb-0">
+            {/* Champion Section */}
             {champion && (
-              <div className="absolute top-0 z-20 flex flex-col items-center gap-2 sm:gap-3">
-                <div className="flex size-10 items-center justify-center rounded-full border-2 border-[#F59E0B] bg-[#F59E0B]/15 shadow-lg sm:size-14">
-                  <Trophy className="h-5 w-5 text-[#F59E0B] sm:h-7 sm:w-7" strokeWidth={1.8} />
+              <div className="md:absolute md:top-0 z-20 flex flex-col items-center gap-3">
+                <div className="flex size-14 items-center justify-center rounded-full border-2 border-[#F59E0B] bg-[#F59E0B]/15 shadow-lg">
+                  <Trophy className="h-7 w-7 text-[#F59E0B]" strokeWidth={1.8} />
                 </div>
                 <TeamFlag logo={champion.logo} name={champion.name} />
                 <div className="w-full text-center">
-                  <span className="block w-full truncate text-[10px] font-bold text-[#F59E0B] sm:text-xs">{champion.name}</span>
-                  <span className="block w-full truncate text-[8px] font-bold uppercase tracking-widest text-[#F59E0B] sm:text-[10px]">
+                  <span className="block w-full truncate text-xs font-bold text-[#F59E0B]">{champion.name}</span>
+                  <span className="block w-full truncate text-[10px] font-bold uppercase tracking-widest text-[#F59E0B]">
                     Champion
                   </span>
                 </div>
               </div>
             )}
 
-            {/* Hidden spacer label to match the top spacing of side trees */}
-            <div className="mb-3 w-full select-none truncate text-center text-[9px] font-bold uppercase tracking-widest text-transparent sm:mb-4">
+            {/* Hidden spacer label for desktop */}
+            <div className="hidden md:block mb-4 w-full select-none truncate text-center text-[10px] font-bold uppercase tracking-widest text-transparent">
               Spacer
             </div>
 
-            {/* This flex-1 container ensures the Final perfectly aligns horizontally with the side trees */}
-            <div className="relative flex w-full flex-1 flex-col items-center justify-center">
+            {/* Final */}
+            <div className="relative flex flex-col w-[150px] md:w-full md:flex-1 items-center justify-center">
               {finalMatch && (
                 <div className="relative z-10 flex w-full flex-col items-center justify-center">
-                  <div className="absolute bottom-[calc(100%+8px)] w-full truncate text-center text-[9px] font-bold uppercase tracking-widest text-[#F59E0B] sm:bottom-[calc(100%+12px)]">
+                  <div className="absolute bottom-[calc(100%+12px)] w-full truncate text-center text-[10px] font-bold uppercase tracking-widest text-[#F59E0B]">
                     Final
                   </div>
                   <div className="relative w-full">
                     {leftRounds.length > 0 && (
-                      <div className="absolute right-full top-1/2 w-2 border-t border-[#DDE8E3] dark:border-white/15 sm:w-4" />
+                      <div className="absolute bottom-full md:bottom-auto md:right-full left-1/2 md:left-auto md:top-1/2 h-6 md:h-auto md:w-4 border-l md:border-l-0 md:border-t border-[#DDE8E3] dark:border-white/15" />
                     )}
                     {rightRounds.length > 0 && (
-                      <div className="absolute left-full top-1/2 w-2 border-t border-[#DDE8E3] dark:border-white/15 sm:w-4" />
+                      <div className="absolute top-full md:top-auto md:left-full left-1/2 md:left-auto md:top-1/2 h-6 md:h-auto md:w-4 border-l md:border-l-0 md:border-t border-[#DDE8E3] dark:border-white/15" />
                     )}
                     <MatchBox match={finalMatch} isFinal />
                   </div>
@@ -353,10 +365,10 @@ export default function KnockoutTab({ fixtures = [] }: Props) {
               )}
             </div>
 
-            {/* Third Place positioned at the bottom */}
+            {/* Third Place */}
             {thirdPlaceRound && thirdPlaceRound.matches[0] && (
-              <div className="absolute bottom-0 z-10 flex w-full flex-col items-center">
-                <div className="mb-2 w-full truncate text-center text-[9px] font-bold uppercase tracking-widest text-[#6B7A75] dark:text-white/40">
+              <div className="md:absolute md:bottom-0 z-10 flex w-[150px] md:w-full flex-col items-center">
+                <div className="mb-2 w-full truncate text-center text-[10px] font-bold uppercase tracking-widest text-[#6B7A75] dark:text-white/40">
                   3rd Place
                 </div>
                 <MatchBox match={thirdPlaceRound.matches[0]} isThirdPlace />
@@ -364,43 +376,50 @@ export default function KnockoutTab({ fixtures = [] }: Props) {
             )}
           </div>
 
-        {/* Right Tree */}
-        <div className="flex flex-1 min-w-0 flex-row-reverse items-stretch justify-end gap-1 sm:gap-4 lg:gap-8">
-          {rightRounds.map((round, rIdx) => {
-            const isLastRound = rIdx === rightRounds.length - 1;
-            return (
-              <div key={`right-r${rIdx}`} className="flex w-[110px] flex-col items-center">
-                <div className="mb-3 w-full truncate text-center text-[10px] font-bold uppercase tracking-widest text-[#6B7A75] dark:text-white/40 sm:mb-4">
-                  {round.label}
-                </div>
-                {round.matches.map((match, mIdx) => (
-                  <div key={match.fixture.id} className="relative flex w-full flex-1 flex-col justify-center py-2 sm:py-3">
-                    {/* Horizontal In (from center to right physically) */}
-                    {rIdx > 0 && (
-                      <div className="absolute left-full top-1/2 w-2 border-t border-[#DDE8E3] dark:border-white/15 sm:w-4" />
-                    )}
-
-                    <MatchBox match={match} />
-
-                    {/* Horizontal Out (to left physically) */}
-                    <div className="absolute right-full top-1/2 w-2 border-t border-[#DDE8E3] dark:border-white/15 sm:w-4" />
-
-                    {/* Vertical Line */}
-                    {!isLastRound && (
-                      <div
-                        className={`absolute right-[calc(100%+8px)] w-px bg-[#DDE8E3] dark:bg-white/15 sm:right-[calc(100%+16px)] ${
-                          mIdx % 2 === 0 ? "top-1/2 h-1/2" : "bottom-1/2 h-1/2"
-                        }`}
-                      />
-                    )}
+          {/* Bottom Tree (Mobile) / Right Tree (Desktop) */}
+          <div className="flex flex-col-reverse md:flex-row-reverse flex-1 min-w-0 items-center md:items-stretch justify-center md:justify-end gap-12 md:gap-4 lg:gap-8 mt-4 md:mt-0">
+            {rightRounds.map((round, rIdx) => {
+              const isLastRound = rIdx === rightRounds.length - 1;
+              return (
+                <div key={`right-r${rIdx}`} className="flex flex-col items-center md:w-[120px]">
+                  <div className="mb-4 w-full truncate text-center text-[10px] font-bold uppercase tracking-widest text-[#6B7A75] dark:text-white/40">
+                    {round.label}
                   </div>
-                ))}
-              </div>
-            );
-          })}
-        </div>
+                  <div className="flex flex-row md:flex-col flex-1 items-stretch justify-center w-full">
+                    {round.matches.map((match, mIdx) => (
+                      <div key={match.fixture.id} className="relative flex flex-1 w-[150px] md:w-full flex-col justify-center py-0 px-2 md:py-3 md:px-0">
+                        {/* Line In */}
+                        {rIdx > 0 && (
+                          <div className="absolute top-full md:top-auto md:left-full left-1/2 md:left-auto md:top-1/2 h-6 md:h-auto md:w-4 border-l md:border-l-0 md:border-t border-[#DDE8E3] dark:border-white/15" />
+                        )}
+
+                        <MatchBox match={match} />
+
+                        {/* Line Out */}
+                        <div className="absolute bottom-full md:bottom-auto md:right-full left-1/2 md:left-auto md:top-1/2 h-6 md:h-auto md:w-4 border-l md:border-l-0 md:border-t border-[#DDE8E3] dark:border-white/15" />
+
+                        {/* Connecting Line */}
+                        {!isLastRound && (
+                          <div
+                            className={`absolute border-[#DDE8E3] dark:border-white/15 
+                              bottom-[calc(100%+24px)] md:bottom-auto md:right-[calc(100%+16px)] 
+                              h-px md:h-1/2 w-1/2 md:w-px 
+                              ${mIdx % 2 === 0 
+                                ? "left-1/2 md:left-auto md:top-1/2" 
+                                : "right-1/2 md:right-auto md:bottom-1/2"
+                              }`}
+                          />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
