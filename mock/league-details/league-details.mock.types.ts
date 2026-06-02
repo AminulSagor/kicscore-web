@@ -4,7 +4,8 @@ export type LeagueDetailsTab =
   | "knockout"
   | "fixtures"
   | "player-stats"
-  | "team-stats";
+  | "team-stats"
+  | "season";
 
 export type LeagueHeaderInfo = {
   id: string;

@@ -15,6 +15,7 @@ export interface LeagueStandingTeam {
   goalDifference: number;
   points: number;
   form: StandingFormResult[];
+  group: string;
 }
 
 export type LeagueStandingGoals = {

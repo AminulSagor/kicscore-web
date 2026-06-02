@@ -6,6 +6,7 @@ import PlayerStatsTab from "./_components/player-stats/player-stats-tab";
 import TableTab from "./_components/table/table.tab";
 import TeamStatsTab from "./_components/team-stats/team-stats-tab";
 import KnockoutTab from "./_components/knockout/knockout-tab";
+import SeasonTab from "./_components/season/season-tab";
 
 import {
   DEFAULT_PLAYER_STATS_LIMIT,
@@ -249,6 +250,8 @@ export default async function Page({
             teamStatsLimit={teamStatsLimit}
           />
         )}
+
+        {activeTab === "season" && <SeasonTab />}
       </div>
     </main>
   );
