@@ -251,7 +251,7 @@ export default async function Page({
           />
         )}
 
-        {activeTab === "season" && <SeasonTab />}
+        {activeTab === "season" && <SeasonTab seasons={leagueDetails?.seasons ?? []} activeSeason={selectedSeason} />}
       </div>
     </main>
   );
