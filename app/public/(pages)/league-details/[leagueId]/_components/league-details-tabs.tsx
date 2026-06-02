@@ -5,13 +5,14 @@ import { useParams, useSearchParams } from "next/navigation";
 
 import type { LeagueDetailsTab } from "@/mock/league-details/league-details.mock.types";
 
-const leagueDetailsTabs: { label: string; value: LeagueDetailsTab }[] = [
+const allTabs: { label: string; value: LeagueDetailsTab }[] = [
   { label: "Overview", value: "overview" },
   { label: "Table", value: "table" },
   { label: "Knockout", value: "knockout" },
   { label: "Fixtures", value: "fixtures" },
   { label: "Player stats", value: "player-stats" },
   { label: "Team stats", value: "team-stats" },
+  { label: "Season", value: "season" },
 ];
 
 export default function LeagueDetailsTabs() {
@@ -20,10 +21,20 @@ export default function LeagueDetailsTabs() {
 
   const activeTab = searchParams.get("tab") ?? "overview";
 
+  const isWorldCup = params.leagueId === "1";
+  const tabs = allTabs.filter(tab => {
+    if (isWorldCup) {
+      if (["table", "player-stats", "team-stats"].includes(tab.value)) return false;
+    } else {
+      if (tab.value === "season") return false;
+    }
+    return true;
+  });
+
   return (
     <div className="mt-12 border-b border-[#DDE8E3] dark:border-white/10">
       <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
-        {leagueDetailsTabs.map((tab) => {
+        {tabs.map((tab) => {
           const isActive = activeTab === tab.value;
 
           return (

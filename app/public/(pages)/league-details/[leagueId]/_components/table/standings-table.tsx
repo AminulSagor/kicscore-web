@@ -117,13 +117,32 @@ const standingsColumns: DataTableColumn<LeagueStandingTeam>[] = [
 ];
 
 export default function StandingsTable({ teams }: StandingsTableProps) {
+  const groups = Array.from(new Set(teams.map((t) => t.group || "")));
+
+  if (groups.length <= 1) {
+    return (
+      <DataTable
+        title={groups[0] || "Table"}
+        data={teams}
+        columns={standingsColumns}
+        getRowKey={(team) => `${team.position}-${team.teamName}`}
+        emptyMessage="No standings found"
+      />
+    );
+  }
+
   return (
-    <DataTable
-      title="Table"
-      data={teams}
-      columns={standingsColumns}
-      getRowKey={(team) => `${team.position}-${team.teamName}`}
-      emptyMessage="No standings found"
-    />
+    <div className="flex flex-col gap-6">
+      {groups.map((group) => (
+        <DataTable
+          key={group}
+          title={group || "Table"}
+          data={teams.filter((t) => t.group === group)}
+          columns={standingsColumns}
+          getRowKey={(team) => `${team.position}-${team.teamName}`}
+          emptyMessage="No standings found"
+        />
+      ))}
+    </div>
   );
 }
