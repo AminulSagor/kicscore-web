@@ -129,7 +129,7 @@ export default function MobileSidebar({ isOpen, onClose }: MobileSidebarProps) {
                     Guest User
                   </p>
                   <p className="text-xs text-[#6B7A75] dark:text-white/50">
-                    Sign in to personalize KICScore
+                    Sign in to personalize Kicscore
                   </p>
                 </div>
               </div>

@@ -14,13 +14,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "KICScore - Live Football Scores & News",
+  title: "Kicscore - Live Football Scores & News",
   description:
-    "KICScore provides live football scores, fixtures, standings, team updates, player stats, and latest football news.",
+    "Kicscore provides live football scores, fixtures, standings, team updates, player stats, and latest football news.",
   icons: {
-    icon: "/icon.svg",
-    shortcut: "/icon.svg",
-    apple: "/icon.svg",
+  icon: "/favicon_io/favicon-32x32.png",
+  shortcut: "/favicon_io/favicon-32x32.png",
+  apple: "/favicon_io/apple-touch-icon.png",
   },
 };
 

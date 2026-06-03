@@ -17,7 +17,7 @@ export default function NewsDetailArticle({
 }: NewsDetailArticleProps) {
   const newsImage = getValidImage(news.imageUrl);
   const category = news.categories?.[0] || "sports";
-  const source = news.source || "KICScore";
+  const source = news.source || "Kicscore";
   const publishedDate = news.publishedAt
     ? new Date(news.publishedAt).toLocaleDateString()
     : "Recently";
@@ -122,7 +122,7 @@ export default function NewsDetailArticle({
                     </h3>
 
                     <div className="mt-6 flex items-center justify-between text-[11px] text-[#61736D] dark:text-white/50">
-                      <span>{item.source || "KICScore"}</span>
+                      <span>{item.source || "Kicscore"}</span>
                       <span>{similarDate}</span>
                     </div>
                   </div>

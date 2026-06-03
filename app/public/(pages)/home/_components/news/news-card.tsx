@@ -10,7 +10,7 @@ interface NewsCardProps {
 
 export default function NewsCard({ item }: NewsCardProps) {
   const imageUrl = getValidImage(item.imageUrl);
-  const source = item.source || "KICScore";
+  const source = item.source || "Kicscore";
   const href = `/public/news/${item.uuid}`;
 
   return (
