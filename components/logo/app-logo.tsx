@@ -22,7 +22,7 @@ export default function AppLogo({
     <Link href={href} className={className}>
       <Image
         src={IMAGE.logo}
-        alt="KICSCORE"
+        alt="Kicscore"
         width={width}
         height={height}
         priority

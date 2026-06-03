@@ -10,7 +10,7 @@ interface NewsSmallCardProps {
 
 export default function NewsSmallCard({ item }: NewsSmallCardProps) {
   const imageUrl = getValidImage(item.imageUrl);
-  const source = item.source || "KICScore";
+  const source = item.source || "Kicscore";
 
   return (
     <article className="flex gap-3">

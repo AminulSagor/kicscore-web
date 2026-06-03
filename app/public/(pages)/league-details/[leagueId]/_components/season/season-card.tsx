@@ -11,14 +11,17 @@ type Props = {
   leagueId: string;
   isActive: boolean;
   onClick: () => void;
+  winnerFromHistory?: { id?: string | null; name?: string | null; logo?: string | null } | null;
+  runnerUpFromHistory?: { id?: string | null; name?: string | null; logo?: string | null } | null;
 };
 
-export default function SeasonCard({ season, leagueId, isActive, onClick }: Props) {
+export default function SeasonCard({ season, leagueId, isActive, onClick, winnerFromHistory, runnerUpFromHistory }: Props) {
   const [winnerData, setWinnerData] = useState<SeasonWinnerData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
+
     const fetchWinners = async () => {
       setLoading(true);
       const data = await getSeasonWinners(leagueId, String(season.year));
@@ -27,9 +30,20 @@ export default function SeasonCard({ season, leagueId, isActive, onClick }: Prop
         setLoading(false);
       }
     };
-    
-    // Only fetch if standings coverage is true to prevent failing api calls
-    if (season.coverage.standings) {
+
+    // If history provides winner/runnerUp, use that and skip fetching
+    if (winnerFromHistory || runnerUpFromHistory) {
+      const mapped: SeasonWinnerData = {
+        winner: winnerFromHistory && winnerFromHistory.name ? { name: winnerFromHistory.name, logo: winnerFromHistory.logo ?? "" } : null,
+        runnerUp: runnerUpFromHistory && runnerUpFromHistory.name ? { name: runnerUpFromHistory.name, logo: runnerUpFromHistory.logo ?? "" } : null,
+      };
+
+      if (mounted) {
+        setWinnerData(mapped);
+        setLoading(false);
+      }
+    } else if (season.coverage.standings) {
+      // fallback to original behavior
       fetchWinners();
     } else {
       setLoading(false);
@@ -38,7 +52,7 @@ export default function SeasonCard({ season, leagueId, isActive, onClick }: Prop
     return () => {
       mounted = false;
     };
-  }, [leagueId, season]);
+  }, [leagueId, season, winnerFromHistory, runnerUpFromHistory]);
 
   return (
     <button
