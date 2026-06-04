@@ -60,10 +60,12 @@ const footerSections: FooterSection[] = [
   },
 ];
 
+// Keep only Facebook visible in the footer. Other social links are retained here
+// as commented entries for easy re-enabling later.
 const socialLinks = [
-  { icon: FaInstagram, label: "Instagram", env: process.env.NEXT_PUBLIC_SOCIAL_INSTAGRAM },
+  // { icon: FaInstagram, label: "Instagram", env: process.env.NEXT_PUBLIC_SOCIAL_INSTAGRAM },
   { icon: FaFacebookF, label: "Facebook", env: process.env.NEXT_PUBLIC_SOCIAL_FACEBOOK },
-  { icon: FaXTwitter, label: "X", env: process.env.NEXT_PUBLIC_SOCIAL_X },
+  // { icon: FaXTwitter, label: "X", env: process.env.NEXT_PUBLIC_SOCIAL_X },
 ];
 
 const footerLinkClassName =
