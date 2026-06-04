@@ -1,5 +1,9 @@
 #!/usr/bin/env sh
-. "$(dirname \"$0\")/_/husky.sh"
+# Source husky helper if it exists (some checkouts may not include the generated helper)
+HUSKY_SH="$(dirname \"$0\")/_/husky.sh"
+if [ -f "$HUSKY_SH" ]; then
+	. "$HUSKY_SH"
+fi
 
 # Always build with npm before pushing
 npm run build || { echo "Build failed — aborting push."; exit 1; }
