@@ -61,9 +61,9 @@ const footerSections: FooterSection[] = [
 ];
 
 const socialLinks = [
-  { icon: FaInstagram, label: "Instagram" },
-  { icon: FaFacebookF, label: "Facebook" },
-  { icon: FaXTwitter, label: "X" },
+  { icon: FaInstagram, label: "Instagram", env: process.env.NEXT_PUBLIC_SOCIAL_INSTAGRAM },
+  { icon: FaFacebookF, label: "Facebook", env: process.env.NEXT_PUBLIC_SOCIAL_FACEBOOK },
+  { icon: FaXTwitter, label: "X", env: process.env.NEXT_PUBLIC_SOCIAL_X },
 ];
 
 const footerLinkClassName =
@@ -88,9 +88,11 @@ const Footer = () => {
               Get The App
             </h3>
 
-            <button
-              type="button"
-              className="mt-5 flex items-center gap-3 rounded-full border border-[#D8E7DF] bg-white px-5 py-3 shadow-[0_10px_30px_rgba(16,32,27,0.08)] transition hover:border-[#008A63]/30 hover:bg-[#F8FBFA] dark:border-transparent dark:bg-white/6 dark:shadow-none dark:hover:bg-white/10"
+            <a
+              href={process.env.NEXT_PUBLIC_PLAYSTORE_URL || "#"}
+              target={process.env.NEXT_PUBLIC_PLAYSTORE_URL ? "_blank" : undefined}
+              rel={process.env.NEXT_PUBLIC_PLAYSTORE_URL ? "noreferrer" : undefined}
+              className="mt-5 inline-flex items-center gap-3 rounded-full border border-[#D8E7DF] bg-white px-5 py-3 shadow-[0_10px_30px_rgba(16,32,27,0.08)] transition hover:border-[#008A63]/30 hover:bg-[#F8FBFA] dark:border-transparent dark:bg-white/6 dark:shadow-none dark:hover:bg-white/10"
             >
               <div className="flex h-9 w-9 items-center justify-center">
                 <Image
@@ -109,7 +111,7 @@ const Footer = () => {
                   Google Play
                 </p>
               </div>
-            </button>
+            </a>
           </div>
 
           {footerSections.map((section) => (
@@ -150,16 +152,22 @@ const Footer = () => {
               Follow Us on
             </span>
 
-            {socialLinks.map(({ icon: Icon, label }) => (
-              <a
-                key={label}
-                href="#"
-                aria-label={label}
-                className="transition hover:text-[#008A63] dark:hover:text-[#79e2c5]"
-              >
-                <Icon className="h-5 w-5" />
-              </a>
-            ))}
+            {socialLinks.map(({ icon: Icon, label, env }) => {
+              const href = env || "#";
+
+              return (
+                <a
+                  key={label}
+                  href={href}
+                  target={href === "#" ? undefined : "_blank"}
+                  rel={href === "#" ? undefined : "noreferrer"}
+                  aria-label={label}
+                  className="transition hover:text-[#008A63] dark:hover:text-[#79e2c5]"
+                >
+                  <Icon className="h-5 w-5" />
+                </a>
+              );
+            })}
           </div>
         </div>
       </div>
