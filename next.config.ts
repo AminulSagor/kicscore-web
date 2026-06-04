@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Allow specific hosts to access dev-only next resources (fonts, etc.)
+  // Add IPs like '192.168.0.109' when developing across local network devices.
+  allowedDevOrigins: ['192.168.0.109'],
   images: {
     unoptimized: true,
     remotePatterns: [
