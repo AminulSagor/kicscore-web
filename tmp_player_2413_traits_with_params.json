@@ -1,0 +1,60 @@
+﻿{
+    "success":  true,
+    "statusCode":  200,
+    "message":  "Request successful",
+    "data":  {
+                 "playerId":  "2413",
+                 "about":  "Richarlison from Brazil. Their strongest current trait is aerial won, rated at 46% compared with players in the selected league.",
+                 "traits":  [
+                                {
+                                    "key":  "defensiveContribution",
+                                    "label":  "DEFENSIVE CONTRIB.",
+                                    "score":  13,
+                                    "rawValue":  0.5,
+                                    "sourceMetric":  "tackles + interceptions per 90"
+                                },
+                                {
+                                    "key":  "goals",
+                                    "label":  "GOALS",
+                                    "score":  0,
+                                    "rawValue":  0,
+                                    "sourceMetric":  "goals per 90"
+                                },
+                                {
+                                    "key":  "shotAttempts",
+                                    "label":  "SHOT ATTEMPTS",
+                                    "score":  23,
+                                    "rawValue":  0.9,
+                                    "sourceMetric":  "shots.total per 90"
+                                },
+                                {
+                                    "key":  "touches",
+                                    "label":  "TOUCHES",
+                                    "score":  18,
+                                    "rawValue":  12.9,
+                                    "sourceMetric":  "passes.total per 90 proxy"
+                                },
+                                {
+                                    "key":  "chancesCreated",
+                                    "label":  "CHANCES CREATED",
+                                    "score":  0,
+                                    "rawValue":  0,
+                                    "sourceMetric":  "assists + key passes per 90"
+                                },
+                                {
+                                    "key":  "aerialWon",
+                                    "label":  "AERIAL WON",
+                                    "score":  46,
+                                    "rawValue":  2.3,
+                                    "sourceMetric":  "duels.won per 90 proxy"
+                                }
+                            ],
+                 "follow":  {
+                                "isFollowed":  false,
+                                "entityType":  "PLAYER",
+                                "entityId":  "2413"
+                            }
+             },
+    "timestamp":  "2026-06-04T13:09:22.414Z",
+    "path":  "/football/players/2413/traits?league=34\u0026season=2026"
+}

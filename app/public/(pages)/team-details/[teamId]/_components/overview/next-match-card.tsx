@@ -32,11 +32,14 @@ export default function NextMatchCard({ fixture }: Props) {
 
         <div className="text-center">
           <p className="text-xl font-bold">
-            {formatFixtureTime(fixture.fixture.date)}
+            {formatFixtureTime(fixture.fixture.date, fixture.fixture.timezone)}
           </p>
 
           <p className="mt-1 text-xs text-[#6B7A75] dark:text-white/50">
-            {formatFixtureDateLabel(fixture.fixture.date)}
+            {formatFixtureDateLabel(
+              fixture.fixture.date,
+              fixture.fixture.timezone,
+            )}
           </p>
         </div>
 

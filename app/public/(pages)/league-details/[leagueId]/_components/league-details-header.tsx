@@ -41,9 +41,9 @@ export default function LeagueDetailsHeader({
     );
   };
 
-  //format season label like this: 2023/24
+  //format season label (use single year from the API)
   function formatSeasonLabel(year: number) {
-    return `${year}/${year + 1}`;
+    return String(year);
   }
 
   return (

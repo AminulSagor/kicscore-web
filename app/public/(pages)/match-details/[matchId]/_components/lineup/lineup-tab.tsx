@@ -13,7 +13,6 @@ interface LineupTabProps {
 export default function LineupTab({ match }: LineupTabProps) {
   const coaches = buildCoaches(match);
   const substitutes = buildSubstitutes(match);
-  const startingPlayers = buildStartingPlayers(match);
 
   return (
     <div className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
@@ -22,9 +21,7 @@ export default function LineupTab({ match }: LineupTabProps) {
 
         <LineupPlayerGroupCard title="Coach" players={coaches} columns="two" />
 
-        <LineupPlayerGroupCard title="Substitutes" players={substitutes} />
-
-        <LineupPlayerGroupCard title="Starting XI" players={startingPlayers} />
+        <LineupPlayerGroupCard title="Bench" players={substitutes} />
       </div>
 
       <aside className="min-w-0 self-start lg:sticky lg:top-20">
@@ -34,10 +31,37 @@ export default function LineupTab({ match }: LineupTabProps) {
   );
 }
 
+// helper to avoid calling map/flatMap on undefined
+function safeArray<T>(v?: T[] | null): T[] {
+  return Array.isArray(v) ? v : [];
+}
+
+//======= Build player photo map from match.players =======//
+function buildPlayerPhotoMap(match: MatchDetailsItem): Map<number, string> {
+  const photoMap = new Map<number, string>();
+
+  if (!Array.isArray(match.players)) return photoMap;
+
+  match.players.forEach((team) => {
+    if (!team || !Array.isArray(team.players)) return;
+
+    team.players.forEach((item) => {
+      const pid = item?.player?.id;
+      const pphoto = item?.player?.photo;
+
+      if (pid && pphoto) {
+        photoMap.set(pid, pphoto);
+      }
+    });
+  });
+
+  return photoMap;
+}
+
 //======= Prepare Coaches =======//
 function buildCoaches(match: MatchDetailsItem): LineupPerson[] {
-  return match.lineups
-    .filter((lineup) => lineup.coach.name)
+  return safeArray(match.lineups)
+    .filter((lineup) => lineup?.coach?.name)
     .map((lineup) => ({
       id: `coach-${lineup.team.id}-${lineup.coach.id ?? lineup.coach.name}`,
       name: lineup.coach.name ?? "Unknown Coach",
@@ -46,26 +70,20 @@ function buildCoaches(match: MatchDetailsItem): LineupPerson[] {
     }));
 }
 
-//======= Prepare Substitutes =======//
+//======= Prepare Substitutes (with player photos) =======//
 function buildSubstitutes(match: MatchDetailsItem): LineupPerson[] {
-  return match.lineups.flatMap((lineup) =>
-    lineup.substitutes.map((item, index) => ({
-      id: `substitute-${lineup.team.id}-${item.player.id ?? index}`,
-      name: item.player.name ?? "Unknown Player",
-      number: item.player.number,
-      meta: lineup.team.name,
-    })),
-  );
-}
+  const playerPhotoMap = buildPlayerPhotoMap(match);
 
-//======= Prepare Starting Players =======//
-function buildStartingPlayers(match: MatchDetailsItem): LineupPerson[] {
-  return match.lineups.flatMap((lineup) =>
-    lineup.startXI.map((item, index) => ({
-      id: `starting-${lineup.team.id}-${item.player.id ?? index}`,
-      name: item.player.name ?? "Unknown Player",
-      number: item.player.number,
-      meta: lineup.team.name,
-    })),
+  return safeArray(match.lineups).flatMap((lineup) =>
+    safeArray(lineup.substitutes).map((item, index) => {
+      const playerId = item.player.id;
+      return {
+        id: `substitute-${lineup.team.id}-${playerId ?? index}`,
+        name: item.player.name ?? "Unknown Player",
+        number: item.player.number,
+        image: playerId ? (playerPhotoMap.get(playerId) ?? null) : null,
+        meta: lineup.team.name,
+      };
+    }),
   );
 }

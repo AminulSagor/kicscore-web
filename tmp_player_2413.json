@@ -1,0 +1,124 @@
+﻿{
+    "success":  true,
+    "statusCode":  200,
+    "message":  "Request successful",
+    "data":  {
+                 "get":  "players",
+                 "parameters":  {
+                                    "id":  "2413",
+                                    "season":  "2026"
+                                },
+                 "errors":  [
+
+                            ],
+                 "results":  1,
+                 "paging":  {
+                                "current":  1,
+                                "total":  1
+                            },
+                 "response":  [
+                                  {
+                                      "player":  {
+                                                     "id":  2413,
+                                                     "name":  "Richarlison",
+                                                     "firstname":  "Richarlison",
+                                                     "lastname":  "de Andrade",
+                                                     "age":  28,
+                                                     "birth":  {
+                                                                   "date":  "1997-05-10",
+                                                                   "place":  "Nova Venécia",
+                                                                   "country":  "Brazil"
+                                                               },
+                                                     "nationality":  "Brazil",
+                                                     "height":  "184",
+                                                     "weight":  "83",
+                                                     "injured":  false,
+                                                     "photo":  "https://media.api-sports.io/football/players/2413.png"
+                                                 },
+                                      "statistics":  [
+                                                         {
+                                                             "team":  {
+                                                                          "id":  6,
+                                                                          "name":  "Brazil",
+                                                                          "logo":  "https://media.api-sports.io/football/teams/6.png"
+                                                                      },
+                                                             "league":  {
+                                                                            "id":  34,
+                                                                            "name":  "World Cup - Qualification South America",
+                                                                            "country":  "World",
+                                                                            "logo":  "https://media.api-sports.io/football/leagues/34.png",
+                                                                            "flag":  null,
+                                                                            "season":  2026
+                                                                        },
+                                                             "games":  {
+                                                                           "appearences":  8,
+                                                                           "lineups":  5,
+                                                                           "minutes":  392,
+                                                                           "number":  9,
+                                                                           "position":  "Attacker",
+                                                                           "rating":  "6.39",
+                                                                           "captain":  false
+                                                                       },
+                                                             "substitutes":  {
+                                                                                 "in":  3,
+                                                                                 "out":  5,
+                                                                                 "bench":  3
+                                                                             },
+                                                             "shots":  {
+                                                                           "total":  4,
+                                                                           "on":  2
+                                                                       },
+                                                             "goals":  {
+                                                                           "total":  0,
+                                                                           "conceded":  0,
+                                                                           "assists":  0,
+                                                                           "saves":  null
+                                                                       },
+                                                             "passes":  {
+                                                                            "total":  56,
+                                                                            "key":  null,
+                                                                            "accuracy":  null
+                                                                        },
+                                                             "tackles":  {
+                                                                             "total":  2,
+                                                                             "blocks":  null,
+                                                                             "interceptions":  null
+                                                                         },
+                                                             "duels":  {
+                                                                           "total":  36,
+                                                                           "won":  10
+                                                                       },
+                                                             "dribbles":  {
+                                                                              "attempts":  4,
+                                                                              "success":  null,
+                                                                              "past":  null
+                                                                          },
+                                                             "fouls":  {
+                                                                           "drawn":  3,
+                                                                           "committed":  2
+                                                                       },
+                                                             "cards":  {
+                                                                           "yellow":  1,
+                                                                           "yellowred":  0,
+                                                                           "red":  0
+                                                                       },
+                                                             "penalty":  {
+                                                                             "won":  null,
+                                                                             "commited":  null,
+                                                                             "scored":  0,
+                                                                             "missed":  0,
+                                                                             "saved":  null
+                                                                         }
+                                                         }
+                                                     ]
+                                  }
+                              ],
+                 "follow":  {
+                                "isFollowed":  false,
+                                "entityType":  "PLAYER",
+                                "entityId":  "2413"
+                            }
+             },
+    "timestamp":  "2026-06-04T13:08:51.748Z",
+    "path":  "/football/players?id=2413\u0026season=2026"
+}

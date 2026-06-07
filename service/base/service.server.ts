@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 
 const serviceServer = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  timeout: 8000, // 8s timeout to avoid very long server-side hangs
   headers: {
     "Content-Type": "application/json",
   },

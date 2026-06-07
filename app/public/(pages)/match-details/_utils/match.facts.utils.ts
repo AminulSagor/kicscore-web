@@ -76,11 +76,13 @@ export function formatMatchDetailDate(date: string, timezone: string) {
 export function buildMatchFactEvents(
   match: MatchDetailsItem,
 ): MatchFactEventView[] {
-  if (!match.events.length) {
+  const events = Array.isArray(match.events) ? match.events : [];
+
+  if (!events.length) {
     return [];
   }
 
-  const normalizedEvents = [...match.events]
+  const normalizedEvents = [...events]
     .sort((firstEvent, secondEvent) => {
       const firstMinute = firstEvent.time.elapsed ?? 0;
       const secondMinute = secondEvent.time.elapsed ?? 0;
@@ -101,30 +103,30 @@ export function buildMatchFactEvents(
     return !Number.isNaN(minute) && minute > 45;
   });
 
-  const events: MatchFactEventView[] = [];
+  const result: MatchFactEventView[] = [];
 
   if (firstHalfEvents.length) {
-    events.push({
+    result.push({
       id: "first-half",
       type: "period",
       title: "First half",
     });
 
-    events.push(...firstHalfEvents);
+    result.push(...firstHalfEvents);
   }
 
   if (secondHalfEvents.length) {
-    events.push({
+    result.push({
       id: "second-half",
       type: "period",
       title: "Second half",
     });
 
-    events.push(...secondHalfEvents);
+    result.push(...secondHalfEvents);
   }
 
   if (match.fixture.status.short === "HT") {
-    events.push({
+    result.push({
       id: "half-time",
       type: "period",
       title: "Half time",
@@ -132,14 +134,14 @@ export function buildMatchFactEvents(
   }
 
   if (match.fixture.status.short === "FT") {
-    events.push({
+    result.push({
       id: "full-time",
       type: "period",
       title: "Full time",
     });
   }
 
-  return events;
+  return result;
 }
 
 //======= Build Event =======//
@@ -231,8 +233,9 @@ function getEventSecondaryTitle(event: MatchEventItem) {
 
 //======= Build Top Stats =======//
 export function buildMatchTopStats(match: MatchDetailsItem): MatchTopStatsView {
-  const homeStats = getTeamStatistics(match, "home");
-  const awayStats = getTeamStatistics(match, "away");
+  const statistics = Array.isArray(match.statistics) ? match.statistics : [];
+  const homeStats = getTeamStatisticsFromList(statistics, match, "home");
+  const awayStats = getTeamStatisticsFromList(statistics, match, "away");
 
   const totalShots = buildStatRow(homeStats, awayStats, "Total shots", [
     "Total Shots",
@@ -258,17 +261,30 @@ export function buildMatchTopStats(match: MatchDetailsItem): MatchTopStatsView {
   };
 
   return {
-    hasStats: match.statistics.length > 0,
+    hasStats: statistics.length > 0,
     possession,
     rows: [totalShots, secondRow],
   };
 }
 
 function getTeamStatistics(match: MatchDetailsItem, side: MatchFactSide) {
+  const statistics = Array.isArray(match.statistics) ? match.statistics : [];
   const teamId = match.teams[side].id;
 
   return (
-    match.statistics.find((item) => item.team.id === teamId)?.statistics ?? []
+    statistics.find((item) => item.team.id === teamId)?.statistics ?? []
+  );
+}
+
+function getTeamStatisticsFromList(
+  statistics: MatchDetailsItem["statistics"],
+  match: MatchDetailsItem,
+  side: MatchFactSide,
+) {
+  const teamId = match.teams[side].id;
+
+  return (
+    statistics.find((item) => item.team.id === teamId)?.statistics ?? []
   );
 }
 

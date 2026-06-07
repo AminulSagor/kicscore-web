@@ -33,10 +33,13 @@ interface TeamHeaderProps {
 
 //======= Formation Pitch =======//
 export default function FormationPitch({ match }: FormationPitchProps) {
-  const homeLineup = getTeamLineup(match, "home");
-  const awayLineup = getTeamLineup(match, "away");
+  // Defensive guards: ensure match shape is present before accessing nested fields
+  const safeMatch = match ?? ({} as MatchDetailsItem);
 
-  const playerPhotoMap = buildPlayerPhotoMap(match);
+  const homeLineup = getTeamLineup(safeMatch, "home");
+  const awayLineup = getTeamLineup(safeMatch, "away");
+
+  const playerPhotoMap = buildPlayerPhotoMap(safeMatch);
 
   const homePlayers = homeLineup
     ? buildPitchPlayers(homeLineup, "home", playerPhotoMap)
@@ -56,8 +59,8 @@ export default function FormationPitch({ match }: FormationPitchProps) {
       className="overflow-hidden border border-[#DDE8E3] bg-white text-[#10201B] dark:border-white/10 dark:bg-[#13211D] dark:text-white"
     >
       <TeamHeader
-        teamName={match.teams.home.name}
-        teamLogo={match.teams.home.logo}
+        teamName={match?.teams?.home?.name ?? ""}
+        teamLogo={match?.teams?.home?.logo ?? null}
         formation={homeLineup?.formation ?? null}
       />
 
@@ -78,8 +81,8 @@ export default function FormationPitch({ match }: FormationPitchProps) {
       </div>
 
       <TeamFooter
-        teamName={match.teams.away.name}
-        teamLogo={match.teams.away.logo}
+        teamName={match?.teams?.away?.name ?? ""}
+        teamLogo={match?.teams?.away?.logo ?? null}
         formation={awayLineup?.formation ?? null}
       />
     </Card>
@@ -187,9 +190,14 @@ function PlayerMarker({ player }: { player: PitchPlayerView }) {
 
 //======= Prepare Lineup =======//
 function getTeamLineup(match: MatchDetailsItem, side: PitchSide) {
+  // Guard against missing teams or lineups
+  if (!match || !match.teams || !match.teams[side]) return null;
+
   const teamId = match.teams[side].id;
 
-  return match.lineups.find((lineup) => lineup.team.id === teamId) ?? null;
+  if (!Array.isArray(match.lineups) || match.lineups.length === 0) return null;
+
+  return match.lineups.find((lineup) => lineup?.team?.id === teamId) ?? null;
 }
 
 function buildPitchPlayers(
@@ -197,26 +205,27 @@ function buildPitchPlayers(
   side: PitchSide,
   playerPhotoMap: Map<number, string>,
 ): PitchPlayerView[] {
-  const gridMeta = buildGridMeta(lineup.startXI);
-  const fallbackRows = buildFallbackRows(
-    lineup.startXI.length,
-    lineup.formation,
-  );
+  const startXI = Array.isArray(lineup.startXI) ? lineup.startXI : [];
 
-  return lineup.startXI.map((item, index) => {
-    const parsedGrid = parsePlayerGrid(item.player.grid);
+  if (startXI.length === 0) return [];
+
+  const gridMeta = buildGridMeta(startXI);
+  const fallbackRows = buildFallbackRows(startXI.length, lineup.formation);
+
+  return startXI.map((item, index) => {
+    const parsedGrid = parsePlayerGrid(item?.player?.grid ?? null);
     const position =
       parsedGrid && gridMeta.rows.has(parsedGrid.row)
         ? getGridPosition(index, parsedGrid.row, gridMeta, side)
         : getFallbackPosition(index, fallbackRows, side);
 
-    const playerId = item.player.id;
+    const playerId = item?.player?.id;
 
     return {
       id: `${lineup.team.id}-${playerId ?? index}`,
-      name: item.player.name ?? "Unknown",
+      name: item?.player?.name ?? "Unknown",
       image: playerId ? (playerPhotoMap.get(playerId) ?? null) : null,
-      number: item.player.number,
+      number: item?.player?.number ?? null,
       position,
     };
   });
@@ -226,8 +235,15 @@ function buildPitchPlayers(
 function buildGridMeta(players: MatchLineupPlayerWrapper[]) {
   const rows = new Map<number, number[]>();
 
+  if (!Array.isArray(players) || players.length === 0) {
+    return {
+      rows,
+      maxRow: 1,
+    };
+  }
+
   players.forEach((item, index) => {
-    const parsedGrid = parsePlayerGrid(item.player.grid);
+    const parsedGrid = parsePlayerGrid(item?.player?.grid ?? null);
 
     if (!parsedGrid) return;
 
@@ -343,20 +359,31 @@ function getRowTop(rowIndex: number, rowTotal: number, side: PitchSide) {
   const progress = rowTotal <= 1 ? 0 : rowIndex / (rowTotal - 1);
 
   if (side === "home") {
-    return `${10 + progress * 37}%`;
+    // Home players occupy top 5%–44% of the pitch (well above the 50% centre line)
+    return `${5 + progress * 39}%`;
   }
 
-  return `${90 - progress * 37}%`;
+  // Away players occupy 95%–56% of the pitch (well below the 50% centre line)
+  return `${95 - progress * 39}%`;
 }
 
 //======= Prepare Player Photo =======//
 function buildPlayerPhotoMap(match: MatchDetailsItem) {
   const photoMap = new Map<number, string>();
 
+  if (!match || !Array.isArray(match.players) || match.players.length === 0) {
+    return photoMap;
+  }
+
   match.players.forEach((team) => {
+    if (!team || !Array.isArray(team.players)) return;
+
     team.players.forEach((item) => {
-      if (item.player.id && item.player.photo) {
-        photoMap.set(item.player.id, item.player.photo);
+      const pid = item?.player?.id;
+      const pphoto = item?.player?.photo;
+
+      if (pid && pphoto) {
+        photoMap.set(pid, pphoto);
       }
     });
   });

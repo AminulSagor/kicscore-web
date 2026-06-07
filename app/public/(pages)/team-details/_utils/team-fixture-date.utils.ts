@@ -2,26 +2,21 @@ import { TeamFixtureLeague } from "@/types/football/fixtures/team.fixtures.types
 
 const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
 
-const fixtureTimeFormatter = new Intl.DateTimeFormat("en-GB", {
-  hour: "2-digit",
-  minute: "2-digit",
-  hour12: false,
-  timeZone: "UTC",
-});
-
-const fixtureDateFormatter = new Intl.DateTimeFormat("en-GB", {
-  day: "numeric",
-  month: "short",
-  timeZone: "UTC",
-});
-
-//======= Format Time =======//
-export function formatFixtureTime(date: string): string {
-  return fixtureTimeFormatter.format(new Date(date));
+// timezone-aware formatters: callers provide timezone (IANA) or undefined
+function formatTimeWithTimezone(date: string, timezone?: string) {
+  try {
+    return new Intl.DateTimeFormat(undefined, {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+      timeZone: timezone || undefined,
+    }).format(new Date(date));
+  } catch {
+    return new Date(date).toLocaleTimeString();
+  }
 }
 
-//======= Format Date =======//
-export function formatFixtureDateLabel(date: string): string {
+function formatDateLabelWithTimezone(date: string, timezone?: string) {
   const fixtureDate = new Date(date);
   const currentDate = new Date();
 
@@ -49,7 +44,25 @@ export function formatFixtureDateLabel(date: string): string {
     return "Tomorrow";
   }
 
-  return fixtureDateFormatter.format(fixtureDate);
+  try {
+    return new Intl.DateTimeFormat(undefined, {
+      day: "numeric",
+      month: "short",
+      timeZone: timezone || undefined,
+    }).format(fixtureDate);
+  } catch {
+    return fixtureDate.toLocaleDateString();
+  }
+}
+
+//======= Format Time =======//
+export function formatFixtureTime(date: string, timezone?: string): string {
+  return formatTimeWithTimezone(date, timezone);
+}
+
+//======= Format Date =======//
+export function formatFixtureDateLabel(date: string, timezone?: string): string {
+  return formatDateLabelWithTimezone(date, timezone);
 }
 
 //======= Build Competition =======//

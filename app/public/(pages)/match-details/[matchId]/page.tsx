@@ -28,7 +28,28 @@ export default async function MatchDetailsPage({
   const queryParams = searchParams ? await searchParams : {};
 
   const activeTab = queryParams.tab ?? "facts";
-  const { match, follow } = await getMatchDetails(routeParams.matchId);
+  let match: any = null;
+  let follow: any = null;
+
+  try {
+    const result = await getMatchDetails(routeParams.matchId);
+    match = result.match;
+    follow = result.follow;
+  } catch (err) {
+    // Log network/backend errors and render a graceful fallback
+    // eslint-disable-next-line no-console
+    console.error("getMatchDetails failed:", err);
+
+    return (
+      <main>
+        <section className="mx-auto w-full pb-16">
+          <p className="mt-10 text-center text-sm font-medium text-[#6B7A75] dark:text-white/55">
+            Unable to load match details right now. Please try again later.
+          </p>
+        </section>
+      </main>
+    );
+  }
 
   if (!match) {
     return (
@@ -42,17 +63,35 @@ export default async function MatchDetailsPage({
     );
   }
 
-  const nextMatches =
-    activeTab === "facts" ? (await getUpcomingFixtures(2)).data.response : [];
+  let nextMatches: any[] = [];
+  let headToHeadMatches: any[] = [];
 
-  const headToHeadMatches =
-    activeTab === "head-to-head"
-      ? await getMatchHeadToHead({
-          homeTeamId: match.teams.home.id,
-          awayTeamId: match.teams.away.id,
-          last: 5,
-        })
-      : [];
+  // Defensive fetches: avoid throwing the whole page render when backend is unreachable
+  if (activeTab === "facts") {
+    try {
+      const res = await getUpcomingFixtures(2);
+      nextMatches = res?.data?.response ?? [];
+    } catch (err) {
+      // Log on server and continue with empty fallback
+      // eslint-disable-next-line no-console
+      console.error("getUpcomingFixtures failed:", err);
+      nextMatches = [];
+    }
+  }
+
+  if (activeTab === "head-to-head") {
+    try {
+      headToHeadMatches = await getMatchHeadToHead({
+        homeTeamId: match.teams.home.id,
+        awayTeamId: match.teams.away.id,
+        last: 5,
+      });
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("getMatchHeadToHead failed:", err);
+      headToHeadMatches = [];
+    }
+  }
 
   return (
     <main>

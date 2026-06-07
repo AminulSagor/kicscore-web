@@ -13,6 +13,15 @@ const PLAYER_TRAIT_ORDER: PlayerTraitKey[] = [
     "aerialWon",
 ];
 
+const DEFAULT_TRAIT_LABEL: Record<PlayerTraitKey, string> = {
+    defensiveContribution: "DEFENSIVE CONTRIB.",
+    goals: "GOALS",
+    shotAttempts: "SHOT ATTEMPTS",
+    touches: "TOUCHES",
+    chancesCreated: "CHANCES CREATED",
+    aerialWon: "AERIAL WON",
+};
+
 const CHART_CENTER = {
     x: 150,
     y: 150,
@@ -32,22 +41,18 @@ const getSafeScore = (score: number) => {
 };
 
 export const mapPlayerTraits = (
-    traits: FootballPlayerTraitItem[],
+    traits: FootballPlayerTraitItem[] | null | undefined,
 ): PlayerTrait[] => {
-    return PLAYER_TRAIT_ORDER.flatMap((traitKey) => {
-        const trait = traits.find((item) => item.key === traitKey);
+    const traitList = Array.isArray(traits) ? traits : [];
 
-        if (!trait) {
-            return [];
-        }
+    return PLAYER_TRAIT_ORDER.map((traitKey) => {
+        const trait = traitList.find((item) => item.key === traitKey);
 
-        return [
-            {
-                key: trait.key,
-                label: trait.label,
-                value: getSafeScore(trait.score),
-            },
-        ];
+        return {
+            key: traitKey,
+            label: trait?.label ?? DEFAULT_TRAIT_LABEL[traitKey],
+            value: getSafeScore(trait?.score ?? 0),
+        };
     });
 };
 

@@ -1,4 +1,5 @@
 "use client";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -33,7 +34,29 @@ export default function UpcomingMatchCard({ match }: UpcomingMatchCardProps) {
           </span>
 
           <span className="flex shrink-0 items-center gap-2 text-sm font-medium text-muted-foreground">
-            {new Date(match.fixture.date).toLocaleString()}
+            {
+              (() => {
+                try {
+                  const d = new Date(match.fixture.date);
+                  const time = new Intl.DateTimeFormat(undefined, {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false,
+                    timeZone: match.fixture.timezone || undefined,
+                  }).format(d);
+
+                  const date = new Intl.DateTimeFormat(undefined, {
+                    day: "numeric",
+                    month: "short",
+                    timeZone: match.fixture.timezone || undefined,
+                  }).format(d);
+
+                  return `${date} · ${time}`;
+                } catch {
+                  return new Date(match.fixture.date).toLocaleString();
+                }
+              })()
+            }
           </span>
         </div>
 
