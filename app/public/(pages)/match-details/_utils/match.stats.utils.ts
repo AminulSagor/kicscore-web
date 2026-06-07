@@ -80,7 +80,7 @@ export function buildMatchStatsSections(match: MatchDetailsItem) {
   };
 
   return {
-    hasStats: match.statistics.length > 0,
+    hasStats: (Array.isArray(match.statistics) ? match.statistics : []).length > 0,
     topSection,
     shotsSection,
     miniStats,
@@ -90,10 +90,11 @@ export function buildMatchStatsSections(match: MatchDetailsItem) {
 
 //======= Prepare Stats =======//
 function getTeamStatistics(match: MatchDetailsItem, side: "home" | "away") {
+  const statistics = Array.isArray(match.statistics) ? match.statistics : [];
   const teamId = match.teams[side].id;
 
   return (
-    match.statistics.find((item) => item.team.id === teamId)?.statistics ?? []
+    statistics.find((item) => item.team.id === teamId)?.statistics ?? []
   );
 }
 

@@ -1,0 +1,18 @@
+﻿{
+    "success":  true,
+    "statusCode":  200,
+    "message":  "Request successful",
+    "data":  {
+                 "playerId":  "2413",
+                 "traits":  null,
+                 "about":  null,
+                 "message":  "league and season are required",
+                 "follow":  {
+                                "isFollowed":  false,
+                                "entityType":  "PLAYER",
+                                "entityId":  "2413"
+                            }
+             },
+    "timestamp":  "2026-06-04T13:06:46.457Z",
+    "path":  "/football/players/2413/traits"
+}

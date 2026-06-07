@@ -65,7 +65,7 @@ export default function SeasonCard({ season, leagueId, isActive, onClick, winner
     >
       <div className="mb-4 flex w-full items-center justify-between">
         <h3 className="text-xl font-bold text-[#10201B] dark:text-white">
-          {season.year} / {season.year + 1}
+          {season.year}
         </h3>
         {season.current && (
           <span className="rounded-full bg-secondary/20 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-secondary">

@@ -1,0 +1,103 @@
+﻿{
+    "success":  true,
+    "statusCode":  200,
+    "message":  "Request successful",
+    "data":  {
+                 "get":  "teams",
+                 "parameters":  {
+                                    "search":  "Rosario Central"
+                                },
+                 "errors":  [
+
+                            ],
+                 "results":  4,
+                 "paging":  {
+                                "current":  1,
+                                "total":  1
+                            },
+                 "response":  [
+                                  {
+                                      "team":  {
+                                                   "id":  437,
+                                                   "name":  "Rosario Central",
+                                                   "code":  "ROS",
+                                                   "country":  "Argentina",
+                                                   "founded":  1889,
+                                                   "national":  false,
+                                                   "logo":  "https://media.api-sports.io/football/teams/437.png"
+                                               },
+                                      "venue":  {
+                                                    "id":  19391,
+                                                    "name":  "Estadio Gigante de Arroyito",
+                                                    "address":  "Avenida Génova y Avenida Centenario Rosario Central, Arroyito",
+                                                    "city":  "Rosario, Provincia de Santa Fe",
+                                                    "capacity":  41654,
+                                                    "surface":  "grass",
+                                                    "image":  "https://media.api-sports.io/football/venues/19391.png"
+                                                }
+                                  },
+                                  {
+                                      "team":  {
+                                                   "id":  15716,
+                                                   "name":  "Rosario Central",
+                                                   "code":  null,
+                                                   "country":  "Bolivia",
+                                                   "founded":  null,
+                                                   "national":  false,
+                                                   "logo":  "https://media.api-sports.io/football/teams/15716.png"
+                                               },
+                                      "venue":  {
+                                                    "id":  2490,
+                                                    "name":  "Estadio Victor Agustín Ugarte",
+                                                    "address":  "Calle Sucre esq. Lucas Jaimes",
+                                                    "city":  "Potosí",
+                                                    "capacity":  35000,
+                                                    "surface":  "grass",
+                                                    "image":  "https://media.api-sports.io/football/venues/2490.png"
+                                                }
+                                  },
+                                  {
+                                      "team":  {
+                                                   "id":  18696,
+                                                   "name":  "Rosario Central Res.",
+                                                   "code":  null,
+                                                   "country":  "Argentina",
+                                                   "founded":  null,
+                                                   "national":  false,
+                                                   "logo":  "https://media.api-sports.io/football/teams/18696.png"
+                                               },
+                                      "venue":  {
+                                                    "id":  19391,
+                                                    "name":  "Estadio Gigante de Arroyito",
+                                                    "address":  "Avenida Génova y Avenida Centenario Rosario Central, Arroyito",
+                                                    "city":  "Rosario, Provincia de Santa Fe",
+                                                    "capacity":  41654,
+                                                    "surface":  "grass",
+                                                    "image":  "https://media.api-sports.io/football/venues/19391.png"
+                                                }
+                                  },
+                                  {
+                                      "team":  {
+                                                   "id":  20771,
+                                                   "name":  "Rosário Central U20",
+                                                   "code":  null,
+                                                   "country":  "Brazil",
+                                                   "founded":  null,
+                                                   "national":  false,
+                                                   "logo":  "https://media.api-sports.io/football/teams/20771.png"
+                                               },
+                                      "venue":  {
+                                                    "id":  null,
+                                                    "name":  null,
+                                                    "address":  null,
+                                                    "city":  null,
+                                                    "capacity":  null,
+                                                    "surface":  null,
+                                                    "image":  null
+                                                }
+                                  }
+                              ]
+             },
+    "timestamp":  "2026-06-04T10:48:22.069Z",
+    "path":  "/football/teams?search=Rosario%20Central"
+}

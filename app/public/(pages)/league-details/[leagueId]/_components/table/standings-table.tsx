@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 import DataTable from "@/components/UI/tables/data-table";
@@ -24,8 +25,21 @@ const standingsColumns: DataTableColumn<LeagueStandingTeam>[] = [
         href={`/public/team-details/${team.teamId}`}
         className="flex w-fit items-center gap-3 rounded-lg transition hover:opacity-80"
       >
-        <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#EAF3EF] text-xs font-bold text-[#10201B] dark:bg-white/10 dark:text-white">
-          {team.shortName}
+        <div className="relative size-8 shrink-0 overflow-hidden rounded-full border border-secondary bg-[#EAF3EF]">
+          {team.teamLogo ? (
+            <Image
+              src={team.teamLogo}
+              alt={team?.teamName ?? "team"}
+              fill
+              sizes="32px"
+              className="object-contain p-1"
+              unoptimized
+            />
+          ) : (
+            <span className="grid size-full place-items-center text-xs font-bold text-[#10201B] dark:text-white">
+              {team.shortName}
+            </span>
+          )}
         </div>
 
         <span className="font-semibold">{team.teamName}</span>

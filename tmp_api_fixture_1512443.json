@@ -1,0 +1,110 @@
+﻿{
+    "success":  true,
+    "statusCode":  200,
+    "message":  "Request successful",
+    "data":  {
+                 "get":  "fixtures",
+                 "parameters":  {
+                                    "ids":  "1512443"
+                                },
+                 "errors":  [
+
+                            ],
+                 "results":  1,
+                 "paging":  {
+                                "current":  1,
+                                "total":  1
+                            },
+                 "response":  [
+                                  {
+                                      "fixture":  {
+                                                      "id":  1512443,
+                                                      "referee":  null,
+                                                      "timezone":  "UTC",
+                                                      "date":  "2026-06-03T18:00:00+00:00",
+                                                      "timestamp":  1780509600,
+                                                      "periods":  {
+                                                                      "first":  1780509600,
+                                                                      "second":  1780513200
+                                                                  },
+                                                      "venue":  {
+                                                                    "id":  null,
+                                                                    "name":  "Victor Legrotaglie",
+                                                                    "city":  "Mendoza"
+                                                                },
+                                                      "status":  {
+                                                                     "long":  "Match Finished",
+                                                                     "short":  "FT",
+                                                                     "elapsed":  90,
+                                                                     "extra":  4
+                                                                 }
+                                                  },
+                                      "league":  {
+                                                     "id":  906,
+                                                     "name":  "Reserve League",
+                                                     "country":  "Argentina",
+                                                     "logo":  "https://media.api-sports.io/football/leagues/906.png",
+                                                     "flag":  "https://media.api-sports.io/flags/ar.svg",
+                                                     "season":  2026,
+                                                     "round":  "Regular Season - 16",
+                                                     "standings":  true
+                                                 },
+                                      "teams":  {
+                                                    "home":  {
+                                                                 "id":  27272,
+                                                                 "name":  "Gimnasia Mendoza 2",
+                                                                 "logo":  "https://media.api-sports.io/football/teams/27272.png",
+                                                                 "winner":  null
+                                                             },
+                                                    "away":  {
+                                                                 "id":  18686,
+                                                                 "name":  "Gimnasia La Plata Res.",
+                                                                 "logo":  "https://media.api-sports.io/football/teams/18686.png",
+                                                                 "winner":  null
+                                                             }
+                                                },
+                                      "goals":  {
+                                                    "home":  0,
+                                                    "away":  0
+                                                },
+                                      "score":  {
+                                                    "halftime":  {
+                                                                     "home":  0,
+                                                                     "away":  0
+                                                                 },
+                                                    "fulltime":  {
+                                                                     "home":  0,
+                                                                     "away":  0
+                                                                 },
+                                                    "extratime":  {
+                                                                      "home":  null,
+                                                                      "away":  null
+                                                                  },
+                                                    "penalty":  {
+                                                                    "home":  null,
+                                                                    "away":  null
+                                                                }
+                                                },
+                                      "events":  [
+
+                                                 ],
+                                      "lineups":  [
+
+                                                  ],
+                                      "statistics":  [
+
+                                                     ],
+                                      "players":  [
+
+                                                  ]
+                                  }
+                              ],
+                 "follow":  {
+                                "isFollowed":  false,
+                                "entityType":  "FIXTURE",
+                                "entityId":  "1512443"
+                            }
+             },
+    "timestamp":  "2026-06-04T10:47:16.108Z",
+    "path":  "/football/fixtures/1512443"
+}

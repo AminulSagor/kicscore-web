@@ -20,6 +20,7 @@ import {
 } from "@/app/public/(pages)/league-details/_utils/team-stats.utils";
 import { getLeagueFixtures } from "@/service/football/fixtures/league.fixtures.service";
 import { getLeagueDetails } from "@/service/football/leagues/league.details.service";
+import type { LeagueDetailsItem } from "@/types/football/leagues/league.details";
 import { getLeaguePlayerStats } from "@/service/football/leagues/league.player-stats.service";
 import {
   getLeagueTopAssists,
@@ -81,7 +82,16 @@ export default async function Page({
 
   const activeTab = queryParams?.tab ?? "overview";
 
-  const leagueDetails = await getLeagueDetails({ id: leagueId });
+  let leagueDetails: LeagueDetailsItem | null = null;
+  try {
+    leagueDetails = await getLeagueDetails({ id: leagueId });
+  } catch (err) {
+    // Backend may timeout or be unavailable; proceed with null so UI can render
+    // partial data and show fallbacks. Log for diagnostics.
+    // eslint-disable-next-line no-console
+    console.error("getLeagueDetails failed for leagueId:", leagueId, err);
+    leagueDetails = null;
+  }
 
   const currentSeason =
     leagueDetails?.seasons.find((season) => season.current) ??
@@ -140,13 +150,27 @@ export default async function Page({
   const categoryTeamStatsPromise = shouldFetchCategoryTeamStats
     ? Promise.all(
         TEAM_STATS_CATEGORIES.map((category) =>
-          getLeagueTeamStats({
-            leagueId,
-            season: selectedSeason,
-            category,
-            page: 1,
-            limit: teamStatsRequestLimit,
-          }),
+          // Wrap each request so a single timeout/error doesn't reject the whole Promise.all
+          (async () => {
+            try {
+              return await getLeagueTeamStats({
+                leagueId,
+                season: selectedSeason,
+                category,
+                page: 1,
+                limit: teamStatsRequestLimit,
+              });
+            } catch (err) {
+              // Return an empty safe shape so UI can render without data
+              return {
+                leagueId: leagueId,
+                season: selectedSeason,
+                category,
+                sections: [],
+                meta: { page: 1, limit: teamStatsRequestLimit },
+              } as import("@/types/football/leagues/league.team-stats.types").LeagueTeamStatsData;
+            }
+          })(),
         ),
       )
     : Promise.resolve([]);
@@ -160,23 +184,41 @@ export default async function Page({
     categoryTeamStats,
   ] = await Promise.all([
     shouldFetchStandings
-      ? getLeagueStandings(leagueId, selectedSeason)
+      ? (async () => {
+          try {
+            return await getLeagueStandings(leagueId, selectedSeason);
+          } catch (err) {
+            return [];
+          }
+        })()
       : Promise.resolve([]),
 
     shouldFetchPlayerRankings
-      ? getLeagueTopScorers({
-          leagueId,
-          season: selectedSeason,
-          limit: playerRankingRequestLimit,
-        })
+      ? (async () => {
+          try {
+            return await getLeagueTopScorers({
+              leagueId,
+              season: selectedSeason,
+              limit: playerRankingRequestLimit,
+            });
+          } catch (err) {
+            return [];
+          }
+        })()
       : Promise.resolve([]),
 
     shouldFetchPlayerRankings
-      ? getLeagueTopAssists({
-          leagueId,
-          season: selectedSeason,
-          limit: playerRankingRequestLimit,
-        })
+      ? (async () => {
+          try {
+            return await getLeagueTopAssists({
+              leagueId,
+              season: selectedSeason,
+              limit: playerRankingRequestLimit,
+            });
+          } catch (err) {
+            return [];
+          }
+        })()
       : Promise.resolve([]),
 
     shouldFetchFixtures

@@ -36,7 +36,7 @@ export default function TeamStatRankingTable({
                 {team.logo ? (
                   <Image
                     src={team.logo}
-                    alt={team.name}
+                    alt={team?.name ?? "team"}
                     fill
                     sizes="48px"
                     className="object-contain p-1.5"
@@ -44,13 +44,13 @@ export default function TeamStatRankingTable({
                   />
                 ) : (
                   <span className="grid size-full place-items-center text-sm font-bold text-secondary">
-                    {team.name.charAt(0)}
+                    {team?.name ? String(team.name).charAt(0) : "-"}
                   </span>
                 )}
               </div>
 
               <h4 className="truncate text-sm font-bold text-[#10201B] dark:text-white">
-                {team.name}
+                {team?.name ?? "Unknown Team"}
               </h4>
             </Link>
 

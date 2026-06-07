@@ -23,6 +23,9 @@ export default function LeagueDetailsTabs() {
 
   const isWorldCup = params.leagueId === "1";
   const tabs = allTabs.filter(tab => {
+    // only show knockout tab for World Cup (leagueId === '1')
+    if (tab.value === "knockout" && !isWorldCup) return false;
+
     if (isWorldCup) {
       if (["table", "player-stats", "team-stats"].includes(tab.value)) return false;
     } else {
