@@ -17,24 +17,24 @@ type Side = "left" | "right";
 // ─── Constants ────────────────────────────────────────────────────────────────
 const DW = 160;  // desktop card width
 const CH = 68;   // card height (shared)
-const MW = 130;  // mobile card width
+const MW = 92;  // mobile card width
 const D_STEP = 200; // desktop: distance between column left-edges (card + gap)
-const M_STEP = 112; // mobile: distance between row top-edges (card + gap)
-const M_CARD_GAP = 8; // mobile: gap between cards side-by-side in a row
+const M_STEP = 118; // mobile: distance between row top-edges (card + gap)
+const M_CARD_GAP = 6; // mobile: gap between cards side-by-side in a row
 
 const CENTER_W = 240; // desktop center panel width
-const CENTER_H = 180; // mobile center panel height
+const CENTER_H = 190; // mobile center panel height
 
 // ─── Round detection ──────────────────────────────────────────────────────────
 const TIERS = [
-  { p: /round of 64/i,                              t: -1 },
-  { p: /round of 32/i,                              t:  0 },
-  { p: /round of 16/i,                              t:  1 },
-  { p: /quarter.?final/i,                           t:  2 },
-  { p: /semi.?final/i,                              t:  3 },
-  { p: /3rd.?place|third.?place|play.?off|bronze/i, t:  4 },
-  { p: /\bfinal\b/i,                                t:  5 },
-  { p: /knockout/i,                                 t:  1 },
+  { p: /round of 64/i, t: -1 },
+  { p: /round of 32/i, t: 0 },
+  { p: /round of 16/i, t: 1 },
+  { p: /quarter.?final/i, t: 2 },
+  { p: /semi.?final/i, t: 3 },
+  { p: /3rd.?place|third.?place|play.?off|bronze/i, t: 4 },
+  { p: /\bfinal\b/i, t: 5 },
+  { p: /knockout/i, t: 1 },
 ];
 
 function detectTier(round = "") {
@@ -53,7 +53,7 @@ function buildRounds(fixtures: LeagueFixtureItem[]) {
     if (t === null) continue;
     if (!map.has(t)) map.set(t, {
       tier: t, matches: [],
-      isFinal:      /\bfinal\b/i.test(round) && !/semi|quarter|3rd|third|bronze/i.test(round),
+      isFinal: /\bfinal\b/i.test(round) && !/semi|quarter|3rd|third|bronze/i.test(round),
       isThirdPlace: /3rd|third|bronze/i.test(round),
     });
     map.get(t)!.matches.push(f);
@@ -64,9 +64,9 @@ function buildRounds(fixtures: LeagueFixtureItem[]) {
 function toMatch(f: LeagueFixtureItem): Match {
   return {
     id: String(f.fixture.id),
-    left:      f.teams.home.name || "Home",
-    right:     f.teams.away.name || "Away",
-    leftLogo:  getValidTeamLogo(f.teams.home.logo || "") ?? null,
+    left: f.teams.home.name || "Home",
+    right: f.teams.away.name || "Away",
+    leftLogo: getValidTeamLogo(f.teams.home.logo || "") ?? null,
     rightLogo: getValidTeamLogo(f.teams.away.logo || "") ?? null,
     date: f.fixture?.timestamp
       ? new Date(f.fixture.timestamp * 1000).toLocaleDateString("en-US", { month: "short", day: "numeric" })
@@ -95,10 +95,10 @@ export default function KnockoutTab({ fixtures = [] }: Props) {
     );
   }
 
-  const mainRounds   = rounds.filter((r) => !r.isThirdPlace);
+  const mainRounds = rounds.filter((r) => !r.isThirdPlace);
   const thirdPlaceRnd = rounds.find((r) => r.isThirdPlace);
-  const finalRound   = mainRounds.find((r) => r.isFinal);
-  const treeRounds   = mainRounds.filter((r) => !r.isFinal);
+  const finalRound = mainRounds.find((r) => r.isFinal);
+  const treeRounds = mainRounds.filter((r) => !r.isFinal);
 
   const finalFixture = finalRound?.matches.length
     ? finalRound.matches.reduce((a, b) => ((a.fixture.timestamp ?? 0) > (b.fixture.timestamp ?? 0) ? a : b))
@@ -155,13 +155,13 @@ export default function KnockoutTab({ fixtures = [] }: Props) {
 
   const champion = finalMatch?.raw
     ? (finalMatch.raw.teams.home.winner ? finalMatch.raw.teams.home.name
-       : finalMatch.raw.teams.away.winner ? finalMatch.raw.teams.away.name : null)
+      : finalMatch.raw.teams.away.winner ? finalMatch.raw.teams.away.name : null)
     : null;
 
-  const finalM  = finalMatch  ? { ...finalMatch,  tag: "FINAL"        as const } : null;
+  const finalM = finalMatch ? { ...finalMatch, tag: "FINAL" as const } : null;
   const bronzeM = bronzeMatch ? { ...bronzeMatch, tag: "BRONZE-FINAL" as const } : null;
 
-  const numCols  = Math.max(leftRounds.length, 1);
+  const numCols = Math.max(leftRounds.length, 1);
   const maxCount = Math.max(...leftRounds.map((r) => r.length), ...rightRounds.map((r) => r.length), 1);
 
   // Desktop
@@ -170,7 +170,7 @@ export default function KnockoutTab({ fixtures = [] }: Props) {
   const D_BOARD_W = D_SIDE_W * 2 + CENTER_W;
 
   // Mobile
-  const M_ROW_W  = maxCount * MW + (maxCount - 1) * M_CARD_GAP;
+  const M_ROW_W = maxCount * MW + (maxCount - 1) * M_CARD_GAP;
   const M_SIDE_H = (numCols - 1) * M_STEP + CH;
 
   return (
@@ -179,7 +179,7 @@ export default function KnockoutTab({ fixtures = [] }: Props) {
       <div className="koBracketDesktop">
         <div className="koScroll">
           <div className="koBoardDesk" style={{ width: D_BOARD_W, height: D_SIDE_H }}>
-            <DeskSide side="left"  rounds={leftRounds}  numCols={numCols} sw={D_SIDE_W} sh={D_SIDE_H} />
+            <DeskSide side="left" rounds={leftRounds} numCols={numCols} sw={D_SIDE_W} sh={D_SIDE_H} />
             <DeskCenter finalM={finalM} bronzeM={bronzeM} champion={champion} w={CENTER_W} h={D_SIDE_H} />
             <DeskSide side="right" rounds={rightRounds} numCols={numCols} sw={D_SIDE_W} sh={D_SIDE_H} />
           </div>
@@ -190,7 +190,7 @@ export default function KnockoutTab({ fixtures = [] }: Props) {
       <div className="koBracketMobile">
         <div className="koMobScroll">
           <div className="koMobInner" style={{ width: M_ROW_W }}>
-            <MobSide side="left"  rounds={leftRounds}  numCols={numCols} rowW={M_ROW_W} sh={M_SIDE_H} />
+            <MobSide side="left" rounds={leftRounds} numCols={numCols} rowW={M_ROW_W} sh={M_SIDE_H} />
             <MobCenter finalM={finalM} bronzeM={bronzeM} champion={champion} w={M_ROW_W} />
             <MobSide side="right" rounds={rightRounds} numCols={numCols} rowW={M_ROW_W} sh={M_SIDE_H} />
           </div>
@@ -209,21 +209,30 @@ export default function KnockoutTab({ fixtures = [] }: Props) {
 
         /* ── desktop scroll wrapper ── */
         .koScroll { overflow-x: auto; overflow-y: hidden; }
-        .koBoardDesk {
-          display: flex;
-          flex-direction: row;
-          align-items: stretch;
-          position: relative;
-        }
+       .koBoardDesk {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  position: relative;
+  margin: 0 auto;
+}
 
         /* ── mobile scroll wrapper ── */
-        .koMobScroll { overflow-x: auto; overflow-y: hidden; padding-bottom: 8px; }
-        .koMobInner  {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          margin: 0 auto;
-        }
+        /* ── mobile scroll wrapper ── */
+.koMobScroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 20px 12px 12px;
+  width: 100%;
+}
+
+.koMobInner  {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  min-width: max-content;
+}
 
         /* ── shared canvas ── */
         .koCanvas {
@@ -331,11 +340,39 @@ export default function KnockoutTab({ fixtures = [] }: Props) {
         .koTagB { background: #38bdf8; }
 
         /* ── center panels ── */
-        .koCenter {
-          position: relative;
-          flex-shrink: 0;
-          overflow: visible;
-        }
+        @media (max-width: 767px) {
+  .koCard {
+    padding: 6px 7px;
+  }
+
+  .koName {
+    font-size: 8.5px;
+  }
+
+  .koScore {
+    font-size: 9.5px;
+  }
+
+  .koPen {
+    font-size: 7px;
+  }
+
+  .koCrest {
+    width: 11px;
+    height: 11px;
+  }
+
+  .koInfo {
+    gap: 3px;
+  }
+}
+
+/* ── center panels ── */
+.koCenter {
+  position: relative;
+  flex-shrink: 0;
+  overflow: visible;
+}
       `}</style>
     </section>
   );
@@ -373,16 +410,16 @@ function DeskSide({ side, rounds, numCols, sw, sh }: {
   // Target enters LEFT edge (left side) or RIGHT edge (right side)
   const paths: string[] = [];
   for (let col = 0; col < rounds.length - 1; col++) {
-    const srcY  = colYCentres[col];       // Y centres of source column
-    const tgtY  = colYCentres[col + 1];   // Y centres of target column
+    const srcY = colYCentres[col];       // Y centres of source column
+    const tgtY = colYCentres[col + 1];   // Y centres of target column
     const srcLeft = colLeft(col);
     const tgtLeft = colLeft(col + 1);
 
     // X where line exits source card
     const x1 = side === "left" ? srcLeft + DW : srcLeft;
     // X where line enters target card
-    const x2 = side === "left" ? tgtLeft      : tgtLeft + DW;
-    const mx  = (x1 + x2) / 2;
+    const x2 = side === "left" ? tgtLeft : tgtLeft + DW;
+    const mx = (x1 + x2) / 2;
 
     // Each target card gets lines from two source cards
     tgtY.forEach((ty, ti) => {
@@ -411,39 +448,90 @@ function DeskSide({ side, rounds, numCols, sw, sh }: {
 function DeskCenter({ finalM, bronzeM, champion, w, h }: {
   finalM: Match | null; bronzeM: Match | null; champion: string | null; w: number; h: number;
 }) {
-  // Cards stacked vertically, centred in the panel
-  const cx    = (w - DW) / 2;    // card left X (centred)
-  const midY  = h / 2;
-  const finalY  = midY - CH - 14; // Final above centre
-  const bronzeY = midY + 14;      // Bronze below centre
+  const cx = (w - DW) / 2;
+  const midY = h / 2;
 
-  // Connector stubs: arrive from left (x=0) and right (x=w) at final card's mid-Y
+  // Keep your desired placement
+  const finalY = midY - CH - 14;
+  const bronzeY = midY + 14;
+
   const finMidY = finalY + CH / 2;
+
+  // side semifinal connector comes from vertical middle
+  const sideMidY = midY;
+
+  const leftBendX = cx / 2;
+  const rightBendX = w - cx / 2;
+
+  const bronzeMidY = bronzeY + CH / 2;
 
   return (
     <div className="koCenter" style={{ width: w, height: h } as CSSProperties}>
       <svg className="koSvg" viewBox={`0 0 ${w} ${h}`} width={w} height={h} aria-hidden>
         {/* left side → Final */}
-        <path className="koLine" d={`M 0 ${finMidY} H ${cx}`} />
+        <path
+          className="koLine"
+          d={`M 0 ${sideMidY} H ${leftBendX} V ${finMidY} H ${cx}`}
+        />
+
         {/* right side → Final */}
-        <path className="koLine" d={`M ${w} ${finMidY} H ${cx + DW}`} />
+        <path
+          className="koLine"
+          d={`M ${w} ${sideMidY} H ${rightBendX} V ${finMidY} H ${cx + DW}`}
+        />
+
+        {bronzeM && (
+          <>
+            {/* left side → Bronze Final */}
+            <path
+              className="koLine"
+              d={`M 0 ${sideMidY} H ${leftBendX} V ${bronzeMidY} H ${cx}`}
+            />
+
+            {/* right side → Bronze Final */}
+            <path
+              className="koLine"
+              d={`M ${w} ${sideMidY} H ${rightBendX} V ${bronzeMidY} H ${cx + DW}`}
+            />
+          </>
+        )}
       </svg>
 
-      {/* Trophy */}
-      <div style={{ position:"absolute", top:18, left:"50%", transform:"translateX(-50%)", textAlign:"center", zIndex:3 }}>
-        <div style={{ fontSize:30 }}>🏆</div>
-        <div style={{ fontWeight:900, fontSize:9, letterSpacing:"0.16em", textTransform:"uppercase", color:"#71717a" }}>Champion</div>
+      <div style={{
+        position: "absolute",
+        top: 18,
+        left: "50%",
+        transform: "translateX(-50%)",
+        textAlign: "center",
+        zIndex: 3
+      }}>
+        <div style={{ fontSize: 30 }}>🏆</div>
+        <div style={{
+          fontWeight: 900,
+          fontSize: 9,
+          letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          color: "#71717a"
+        }}>
+          Champion
+        </div>
+
         {champion && (
-          <div style={{ marginTop:3, fontWeight:800, fontSize:13,
-            background:"linear-gradient(to right,#facc15,#f59e0b)",
-            WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>
+          <div style={{
+            marginTop: 3,
+            fontWeight: 800,
+            fontSize: 13,
+            background: "linear-gradient(to right,#facc15,#f59e0b)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent"
+          }}>
             {champion}
           </div>
         )}
       </div>
 
-      {finalM  && <Card match={finalM}  style={{ left:cx, top:finalY,  width:DW }} />}
-      {bronzeM && <Card match={bronzeM} style={{ left:cx, top:bronzeY, width:DW }} />}
+      {finalM && <Card match={finalM} style={{ left: cx, top: finalY, width: DW }} />}
+      {bronzeM && <Card match={bronzeM} style={{ left: cx, top: bronzeY, width: DW }} />}
     </div>
   );
 }
@@ -491,14 +579,14 @@ function MobSide({ side, rounds, numCols, rowW, sh }: {
   //   right: source exits TOP    of card (rowTop),       target enters BOTTOM (tgtRowTop + CH)
   const paths: string[] = [];
   for (let col = 0; col < rounds.length - 1; col++) {
-    const srcXC   = rowXC[col];
-    const tgtXC   = rowXC[col + 1];
+    const srcXC = rowXC[col];
+    const tgtXC = rowXC[col + 1];
     const srcRowT = rowTop(col);
     const tgtRowT = rowTop(col + 1);
 
     const y1 = side === "left" ? srcRowT + CH : srcRowT;       // exit edge of source card
-    const y2 = side === "left" ? tgtRowT      : tgtRowT + CH;  // entry edge of target card
-    const my  = (y1 + y2) / 2;
+    const y2 = side === "left" ? tgtRowT : tgtRowT + CH;  // entry edge of target card
+    const my = (y1 + y2) / 2;
 
     tgtXC.forEach((tx, ti) => {
       [ti * 2, ti * 2 + 1].forEach((si) => {
@@ -532,45 +620,101 @@ function MobSide({ side, rounds, numCols, rowW, sh }: {
 // Stub from bottom → Final card bottom edge  (right side connects here)
 // ═══════════════════════════════════════════════════════════════════════════════
 function MobCenter({ finalM, bronzeM, champion, w }: {
-  finalM: Match | null; bronzeM: Match | null; champion: string | null; w: number;
+  finalM: Match | null; bronzeM: Match | null; champion: string | null;
+  w: number;
 }) {
   const h = CENTER_H;
 
-  // Final card centred, Bronze to its right (or just below if too narrow)
   const totalCards = bronzeM ? 2 : 1;
   const totalCardW = totalCards * MW + (totalCards - 1) * M_CARD_GAP;
-  const startX     = (w - totalCardW) / 2;
-  const finalX     = startX;
-  const bronzeX    = startX + MW + M_CARD_GAP;
-  const cardY      = (h - CH) / 2;
+  const startX = (w - totalCardW) / 2;
 
-  // Stub X = centre of Final card; both top and bottom stubs connect at Final's X centre
-  const finalCentreX = finalX + MW / 2;
+  const finalX = startX;
+  const bronzeX = startX + MW + M_CARD_GAP;
+  const cardY = (h - CH) / 2;
+
+  const finalCenterX = finalX + MW / 2;
+  const bronzeCenterX = bronzeX + MW / 2;
+
+  // this is the real center line coming from top/bottom bracket
+  const mainX = w / 2;
+
+  const topJoinY = cardY - 22;
+  const bottomJoinY = cardY + CH + 22;
 
   return (
     <div className="koCenter" style={{ width: w, height: h } as CSSProperties}>
       <svg className="koSvg" viewBox={`0 0 ${w} ${h}`} width={w} height={h} aria-hidden>
-        {/* Top stub: left side SF bottom → Final card top */}
-        <path className="koLine" d={`M ${finalCentreX} 0 V ${cardY}`} />
-        {/* Bottom stub: Final card bottom → right side SF top */}
-        <path className="koLine" d={`M ${finalCentreX} ${h} V ${cardY + CH}`} />
+        {bronzeM ? (
+          <>
+            {/* Top bracket line splits to Final + Bronze-Final */}
+            <path
+              className="koLine"
+              d={`M ${mainX} 0 V ${topJoinY} H ${finalCenterX} V ${cardY}`}
+            />
+            <path
+              className="koLine"
+              d={`M ${mainX} ${topJoinY} H ${bronzeCenterX} V ${cardY}`}
+            />
+
+            {/* Final + Bronze-Final join back to bottom bracket */}
+            <path
+              className="koLine"
+              d={`M ${finalCenterX} ${cardY + CH} V ${bottomJoinY} H ${mainX} V ${h}`}
+            />
+            <path
+              className="koLine"
+              d={`M ${bronzeCenterX} ${cardY + CH} V ${bottomJoinY} H ${mainX}`}
+            />
+          </>
+        ) : (
+          <>
+            <path
+              className="koLine"
+              d={`M ${mainX} 0 V ${cardY}`}
+            />
+            <path
+              className="koLine"
+              d={`M ${mainX} ${h} V ${cardY + CH}`}
+            />
+          </>
+        )}
       </svg>
 
-      {/* Trophy */}
-      <div style={{ position:"absolute", top:"50%", right: bronzeM ? startX + totalCardW + 8 : 8,
-        transform:"translateY(-50%)", textAlign:"center", zIndex:3 }}>
-        <div style={{ fontSize:20 }}>🏆</div>
-        <div style={{ fontWeight:900, fontSize:8, letterSpacing:"0.12em", textTransform:"uppercase", color:"#71717a" }}>Champ</div>
+      <div style={{
+        position: "absolute",
+        top: "50%",
+        right: bronzeM ? startX + totalCardW + 8 : 8,
+        transform: "translateY(-50%)",
+        textAlign: "center",
+        zIndex: 3
+      }}>
+        <div style={{ fontSize: 20 }}>🏆</div>
+        <div style={{
+          fontWeight: 900,
+          fontSize: 8,
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+          color: "#71717a"
+        }}>
+          Champ
+        </div>
+
         {champion && (
-          <div style={{ marginTop:2, fontWeight:800, fontSize:10,
-            background:"linear-gradient(to right,#facc15,#f59e0b)",
-            WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>
+          <div style={{
+            marginTop: 2,
+            fontWeight: 800,
+            fontSize: 10,
+            background: "linear-gradient(to right,#facc15,#f59e0b)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent"
+          }}>
             {champion}
           </div>
         )}
       </div>
 
-      {finalM  && <Card match={finalM}  style={{ left: finalX,  top: cardY, width: MW }} />}
+      {finalM && <Card match={finalM} style={{ left: finalX, top: cardY, width: MW }} />}
       {bronzeM && <Card match={bronzeM} style={{ left: bronzeX, top: cardY, width: MW }} />}
     </div>
   );
@@ -580,18 +724,18 @@ function MobCenter({ finalM, bronzeM, champion, w }: {
 // MATCH CARD
 // ═══════════════════════════════════════════════════════════════════════════════
 function Card({ match, style }: { match: Match; style?: CSSProperties }) {
-  const raw  = match.raw ?? null;
-  const hg   = raw?.goals?.home ?? null;
-  const ag   = raw?.goals?.away ?? null;
-  const hp   = raw?.score?.penalty?.home ?? null;
-  const ap   = raw?.score?.penalty?.away ?? null;
+  const raw = match.raw ?? null;
+  const hg = raw?.goals?.home ?? null;
+  const ag = raw?.goals?.away ?? null;
+  const hp = raw?.score?.penalty?.home ?? null;
+  const ap = raw?.score?.penalty?.away ?? null;
   const hasS = hg !== null && ag !== null;
 
   return (
     <article className="koCard" style={style}>
       <div className="koInner">
         <div className="koTeams">
-          <TR name={match.left}  logo={match.leftLogo}  win={match.winner === "left"}  sc={hg} pen={hp} hasS={hasS} />
+          <TR name={match.left} logo={match.leftLogo} win={match.winner === "left"} sc={hg} pen={hp} hasS={hasS} />
           <TR name={match.right} logo={match.rightLogo} win={match.winner === "right"} sc={ag} pen={ap} hasS={hasS} />
         </div>
         {!hasS && <div className="koDate">{match.date}</div>}
@@ -611,7 +755,7 @@ function TR({ name, logo, win, sc, pen, hasS }: {
     <div className={`koRow${win ? " koWinner" : ""}`} style={{ opacity: win || !hasS ? 1 : 0.55 }}>
       <div className="koInfo">
         {logo
-          ? <Image src={logo} alt={name} width={14} height={14} style={{ borderRadius:999, objectFit:"contain", flexShrink:0 }} />
+          ? <Image src={logo} alt={name} width={14} height={14} style={{ borderRadius: 999, objectFit: "contain", flexShrink: 0 }} />
           : <span className="koCrest" />}
         <span className="koName">{name}</span>
       </div>
