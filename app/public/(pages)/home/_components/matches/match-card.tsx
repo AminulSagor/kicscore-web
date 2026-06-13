@@ -12,9 +12,9 @@ export default function MatchCard({ group }: MatchCardProps) {
     <Accordion
       title={`${group.league.name} ${group.league.round ?? ""}`}
       defaultOpen
-      className="rounded-3xl"
+      className="min-w-0 overflow-hidden rounded-3xl"
     >
-      <div className="-mx-4 -my-4">
+      <div className="-mx-4 -my-4 min-w-0 overflow-hidden">
         {group.fixtures.map((match) => (
           <MatchRow key={match.fixture.id} match={match} />
         ))}
