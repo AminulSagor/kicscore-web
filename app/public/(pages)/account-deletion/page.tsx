@@ -26,7 +26,7 @@ const accountDeletionSections = [
   {
     title: "What To Include In The Email",
     description:
-      "Send to hello@kicsore.com with the subject 'Account Deletion Request' and include: your full name, your registered email address, and an optional reason for deletion. We will reply to verify your identity.",
+      "Send to hello@kicscore.com with the subject 'Account Deletion Request' and include: your full name, your registered email address, and an optional reason for deletion. We will reply to verify your identity.",
   },
   {
     title: "What Gets Deleted",
@@ -51,7 +51,7 @@ const accountDeletionSections = [
   {
     title: "Need Help?",
     description:
-      "If you need assistance with deletion, identity verification, or have other questions, contact support at hello@kicsore.com. We usually respond within 24–48 hours on business days.",
+      "If you need assistance with deletion, identity verification, or have other questions, contact support at hello@kicscore.com. We usually respond within 24–48 hours on business days.",
   },
 ];
 
@@ -63,7 +63,7 @@ const AccountDeletionPage = () => {
       sections={accountDeletionSections}
       showContact
       contactText="If you need help deleting your account or have questions about the process, please contact our support team at:"
-      contactEmail="hello@kicsore.com"
+      contactEmail="hello@kicscore.com"
     />
   );
 };
