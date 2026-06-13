@@ -11,6 +11,7 @@ import NavbarActions from "@/components/layout/navbar/navbar-actions";
 import Image from "next/image";
 import { IMAGE } from "@/constants/image.path";
 import AppLogo from "@/components/logo/app-logo";
+import NavbarGetAppButton from "@/components/UI/buttons/navbar-get-app-button";
 
 export default function Navbar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -27,7 +28,7 @@ export default function Navbar() {
             <Menu className="h-4.5 w-4.5 md:h-5 md:w-5" />
           </button>
 
-          <AppLogo className="hidden items-center md:inline-flex" width={130}/>
+          <AppLogo className="hidden items-center md:inline-flex" width={130} />
 
           <div className="hidden md:block">
             <NavbarSearch />
@@ -38,7 +39,8 @@ export default function Navbar() {
           <NavbarSearchField inputClassName="w-full" popoverWidth="mobile" />
         </div>
 
-        <div className="shrink-0">
+        <div className="flex shrink-0 items-center gap-3">
+          <NavbarGetAppButton />
           <NavbarActions />
         </div>
       </div>

@@ -1,10 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Copy, Share2 } from "lucide-react";
 
-import type { NewsArticle } from "@/types/news/news.types";
-import { getValidImage } from "@/utils/image/image.utils";
 import NewsDetailShareActions from "@/app/public/(pages)/news/[newsId]/_components/news-detail-share-actions";
+import { AdsterraNativeBanner } from "@/components/ads/AdsterraNativeBanner";
+import type { NewsArticle } from "@/types/news/news.types";
+import {
+  ADSTERRA_BANNER_ZONES,
+  ADSTERRA_NATIVE_ZONES,
+} from "@/utils/ads/adsterra-zones";
+import { getValidImage } from "@/utils/image/image.utils";
+import { AdsterraBannerAd } from "@/components/ads/AdsterraBannerAd";
 
 type NewsDetailArticleProps = {
   news: NewsArticle;
@@ -26,20 +31,30 @@ export default function NewsDetailArticle({
 
   return (
     <article className="mx-auto max-w-[1060px] pt-12 pb-15">
-      <div className="text-[15px] font-medium text-[#7E8E88] dark:text-white/50">
-        <Link
-          href="/public/news"
-          className="transition hover:text-[#008A63] dark:hover:text-[#79e2c5]"
-        >
-          News
-        </Link>
-        <span className="mx-2">›</span>
-        <span className="text-[#00C48C]">{category}</span>
-      </div>
+      <div className="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,660px)_300px] xl:items-start">
+        <div>
+          <div className="text-[15px] font-medium text-[#7E8E88] dark:text-white/50">
+            <Link
+              href="/public/news"
+              className="transition hover:text-[#008A63] dark:hover:text-[#79e2c5]"
+            >
+              News
+            </Link>
+            <span className="mx-2">›</span>
+            <span className="text-[#00C48C]">{category}</span>
+          </div>
 
-      <h1 className="mt-6 max-w-[660px] text-[34px] leading-[1.18] font-bold tracking-[-0.03em] text-[#0B1F1A] md:text-[48px] dark:text-white">
-        {news.title}
-      </h1>
+          <h1 className="mt-6 text-[34px] leading-[1.18] font-bold tracking-[-0.03em] text-[#0B1F1A] md:text-[48px] dark:text-white">
+            {news.title}
+          </h1>
+        </div>
+
+        <AdsterraNativeBanner
+          {...ADSTERRA_NATIVE_ZONES.newsDetailTitleAd}
+          className="hidden xl:block"
+          minHeightClassName="min-h-[170px]"
+        />
+      </div>
 
       <div className="mt-8 flex items-center justify-between border-b border-[#D8E7DF] pb-7 dark:border-white/8">
         <div className="flex items-center gap-4">
@@ -87,8 +102,13 @@ export default function NewsDetailArticle({
         )}
       </div>
 
+      <AdsterraBannerAd
+        {...ADSTERRA_BANNER_ZONES.banner728x90}
+        className="mt-8 mb-10 hidden md:flex"
+      />
+
       {similarNews.length > 0 && (
-        <section className="mt-16 border-t border-[#D8E7DF] pt-10 dark:border-white/8">
+        <section className="mt-0 border-t border-[#D8E7DF] pt-10 dark:border-white/8">
           <h2 className="text-2xl font-bold tracking-[-0.02em] text-[#0B1F1A] dark:text-white">
             Similar News
           </h2>

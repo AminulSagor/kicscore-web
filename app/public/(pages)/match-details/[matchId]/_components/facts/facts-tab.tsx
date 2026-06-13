@@ -9,6 +9,12 @@ import MatchInfoCard from "../match-info-card";
 import MatchEvents from "./match-events";
 import PlayerOfTheMatch from "./player-of-the-match";
 import TopStats from "./top-stats";
+import { AdsterraNativeBanner } from "@/components/ads/AdsterraNativeBanner";
+import {
+  ADSTERRA_BANNER_ZONES,
+  ADSTERRA_NATIVE_ZONES,
+} from "@/utils/ads/adsterra-zones";
+import { AdsterraBannerAd } from "@/components/ads/AdsterraBannerAd";
 
 interface FactsTabProps {
   match: MatchDetailsItem;
@@ -21,16 +27,29 @@ export default function FactsTab({ match, nextMatches }: FactsTabProps) {
       <div className="min-w-0 space-y-5">
         {/* <PlayerOfTheMatch /> */}
         <TopStats match={match} />
+        <AdsterraNativeBanner
+          {...ADSTERRA_NATIVE_ZONES.matchFactsAfterTopStats}
+          className="my-4"
+          minHeightClassName="min-h-[130px]"
+        />
         <MatchEvents match={match} />
         <FormationPitch match={match} />
 
         {/* <TeamFormCard /> */}
+        <AdsterraBannerAd
+          {...ADSTERRA_BANNER_ZONES.banner728x90}
+          className="mt-8 mb-10 hidden md:flex"
+        />
         <NextMatchCard fixtures={nextMatches} />
         <AboutMatchCard match={match} />
       </div>
 
-      <aside className="min-w-0 self-start lg:sticky lg:top-20">
+      <aside className="min-w-0 self-start lg:sticky lg:top-20 space-y-4">
         <MatchInfoCard match={match} />
+        <AdsterraBannerAd
+          {...ADSTERRA_BANNER_ZONES.banner320x50}
+          className="mt-4 hidden xl:flex"
+        />
       </aside>
     </div>
   );
