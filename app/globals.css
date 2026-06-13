@@ -35,6 +35,50 @@
   /*custom color name end*/
 }
 
+@keyframes navbar-get-app-shake {
+  0%,
+  8%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+
+  1% {
+    transform: translateX(-2px) rotate(-2deg);
+  }
+
+  2% {
+    transform: translateX(2px) rotate(2deg);
+  }
+
+  3% {
+    transform: translateX(-2px) rotate(-2deg);
+  }
+
+  4% {
+    transform: translateX(2px) rotate(2deg);
+  }
+
+  5% {
+    transform: translateX(-1px) rotate(-1deg);
+  }
+
+  6% {
+    transform: translateX(1px) rotate(1deg);
+  }
+}
+
+.navbar-get-app-shake {
+  animation: navbar-get-app-shake 5s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar-get-app-shake {
+    animation: none;
+  }
+}
+
 html,
 body {
   min-height: 100%;

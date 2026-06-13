@@ -2,7 +2,9 @@ import FeaturedNewsCard from "@/app/public/(pages)/news/_components/featured-new
 import NewsListCard from "@/app/public/(pages)/news/_components/news-list-card";
 import NewsPagination from "@/app/public/(pages)/news/_components/news-pagination";
 import NewsToolbar from "@/app/public/(pages)/news/_components/news-toolbar";
+import { AdsterraNativeBanner } from "@/components/ads/AdsterraNativeBanner";
 import { getNewsServer } from "@/service/news/news.server.service";
+import { ADSTERRA_NATIVE_ZONES } from "@/utils/ads/adsterra-zones";
 
 interface NewsPageProps {
   searchParams: Promise<{
@@ -29,6 +31,12 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
         <NewsToolbar />
 
         <FeaturedNewsCard news={featuredNews} />
+
+        <AdsterraNativeBanner
+          {...ADSTERRA_NATIVE_ZONES.newsListAfterFeaturedNewsCard}
+          className="my-4"
+          minHeightClassName="min-h-[130px]"
+        />
 
         <div className="mt-10 grid grid-cols-1 gap-7 md:grid-cols-2">
           {newsList.map((news) => (

@@ -105,7 +105,7 @@ export default function LeagueSidebar() {
   };
 
   return (
-    <aside className="w-full lg:w-[240px] xl:w-[280px]">
+    <aside className="w-full lg:w-[240px] xl:w-[336px]">
       <Accordion title="Top Leagues" defaultOpen>
         <div className="space-y-3">
           {isLoading
