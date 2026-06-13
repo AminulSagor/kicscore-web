@@ -17,7 +17,7 @@ import {
 import MatchCard from "./match-card";
 import MatchToolbar from "./match-toolbar";
 
-const MATCH_LIMIT = 14;
+const MATCH_LIMIT = 10;
 
 const getDateKey = (date: Date) => date.toISOString().slice(0, 10);
 
@@ -232,9 +232,12 @@ export default function MatchSection() {
 
       {!isLoading && matchGroups.length > 0 && (
         <>
-          <div className="columns-1 gap-5 xl:columns-2">
+          <div className="columns-1 gap-5 2xl:columns-2">
             {sortedMatchGroups.map((group) => (
-              <div key={group.league.id} className="mb-5 break-inside-avoid">
+              <div
+                key={group.league.id}
+                className="mb-5 min-w-0 break-inside-avoid"
+              >
                 <MatchCard group={group} />
               </div>
             ))}

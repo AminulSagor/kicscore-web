@@ -12,7 +12,7 @@ import {
 const Home = () => {
   return (
     <div className="grid min-w-0 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_240px] xl:grid-cols-[minmax(0,1fr)_336px]">
-      <div className="flex min-w-0 flex-col gap-4 overflow-hidden">
+      <div className="flex min-w-0 flex-col gap-4">
         <MatchTopSection />
 
         <AdsterraNativeBanner
